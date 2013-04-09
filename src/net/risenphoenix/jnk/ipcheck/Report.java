@@ -43,7 +43,7 @@ public class Report {
 				sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Banned: " + ChatColor.GREEN + "False");
 			}
 			
-			if (Configuration.isExemptPlayer(player.getName())) {
+			if (Configuration.isExemptPlayer(arg)) {
 				sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Exempt: " + ChatColor.GREEN + "True");
 			} else {
 				sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Exempt: " + ChatColor.RED + "False");
