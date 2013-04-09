@@ -1,0 +1,9 @@
+name: IP-Check
+main: net.risenphoenix.jnk.ipcheck.IPcheck
+version: 1.2.0
+commands:
+   check:
+      description: Check for multi-accounting players via IP-Address or Player Name
+      usage: /<command>
+      permission: IPcheck.use
+      permission-message: You don't have permission to use this command. Please contact your server administrator.
