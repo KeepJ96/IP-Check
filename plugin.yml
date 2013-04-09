@@ -1,6 +1,6 @@
 name: IP-Check
 main: net.risenphoenix.jnk.ipcheck.IPcheck
-version: 1.2.0
+version: 1.2.1
 commands:
    check:
       description: Check for multi-accounting players via IP-Address or Player Name

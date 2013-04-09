@@ -95,7 +95,7 @@ public class Essentials implements Backend{
 				}
 			}
 			
-			playerInfo.add(sb.toString());
+			playerInfo.add(sb.toString().toLowerCase());
 		}
 	}
 
@@ -115,7 +115,9 @@ public class Essentials implements Backend{
 		
 		// Check if player is already in the list.
 		for (String s:playerInfo) {
-			if (s.contains(player.toLowerCase())) {
+			if (playerInfo.contains(sb.toString().toLowerCase())) {
+				return;
+			} else if (s.contains(player.toLowerCase())) {
 				playerInfo.remove(index);
 				playerInfo.add(sb.toString());
 				return;
@@ -124,7 +126,7 @@ public class Essentials implements Backend{
 			index++;
 		}
 		
-		playerInfo.add(sb.toString());
+		playerInfo.add(sb.toString().toLowerCase());
 	}
 
 	@Override

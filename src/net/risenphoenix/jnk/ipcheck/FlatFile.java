@@ -64,7 +64,7 @@ public class FlatFile implements Backend{
 			String strLine;
 			
 			while ((strLine = br.readLine()) != null) {
-				playerInfo.add(strLine);
+				playerInfo.add(strLine.toLowerCase());
 			}
 			
 		} catch (Exception e) {
@@ -119,13 +119,11 @@ public class FlatFile implements Backend{
 		sb.append("|");
 		sb.append(ip);
 		
-		logger.info(sb.toString());
-		
 		// Check if player is already in the list.
 		for (String s:playerInfo) {
-			if (playerInfo.contains(sb.toString())) {
+			if (playerInfo.contains(sb.toString().toLowerCase())) {
 				return;
-			} else if (s.contains(player)) {
+			} else if (s.contains(player.toLowerCase())) {
 				playerInfo.remove(index);
 				playerInfo.add(sb.toString());
 				return;
@@ -134,7 +132,7 @@ public class FlatFile implements Backend{
 			index++;
 		}
 		
-		playerInfo.add(sb.toString());
+		playerInfo.add(sb.toString().toLowerCase());
 	}
 
 	@Override
