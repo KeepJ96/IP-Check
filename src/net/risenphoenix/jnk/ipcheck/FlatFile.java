@@ -215,10 +215,39 @@ public class FlatFile implements Backend{
 
 	@Override
 	public String getIP(String player) {
-		StringBuilder ip = new StringBuilder();
-		int index = 0;
+StringBuilder ip = new StringBuilder();
 		
+		// First look for exact name
 		for(String s:playerInfo) {
+			StringBuilder name = new StringBuilder();
+			int indexName = 0;
+			int index = 0;
+			
+			while (s.charAt(indexName) != '|') {
+				name.append(s.charAt(indexName));
+				indexName++;
+			}
+			
+			if (name.toString().toLowerCase().equals(player.toLowerCase())) {
+				while (s.charAt(index) != '|') {
+					index++;
+				}
+				
+				index++; // Skip the '|' character
+				
+				while (index < s.length()) {
+					ip.append(s.charAt(index));
+					index++;
+				}
+				
+				return ip.toString();
+			}
+		}
+		
+		// If the exact name could not be found
+		for(String s:playerInfo) {
+			int index = 0;
+			
 			if (s.toLowerCase().contains(player.toLowerCase())) {
 				while (s.charAt(index) != '|') {
 					index++;
@@ -231,16 +260,12 @@ public class FlatFile implements Backend{
 					index++;
 				}
 				
-				break;
+				return ip.toString();
 			}
 		}
 		
-		if (ip.length() == 0) {
-			return "no-find";
-		}
-		
-		// Return the IP address
-		return ip.toString();
+		// If neither loop returned a match, then return.
+		return "no-find";
 	}
 
 	@Override

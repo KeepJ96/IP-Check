@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 public class Report {
 	
 	private static final String PLUG_NAME = "[IP-Check] ";
-	private static final String NO_FIND = "The player or IP specified could not be found.";
+	private static final String NO_FIND = "The player or IP specified could not be found. Additionally, there were no similar results.";
 
 	public void execute(ArrayList<String> players, CommandSender sender, String ip, String arg, boolean forPlayer) {
 		OfflinePlayer player = null;

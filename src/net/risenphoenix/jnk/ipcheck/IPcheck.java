@@ -313,7 +313,7 @@ public class IPcheck extends JavaPlugin implements Listener{
 						
 					// About Command
 					} else if (args[0].equalsIgnoreCase("about")) {
-						sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + "IP-Check v1.2.0 by Jnk1296.");
+						sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + "IP-Check v1.2.2 by Jnk1296.");
 						return true;
 						
 					// All else
