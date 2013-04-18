@@ -20,7 +20,7 @@ public class Report {
 		}
 		
 		if (forPlayer) {
-			player = IPcheck.backend.getPlayer(ip);
+			player = IPcheck.backend.getPlayer(ip, arg);
 		}
 		
 		StringBuilder sb = new StringBuilder();

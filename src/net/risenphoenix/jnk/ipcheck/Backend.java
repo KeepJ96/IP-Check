@@ -68,7 +68,7 @@ public interface Backend {
 	 * @param ip
 	 * @return Player object.
 	 */
-	public OfflinePlayer getPlayer(String ip);
+	public OfflinePlayer getPlayer(String ip, String arg);
 	
 	/***
 	 * Checks if IP address given exists or not.

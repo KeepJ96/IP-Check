@@ -245,11 +245,11 @@ public class Essentials implements Backend{
 	}
 
 	@Override
-	public OfflinePlayer getPlayer(String ip) {
+	public OfflinePlayer getPlayer(String ip, String arg) {
 		StringBuilder playerName = new StringBuilder();
 		
 		for (String s:playerInfo) {
-			if (s.contains(ip)) {
+			if (s.toLowerCase().contains(arg + '|' + ip)) {
 				int index = 0;
 				
 				while (s.charAt(index) != '|') {
