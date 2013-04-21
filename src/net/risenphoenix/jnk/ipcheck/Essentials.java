@@ -249,7 +249,7 @@ public class Essentials implements Backend{
 		StringBuilder playerName = new StringBuilder();
 		
 		for (String s:playerInfo) {
-			if (s.toLowerCase().contains(arg + '|' + ip)) {
+			if (s.toLowerCase().contains(arg.toLowerCase() + '|' + ip)) {
 				int index = 0;
 				
 				while (s.charAt(index) != '|') {
@@ -259,9 +259,7 @@ public class Essentials implements Backend{
 			}
 		}
 		
-		OfflinePlayer player = Bukkit.getOfflinePlayer(playerName.toString());
-		
-		return player;
+		return Bukkit.getOfflinePlayer(playerName.toString());
 	}
 
 	@Override

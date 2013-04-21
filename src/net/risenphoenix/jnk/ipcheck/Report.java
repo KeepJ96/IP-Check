@@ -37,10 +37,14 @@ public class Report {
 		
 		if (forPlayer) {
 			sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Searched for: " + ChatColor.YELLOW + arg);
-			if (player.isBanned()) {
-				sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Banned: " + ChatColor.RED + "True");
+			if (player != null) {
+				if (player.isBanned()) {
+					sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Banned: " + ChatColor.RED + "True");
+				} else {
+					sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Banned: " + ChatColor.GREEN + "False");
+				}
 			} else {
-				sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Banned: " + ChatColor.GREEN + "False");
+				sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Banned: " + ChatColor.GOLD + "Player object returned was NULL");
 			}
 			
 			if (Configuration.isExemptPlayer(arg)) {
