@@ -20,7 +20,7 @@ public class Report {
 		}
 		
 		if (forPlayer) {
-			player = IPcheck.backend.getPlayer(ip, arg);
+			player = IPcheck.backend.getPlayer(arg, players);
 		}
 		
 		StringBuilder sb = new StringBuilder();
@@ -36,18 +36,18 @@ public class Report {
 		sender.sendMessage("");
 		
 		if (forPlayer) {
-			sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Searched for: " + ChatColor.YELLOW + arg);
 			if (player != null) {
+				sender.sendMessage(ChatColor.LIGHT_PURPLE + "More Information about: " + ChatColor.YELLOW + player.getName());
 				if (player.isBanned()) {
 					sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Banned: " + ChatColor.RED + "True");
 				} else {
 					sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Banned: " + ChatColor.GREEN + "False");
 				}
 			} else {
-				sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Banned: " + ChatColor.GOLD + "Player object returned was NULL");
+				sender.sendMessage(ChatColor.RED + "ERROR: " + ChatColor.GOLD + "Player object returned was NULL");
 			}
 			
-			if (Configuration.isExemptPlayer(arg)) {
+			if (Configuration.isExemptPlayer(player.getName())) {
 				sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Exempt: " + ChatColor.GREEN + "True");
 			} else {
 				sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Exempt: " + ChatColor.RED + "False");

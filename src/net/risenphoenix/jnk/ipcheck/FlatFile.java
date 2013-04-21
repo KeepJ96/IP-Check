@@ -269,21 +269,23 @@ StringBuilder ip = new StringBuilder();
 	}
 
 	@Override
-	public OfflinePlayer getPlayer(String ip, String arg) {
-		StringBuilder playerName = new StringBuilder();
+	public OfflinePlayer getPlayer(String arg, ArrayList<String> alts) {
+		String getPlayer = null;
 		
-		for (String s:playerInfo) {
-			if (s.toLowerCase().contains(arg.toLowerCase() + '|' + ip)) {
-				int index = 0;
-				
-				while (s.charAt(index) != '|') {
-					playerName.append(s.charAt(index));
-					index++;
-				}
+		// Check for a match between the argument given and the list of alts returned from the IP
+		for (String s:alts) {
+			if (s.toLowerCase().contains(arg.toLowerCase())) {
+				getPlayer = s;
 			}
 		}
 		
-		return Bukkit.getOfflinePlayer(playerName.toString());
+		// If, for whatever reason, the string is still null after the above, then set it equal to the first element in alts
+		if (getPlayer == null) {
+			getPlayer = alts.get(0);
+		}
+		
+		// return player object
+		return Bukkit.getOfflinePlayer(getPlayer);
 	}
 
 	@Override

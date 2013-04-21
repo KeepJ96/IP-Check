@@ -27,7 +27,7 @@ public class LoginReport {
 							online[i].sendMessage(ChatColor.DARK_GRAY + "------------------------");
 							online[i].sendMessage(ChatColor.GREEN + "IP Address: " + ChatColor.LIGHT_PURPLE + ip);
 							online[i].sendMessage(ChatColor.LIGHT_PURPLE + player.getDisplayName() + ChatColor.YELLOW + " was found to have " + ChatColor.LIGHT_PURPLE + accounts + ChatColor.YELLOW + // subtract one from playersfound to make up for Recursion
-									" possible alternative accounts. Perform command " + ChatColor.LIGHT_PURPLE + "'/check " + player.getDisplayName() + "'" + 
+									" possible alternative accounts. Perform command " + ChatColor.LIGHT_PURPLE + "'/c " + player.getDisplayName() + "'" + 
 									ChatColor.YELLOW + " for more information.");
 							online[i].sendMessage(ChatColor.DARK_GRAY + "------------------------");
 							online[i].sendMessage("");

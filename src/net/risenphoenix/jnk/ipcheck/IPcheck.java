@@ -100,8 +100,7 @@ public class IPcheck extends JavaPlugin implements Listener{
 		// Do not perform check on operators or players with the "ipcheck.getnotify permission.
 		if (!player.isOp() && !player.hasPermission("ipcheck.getnotify")) {
 			if (Configuration.notifyLogin && shouldCheck) {
-				ArrayList<String> players = backend.getAlts(ipToCheck);
-				int accounts = players.size();
+				int accounts = (backend.getAlts(ipToCheck)).size();
 				Player playerCheck = e.getPlayer();
 				loginReport.execute(ipToCheck, playerCheck, accounts);
 			}
@@ -111,7 +110,7 @@ public class IPcheck extends JavaPlugin implements Listener{
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (cmd.getName().equalsIgnoreCase("check")) {
+		if (cmd.getName().equalsIgnoreCase("c")) {
 			try {
 				if (args[0] != null) {
 					// Ban Command

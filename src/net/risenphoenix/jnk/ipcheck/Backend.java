@@ -64,11 +64,11 @@ public interface Backend {
 	public String getIP(String player);
 	
 	/***
-	 * Returns the Player Object associated with the IP address given, if one exists.
-	 * @param ip
+	 * Returns the Player Object based on the closest match between @arg and @alts, if one exists, otherwise returns the player object for the first entry in @alts.
+	 * @param
 	 * @return Player object.
 	 */
-	public OfflinePlayer getPlayer(String ip, String arg);
+	public OfflinePlayer getPlayer(String arg, ArrayList<String> alts);
 	
 	/***
 	 * Checks if IP address given exists or not.
