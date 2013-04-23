@@ -1,30 +1,63 @@
 package net.risenphoenix.jnk.ipcheck;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
+
+import net.risenphoenix.jnk.ipcheck.Listeners.PlayerJoinListener;
+import net.risenphoenix.jnk.ipcheck.Listeners.PlayerLoginListener;
+import net.risenphoenix.jnk.ipcheck.commands.CmdAbout;
+import net.risenphoenix.jnk.ipcheck.commands.CmdBan;
+import net.risenphoenix.jnk.ipcheck.commands.CmdCheck;
+import net.risenphoenix.jnk.ipcheck.commands.CmdReload;
+import net.risenphoenix.jnk.ipcheck.commands.CmdToggle;
+import net.risenphoenix.jnk.ipcheck.commands.CmdUnban;
+import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
+import net.risenphoenix.jnk.ipcheck.commands.ParseCommand;
+import net.risenphoenix.jnk.ipcheck.commands.exempt.CmdExemptIp;
+import net.risenphoenix.jnk.ipcheck.commands.exempt.CmdExemptPlayer;
+import net.risenphoenix.jnk.ipcheck.commands.exempt.CmdUnexempt;
+import net.risenphoenix.jnk.ipcheck.commands.exempt.list.CmdExmtListAll;
+import net.risenphoenix.jnk.ipcheck.commands.exempt.list.CmdExmtListIp;
+import net.risenphoenix.jnk.ipcheck.commands.exempt.list.CmdExmtListPlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class IPcheck extends JavaPlugin implements Listener{
 	
-	// IP-Check v1.2.0 (REBUILD) by Jnk1296. Designed for checking for and banning multi-accounting players.
+	//================== IP-Check v1.3.0 (BUILD_008) | April 22, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
+	//==================                 CraftBukkit Build: 2759 | Bukkit API Version: 1.5.1-R0-3                 ==================//
 	
+	//=============== Backend Manager ===============//
 	public static Backend backend = null;
 	
-	public static Report report = new Report();
-	public static LoginReport loginReport = new LoginReport();
+	//=============== Event Listeners ===============//
+	public static PlayerLoginListener PLL = new PlayerLoginListener();
+	public static PlayerJoinListener PJL = new PlayerJoinListener();
 	
+	//================== Commands ==================//
+	ArrayList<IpcCommand> commands = new ArrayList<IpcCommand>();
+	public static final IpcCommand check = new CmdCheck();
+	public static final IpcCommand ban = new CmdBan();
+	public static final IpcCommand unban = new CmdUnban();
+	public static final IpcCommand exemptIp = new CmdExemptIp();
+	public static final IpcCommand exemptPlayer = new CmdExemptPlayer();
+	public static final IpcCommand unexempt = new CmdUnexempt();
+	public static final IpcCommand toggle = new CmdToggle();
+	public static final IpcCommand exemptList_all = new CmdExmtListAll();
+	public static final IpcCommand exemptList_ip = new CmdExmtListIp();
+	public static final IpcCommand exemptList_player = new CmdExmtListPlayer();
+	public static final IpcCommand reload = new CmdReload();
+	public static final IpcCommand about = new CmdAbout();
+	
+	//=============== Global Messages ===============//
 	public static final String PLUG_NAME = "[IP-Check] ";
 	public static final String BAN_LIST_READ_ERR = "Error occurred while attempting to read banned-ips.txt!";
 	public static final String PLAYER_FILE_READ_ERR = "Error occurred while attempting to read player file!";
@@ -43,13 +76,18 @@ public class IPcheck extends JavaPlugin implements Listener{
 	public static final String EXEMPTION_DEL_SUC = "Exemption successfully removed!";
 	public static final String EXEMPTION_DEL_ERR = "Exemption specified does not exist.";
 	
+	//============== Global Variables ==============//
 	public static boolean shouldCheck = true;
 	public static String ipToCheck = "";
 	
+	//================== Methods ==================//
+	
+	// Called when plugin is enabled
 	@Override
-	public void onEnable() {
+	public void onEnable() { 
 		getServer().getPluginManager().registerEvents(this, this); // Register the Player Login Listener
-		Configuration.onLoad(); // Load the Configuration File
+		
+		Configuration.onLoad();      // Load the Configuration File
 		
 		// Determine which backend to use
 		if (Configuration.backend == 1) {
@@ -58,351 +96,81 @@ public class IPcheck extends JavaPlugin implements Listener{
 			backend = new Essentials();
 		}
 		
-		backend.onLoad();
+		backend.onLoad();            // Initialize Backend
+		registerCommands();          // Register Commands
 	}
 	
+	// Called when plugin is disabled
 	@Override
 	public void onDisable() {
 		backend.onDisable();
 	}
 
+	// Registers all existing commands with the global arraylist
+	public void registerCommands() {
+		//----- Command Register -----||----- Command Description ----- || ----- Command ID -----//
+		//=======================================================================================//
+		commands.add(check);               //Default Check Command             || 0
+		commands.add(ban);                 //Ban Command                       || 1
+		commands.add(unban);               //Unban Command                     || 2
+		commands.add(exemptIp);            //Exempt Command (IP)               || 3
+		commands.add(exemptPlayer);        //Exempt Command (Player)           || 4
+		commands.add(unexempt);            //Unexempt Command                  || 5
+		commands.add(toggle);              //Toggle Command                    || 6
+		commands.add(exemptList_all);      //Exempt-List Command (list)        || 7
+		commands.add(exemptList_ip);       //Exempt-List Command (IP)          || 8
+		commands.add(exemptList_player);   //Exempt-List Command (Player)      || 9
+		commands.add(reload);              //Reload Command                    || 10
+		commands.add(about);               //About Command                     || 11
+		//=======================================================================================//
+		
+		Bukkit.getLogger().info(PLUG_NAME + "Registered " + commands.size() + " commands.");
+	}
+	
+	// Event Handler for PlayerJoinEvents
 	@EventHandler (priority = EventPriority.MONITOR)
 	public void onPlayerLogin(PlayerLoginEvent e) {
-		Player player = e.getPlayer();
-			
-		// Construct the IP Address String
-		InetAddress a = e.getAddress();
-		String iNetAddress = a.getHostAddress();
-		StringBuilder ip = new StringBuilder();
-		for (int i = 0; i < iNetAddress.length(); i++) {
-			if ((iNetAddress.charAt(i) >= '0' && iNetAddress.charAt(i) <= '9') || iNetAddress.charAt(i) == '.') {
-				ip.append(iNetAddress.charAt(i));
-			} else if (iNetAddress.charAt(i) == ':') {
-				break;
-			}
-		}
-		
-		ipToCheck = ip.toString();
-		backend.log(player.getName(), ip.toString());
-		shouldCheck = true;
-		
-		if (Configuration.secureMode) {
-			shouldCheck = secureCheck(ip.toString(), e);
-		}
-		
-		return;
+		PLL.execute(e);
 	}
 	
+	// Event Handler for PlayerLoginEvents
 	@EventHandler (priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent e) {
-		Player player = e.getPlayer();
-		
-		// Do not perform check on operators or players with the "ipcheck.getnotify permission.
-		if (!player.isOp() && !player.hasPermission("ipcheck.getnotify")) {
-			if (Configuration.notifyLogin && shouldCheck) {
-				int accounts = (backend.getAlts(ipToCheck)).size();
-				Player playerCheck = e.getPlayer();
-				loginReport.execute(ipToCheck, playerCheck, accounts);
-			}
-		}
-		
-		return;
+		PJL.execute(e);
 	}
 	
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if (cmd.getName().equalsIgnoreCase("c")) {
-			try {
-				if (args[0] != null) {
-					// Ban Command
-					if (args[0].equalsIgnoreCase("ban")) {
-						if (sender.hasPermission("ipcheck.ban") || sender.isOp()) {
-							if (args.length == 2) {
-								String ip_filter = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
-								if (args[1].toLowerCase().matches(ip_filter.toLowerCase())) {
-									// Command Instructions Here
-									report.execute(banPlayers(backend.getAlts(args[1]), sender, backend.checkIPaddress(args[1]), true), sender, backend.getIP(args[1]), args[1], false);
-								} else {
-									report.execute(banPlayers(backend.getAlts(backend.getIP(args[1])), sender, backend.getIP(args[1]), true), sender, backend.getIP(args[1]), args[1], false);
-								}
-							} else {
-								sender.sendMessage(NUM_ARGS_ERR);
-							}
-						} else {
-							sender.sendMessage(NO_PERM_ERR);
-						}
-						
-						return true;
-							
-					// Unban Command
-					} else if (args[0].equalsIgnoreCase("unban")) {
-						if (sender.hasPermission("ipcheck.unban") || sender.isOp()) {
-							if (args.length == 2) {
-								//Command Instructions Here
-								String ip_filter = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
-								if (args[1].toLowerCase().matches(ip_filter.toLowerCase())) {
-									// Command Instructions Here
-									report.execute(banPlayers(backend.getAlts(args[1]), sender, backend.checkIPaddress(args[1]), false), sender, backend.getIP(args[1]), args[1], false);
-								} else {
-									report.execute(banPlayers(backend.getAlts(backend.getIP(args[1])), sender, backend.getIP(args[1]), false), sender, backend.getIP(args[1]), args[1], false);
-								}
-							} else {
-								sender.sendMessage(NUM_ARGS_ERR);
-							}
-						} else {
-							sender.sendMessage(NO_PERM_ERR);
-						}
-						
-						return true;
-						
-					// Player Command
-					} else if (args[0].equalsIgnoreCase("player")) {
-						sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + "This command has been depricated. Please use '/check' for all player/ip lookups.");
-						
-						return true;
-						
-					// Exempt Command
-					} else if (args[0].equalsIgnoreCase("exempt")) {
-						if (sender.hasPermission("ipcheck.exempt") || sender.isOp()) {
-							if (args.length == 3) {
-								//Command Instructions Here
-								if (args[1].equalsIgnoreCase("player")) {
-									if (Configuration.addExemption(1, args[2])) {
-										sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + PLAYER_EXEMPT_SUC);
-									} else {
-										sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + EXEMPTION_FAIL);
-									}
-								} else if (args[1].equalsIgnoreCase("ip")) {
-									if (Configuration.addExemption(0, args[2])) {
-										sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + IP_EXEMPT_SUC);
-									} else {
-										sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + EXEMPTION_FAIL);
-									}
-								} else if (args[1].equalsIgnoreCase("remove")) {
-									if (sender.hasPermission("ipcheck.exempt.remove") || sender.isOp()) {
-										boolean result = Configuration.deleteExemption(args[2]);
-										
-										if (result) {
-											sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + EXEMPTION_DEL_SUC);
-										} else {
-											sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + EXEMPTION_DEL_ERR);
-										}
-									} else {
-										sender.sendMessage(NO_PERM_ERR);
-									}
-								} else {
-									sender.sendMessage(ILL_ARGS_ERR);
-								}
-							} else {
-								sender.sendMessage(NUM_ARGS_ERR);
-							}
-						} else {
-							sender.sendMessage(NO_PERM_ERR);
-						}
-						
-						return true;
-						
-					// Exempt-List Command
-					} else if (args[0].equalsIgnoreCase("exempt-list")) {
-						if (sender.hasPermission("ipcheck.list")) {
-							if (args.length == 2) {
-								//Command Instructions Here
-								if (args[1].equalsIgnoreCase("player")) {
-									ArrayList<String> list = Configuration.getPlayerExemptList();
-									
-									sender.sendMessage("");
-									for (String s:list) {
-										sender.sendMessage(s);
-									}
-									
-									sender.sendMessage(ChatColor.YELLOW + "Total players in exemption list: " + ChatColor.LIGHT_PURPLE + list.size());
-									sender.sendMessage("");
-									
-								} else if (args[1].equalsIgnoreCase("ip")) {
-									ArrayList<String> list = Configuration.getIpExemptList();
-									
-									sender.sendMessage("");
-									for (String s:list) {
-										sender.sendMessage(s);
-									}
-									
-									sender.sendMessage(ChatColor.YELLOW + "Total players in exemption list: " + ChatColor.LIGHT_PURPLE + list.size());
-									sender.sendMessage("");
-									
-								} else if (args[1].equalsIgnoreCase("list")) {
-									ArrayList<String> list = Configuration.getPlayerExemptList();
-									ArrayList<String> list2 = Configuration.getIpExemptList();
-									
-									sender.sendMessage("");
-									for (String s:list) sender.sendMessage(s);
-									sender.sendMessage(ChatColor.GOLD + "------------------------------");
-									for (String s:list2) sender.sendMessage(s);
-									
-									sender.sendMessage(ChatColor.YELLOW + "Total exemptions on file: " + ChatColor.LIGHT_PURPLE + (list.size() + list2.size()));
-									sender.sendMessage("");
-								}
-							} else {
-								sender.sendMessage(NUM_ARGS_ERR);
-							}
-						} else {
-							sender.sendMessage(NO_PERM_ERR);
-						}
-						
-						return true;
-						
-					// Toggle Commands
-					} else if (args[0].equalsIgnoreCase("toggle")) {
-						if (sender.hasPermission("ipcheck.toggle") || sender.isOp()) {
-							if (args.length == 2) {
-								if (args[1].equalsIgnoreCase("immediate-mode") || args[1].equalsIgnoreCase("immediate") || args[1].equalsIgnoreCase("im")) {
-									int response = Configuration.toggle(0);
-									
-									if (response == 0) {
-										sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + TOGGLE_NOTIFY + ChatColor.RED + "False");
-									} else if (response == 1) {
-										sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + TOGGLE_NOTIFY + ChatColor.GREEN + "True");
-									} else {
-										sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.RED + TOGGLE_ERR);
-									}
-								} else if (args[1].equalsIgnoreCase("notification-mode") || args[1].equalsIgnoreCase("notification") || args[1].equalsIgnoreCase("notify")) {
-									int response = Configuration.toggle(1);
-									
-									if (response == 0) {
-										sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + TOGGLE_DETAIL + ChatColor.RED + "False");
-									} else if (response == 1) {
-										sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + TOGGLE_DETAIL + ChatColor.GREEN + "True");
-									} else {
-										sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.RED + TOGGLE_ERR);
-									}
-								} else if (args[1].equalsIgnoreCase("secure-mode") || args[1].equalsIgnoreCase("secure")) {
-									int response = Configuration.toggle(2);
-									
-									if (response == 0) {
-										sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + TOGGLE_SECURE + ChatColor.RED + "False");
-									} else if (response == 1) {
-										sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + TOGGLE_SECURE + ChatColor.GREEN + "True");
-									} else {
-										sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.RED + TOGGLE_ERR);
-									}
-								} else {
-									sender.sendMessage(ILL_ARGS_ERR);
-								}
-							} else {
-								sender.sendMessage(NUM_ARGS_ERR);
-							}
-						} else {
-							sender.sendMessage(NO_PERM_ERR);
-						}
-						
-						return true;
-						
-					// Reload the Configuration
-					} else if (args[0].equalsIgnoreCase("reload")) {
-						if (sender.hasPermission("ipcheck.reload") || sender.isOp()) {
-							if (args.length == 1) {
-								Configuration.onLoad();
-								backend.onLoad();
-							} else {
-								sender.sendMessage(NUM_ARGS_ERR);
-							}
-						} else {
-							sender.sendMessage(NO_PERM_ERR);
-						}
-					
-						return true;
-						
-					// About Command
-					} else if (args[0].equalsIgnoreCase("about")) {
-						sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + "IP-Check v1.2.3 by Jnk1296.");
-						return true;
-						
-					// All else
-					} else if (args.length == 1) {
-						String ip_filter = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
-						//Command Instructions here
-						if (args[0].toLowerCase().matches(ip_filter.toLowerCase())) {
-							showReport(args[0], sender, false);
-							return true;
-						} else {
-							showReport(args[0].toLowerCase(), sender, true);
-							return true;
-						}
-					}
-					
+	// Called when a command is entered
+	public boolean onCommand(CommandSender sender, Command root, String commandLabel, String[] args) {
+		if (root.getName().equalsIgnoreCase("c")) {
+			if (sender.hasPermission("ipcheck.use")) {
+				int commandID = ParseCommand.execute(args);
+				
+				if (commandID == -1) {
+					sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + "An invalid command was specified.");
+					return true;
+				}
+				
+				if (commandID == -2) {
+					sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + "An invalid sub-command or no sub-command was specified.");
+					return true;
+				}
+				
+				if (commandID == -3) {
 					return false;
 				}
-			} catch (ArrayIndexOutOfBoundsException e) {
-				sender.sendMessage(NUM_ARGS_ERR);
-			} 
-		}
-			
-		return false;
-	}
-	
-	public void showReport(String input, CommandSender sender, boolean forPlayer) {
-		if (forPlayer) {
-			report.execute(backend.getAlts(backend.getIP(input)), sender, backend.getIP(input), input, true);
-		} else {
-			report.execute(backend.getAlts(input), sender, backend.getIP(input), input, false);
-		}
-	}
-	
-	public boolean secureCheck(String ip, PlayerLoginEvent e) {
-		ArrayList<String> players = backend.getAlts(ip);
-		int accounts = players.size();
-		Player player = e.getPlayer();
-		return secureKick(accounts, player.getName(), e, ip);
-	}
-	
-	public boolean secureKick(int accounts, String player, PlayerLoginEvent e, String ip) {
-		// If the player was reported to have more than the secure-threshold # of accounts, then kick (if not exempt).
-		if (accounts > Configuration.secureThreshold && !Configuration.isExemptPlayer(player) && !Configuration.isExemptIp(ip)) {
-			
-			if (player != null) {
-				e.setKickMessage(Configuration.secureKickMsg);
-				e.setResult(Result.KICK_OTHER);
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	
-	public ArrayList<String> banPlayers(ArrayList<String> players, CommandSender sender, String ip, boolean banning) {
-		// Ban or Unban IP Address
-		if (ip.equals("no-find")) {
-			sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + NO_FIND);
-			return players;
-		}
-		
-		if (banning) {
-			Bukkit.banIP(ip);
-			sender.sendMessage("");
-			sender.sendMessage("Banned IP Address: " + ip);
-			sender.sendMessage("");
-		} else if (!banning) {
-			Bukkit.unbanIP(ip);
-			sender.sendMessage("");
-			sender.sendMessage("Unbanned IP Address: " + ip);
-			sender.sendMessage("");
-		}
-		
-		// Ban or Unban Players with corresponding IP Address
-		for(String s:players) {
-			Bukkit.getOfflinePlayer(s).setBanned(banning);
-			
-			if (banning) {
-				Player player = Bukkit.getPlayer(s);
 				
-				if (player != null) {
-					player.kickPlayer(Configuration.banMessage);
+				for (IpcCommand cmd : commands) {
+					if (cmd.getID() == commandID) {
+						cmd.execute(sender, commandLabel, args); // Execute
+						return true;
+					}
 				}
-				
-				sender.sendMessage("Banned " + s);
-			} else if (!banning) {
-				sender.sendMessage("Pardoned " + s);
+			} else {
+				sender.sendMessage(NO_PERM_ERR);
+				return true;
 			}
 		}
 		
-		return players;
+		return false;
 	}
 }
