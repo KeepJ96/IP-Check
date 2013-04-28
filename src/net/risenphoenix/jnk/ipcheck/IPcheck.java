@@ -2,6 +2,7 @@ package net.risenphoenix.jnk.ipcheck;
 
 import java.util.ArrayList;
 
+import net.risenphoenix.jnk.ipcheck.Listeners.PlayerChatListener;
 import net.risenphoenix.jnk.ipcheck.Listeners.PlayerJoinListener;
 import net.risenphoenix.jnk.ipcheck.Listeners.PlayerLoginListener;
 import net.risenphoenix.jnk.ipcheck.commands.CmdAbout;
@@ -26,14 +27,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class IPcheck extends JavaPlugin implements Listener{
 	
-	//================== IP-Check v1.3.0 (BUILD_008) | April 22, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
+	//================== IP-Check v1.3.0 (BUILD_103) | April 27, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
 	//==================                 CraftBukkit Build: 2759 | Bukkit API Version: 1.5.1-R0-3                 ==================//
+	
+	//=================Root Command==================//
+	public static final String ROOT_COMMAND = "c";
 	
 	//=============== Backend Manager ===============//
 	public static Backend backend = null;
@@ -41,6 +46,7 @@ public class IPcheck extends JavaPlugin implements Listener{
 	//=============== Event Listeners ===============//
 	public static PlayerLoginListener PLL = new PlayerLoginListener();
 	public static PlayerJoinListener PJL = new PlayerJoinListener();
+	public static PlayerChatListener PCL = new PlayerChatListener();
 	
 	//================== Commands ==================//
 	ArrayList<IpcCommand> commands = new ArrayList<IpcCommand>();
@@ -127,21 +133,27 @@ public class IPcheck extends JavaPlugin implements Listener{
 		Bukkit.getLogger().info(PLUG_NAME + "Registered " + commands.size() + " commands.");
 	}
 	
-	// Event Handler for PlayerJoinEvents
+	// Event Handler for PlayerLoginEvents
 	@EventHandler (priority = EventPriority.MONITOR)
 	public void onPlayerLogin(PlayerLoginEvent e) {
 		PLL.execute(e);
 	}
 	
-	// Event Handler for PlayerLoginEvents
+	// Event Handler for PlayerJoinEvents
 	@EventHandler (priority = EventPriority.MONITOR)
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		PJL.execute(e);
 	}
 	
+	// Event Handler for PlayerChatEvents
+	@EventHandler (priority = EventPriority.HIGH)
+	public void onPlayerChat(PlayerCommandPreprocessEvent e) {
+		PCL.execute(e);
+	}
+	
 	// Called when a command is entered
 	public boolean onCommand(CommandSender sender, Command root, String commandLabel, String[] args) {
-		if (root.getName().equalsIgnoreCase("c")) {
+		if (root.getName().equalsIgnoreCase(ROOT_COMMAND)) {
 			if (sender.hasPermission("ipcheck.use")) {
 				int commandID = ParseCommand.execute(args);
 				
@@ -165,6 +177,7 @@ public class IPcheck extends JavaPlugin implements Listener{
 						return true;
 					}
 				}
+				
 			} else {
 				sender.sendMessage(NO_PERM_ERR);
 				return true;

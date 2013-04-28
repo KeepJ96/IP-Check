@@ -252,6 +252,7 @@ public class Essentials implements Backend{
 		for (String s:alts) {
 			if (s.toLowerCase().contains(arg.toLowerCase())) {
 				getPlayer = s;
+				break;
 			}
 		}
 		
