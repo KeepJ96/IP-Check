@@ -36,6 +36,7 @@ private static Logger logger = Bukkit.getLogger();
  	public static boolean secureMode = false;
  	public static boolean notifyLogin = true;
  	public static boolean detailNotify = false;
+ 	public static boolean usingMySQL = false;
  	
  	public static int notifyThreshold = 1;
  	public static int secureThreshold = 1;
@@ -43,8 +44,12 @@ private static Logger logger = Bukkit.getLogger();
  	public static String secureKickMsg = "Multiple Accounts Not Permitted.";
  	public static String banMessage = "Banned for Multi-Accounting.";
  	
+ 	private static String mySQLdb = null;
+ 	private static String mySQLuser = null;
+ 	private static String mySQLpassword = null;
+ 	
  	private static String defaultConfig =
- 			"# IPcheck 1.3.0 Configuration / Exemption List\r\n" +						// 0
+ 			"# IP-Check 1.3.0 Configuration / Exemption List\r\n" +						// 0
  			"===============================\r\n" + 									// 1
  			"Configuration Options\r\n" +        										// 2
  			"===============================\r\n" +										// 3			
@@ -57,13 +62,18 @@ private static Logger logger = Bukkit.getLogger();
  			"secure-kick-message: Multiple Accounts Not Permitted.\r\n" +				// 10
  			"ban-message: Banned for Multi-Accounting.\r\n" +							// 11
  			"logging-date-stamp-format: EEEE, MMMM dd, yyyy 'at' hh:mm:ss a, ZZZ\r\n" +	// 12 - Added Update #7
- 			"===============================\r\n" +										// 13
- 			"Exemptions: IP\r\n" +														// 14
- 			"===============================\r\n" +										// 15
- 			"===============================\r\n" +										// 16
- 			"Exemptions: Player_Name\r\n" +												// 17
+ 			"-------------------------------\r\n" +										// 13
+ 			"use-mysql: false\r\n" +													// 14
+ 			"database-address: \r\n" +													// 15
+ 			"user-name: \r\n" +															// 16
+ 			"password: \r\n" +															// 17
  			"===============================\r\n" +										// 18
- 			"===============================\r\n";										// 19
+ 			"Exemptions: IP\r\n" +														// 19
+ 			"===============================\r\n" +										// 20
+ 			"===============================\r\n" +										// 21
+ 			"Exemptions: Player_Name\r\n" +												// 22
+ 			"===============================\r\n" +										// 23
+ 			"===============================\r\n";										// 24
 
  	public static void onLoad() {
  		defaultConfiguration(); // Generate Default Configuration if one does not exist.
@@ -101,20 +111,40 @@ private static Logger logger = Bukkit.getLogger();
 		
 		// Check if Configuration Header indicates current version, else update.
 		if (!config.get(0).contains("1.3.0")) {
-			config.set(0, "# IPcheck 1.3.0 Configuration / Exemption List");
+			config.set(0, "# IP-Check 1.3.0 Configuration / Exemption List");
 			logger.info(PLUG_NAME + "Updated Configuration File!");
 		} else {
 			return; // Configuration is already up to date. There is no need to go further.
 		}
 		
 		// Check if Configuration contains options added in Update #1
-		if (!config.get(7).contains("use-flat-file: ")) {
+		if (!config.get(7).contains("use-flat-file:")) {
 			config.add(7, "use-flat-file: false");
 		}
 		
 		// Check if Configuration contains options added in Update #7
 		if (!config.get(12).contains("logging-date-stamp-format:")) {
 			config.add(12, "logging-date-stamp-format: EEEE, MMMM dd, yyyy 'at' hh:mm:ss a, ZZZ");
+		}
+		
+		if (!config.get(13).contains("---------")) {
+			config.add(13, "-------------------------------");
+		}
+		
+		if (!config.get(14).contains("use-mysql:")) {
+			config.add(14, "use-mysql: false");
+		}
+		
+		if (!config.get(15).contains("database-address:")) {
+			config.add(15, "database-address: ");
+		}
+		
+		if (!config.get(16).contains("user-name:")) {
+			config.add(16, "user-name: ");
+		}
+		
+		if (!config.get(17).contains("password:")) {
+			config.add(17, "password: ");
 		}
 		
 		if (DEBUG) {
@@ -151,6 +181,18 @@ private static Logger logger = Bukkit.getLogger();
 	    	e.printStackTrace();
 	    	logger.info(confWriteErr);
 	    }
+	}
+	
+	public static String getMySQLUsername() {
+		return mySQLuser;
+	}
+	
+	public static String getMySQLpassword() {
+		return mySQLpassword;
+	}
+	
+	public static String getMySQLdatabase() {
+		return mySQLdb;
 	}
 	
 	/***
@@ -273,8 +315,8 @@ private static Logger logger = Bukkit.getLogger();
 		
 		for (String line:config) {
 			// Should use Login Checking?
-			if (line.contains("notify-on-login: ")) {
-				modulus = line.replace("notify-on-login: ", "");
+			if (line.contains("notify-on-login:")) {
+				modulus = line.replace("notify-on-login:", "");
 				if (modulus.equalsIgnoreCase("true")) {
 					notifyLogin = true;
 				} else {
@@ -282,8 +324,8 @@ private static Logger logger = Bukkit.getLogger();
 				}
 				
 			// Should show descriptive notifications?
-			} else if (line.contains("descriptive-notice: ")) {
-				modulus = line.replace("descriptive-notice: ", "");
+			} else if (line.contains("descriptive-notice:")) {
+				modulus = line.replace("descriptive-notice:", "");
 				if (modulus.equalsIgnoreCase("true")) {
 					detailNotify = true;
 				} else {
@@ -291,8 +333,8 @@ private static Logger logger = Bukkit.getLogger();
 				}
 			
 			// Should use Secure Mode?
-			} else if (line.contains("secure-mode: ")) {
-				modulus = line.replace("secure-mode: ", "");
+			} else if (line.contains("secure-mode:")) {
+				modulus = line.replace("secure-mode:", "");
 				if (modulus.equalsIgnoreCase("true")) {
 					secureMode = true;
 				} else {
@@ -300,8 +342,8 @@ private static Logger logger = Bukkit.getLogger();
 				}
 				
 			// Should use Database?
-			} else if (line.contains("use-flat-file: ")) {
-				modulus = line.replace("use-flat-file: ", "");
+			} else if (line.contains("use-flat-file:")) {
+				modulus = line.replace("use-flat-file:", "");
 				if (modulus.equalsIgnoreCase("true")) {
 					backend = 1;
 				} else {
@@ -309,8 +351,8 @@ private static Logger logger = Bukkit.getLogger();
 				}
 				
 			// Set Logging Time/Date Stamp Format
-			} else if (line.contains("logging-date-stamp-format: ")) {
-				modulus = line.replace("logging-date-stamp-format: ", "");
+			} else if (line.contains("logging-date-stamp-format:")) {
+				modulus = line.replace("logging-date-stamp-format:", "");
 				dateStampFormat = modulus;
 								
 			// Set a minimum number of accounts to have before being notified
@@ -323,7 +365,7 @@ private static Logger logger = Bukkit.getLogger();
 						notifyThreshold = 1;
 					}
 				} catch (NumberFormatException e) {
-					logger.warning("Failed to parse Configuration option 'min-account-notify-threshold': was not valid integer.");
+					logger.warning(PLUG_NAME + "Failed to parse Configuration option 'min-account-notify-threshold': was not valid integer.");
 				}
 			
 			// Set a minimum number of accounts to have before being kicked
@@ -336,18 +378,54 @@ private static Logger logger = Bukkit.getLogger();
 						secureThreshold = 1;
 					}
 				} catch (NumberFormatException e) {
-					logger.warning("Failed to parse Configuration option 'secure-kick-threshold': was not valid integer.");
+					logger.warning(PLUG_NAME + "Failed to parse Configuration option 'secure-kick-threshold': was not valid integer.");
 				}
 				
 			// Set Kick Message
-			} else if (line.contains("secure-kick-message: ")) {
-				modulus = line.replace("secure-kick-message: ", "");
+			} else if (line.contains("secure-kick-message:")) {
+				modulus = line.replace("secure-kick-message:", "");
 				secureKickMsg = modulus;
 				
 			// Set Ban Message
-			} else if (line.contains("ban-message: ")) {
-				modulus = line.replace("ban-message: ", "");
+			} else if (line.contains("ban-message:")) {
+				modulus = line.replace("ban-message:", "");
 				banMessage = modulus;
+				
+			// Are we using MySQL?
+			} else if (line.contains("use-mysql:")) {
+				modulus = line.replace("use-mysql:", "");
+				if (modulus.equalsIgnoreCase("true")) {
+					usingMySQL = true;
+				} else {
+					usingMySQL = false;
+				}
+			
+			// If yes, what is the DB address?
+			} else if (line.contains("database-address:")) {
+				modulus = line.replace("database-address:", "");
+				if (!modulus.isEmpty()) {
+					mySQLdb = modulus;
+				} else {
+					logger.severe(PLUG_NAME + "No address given for MySQL Database!");
+				}
+				
+			// What is the username?
+			} else if (line.contains("user-name:")) {
+				modulus = line.replace("user-name:", "");
+				if (!modulus.isEmpty()) {
+					mySQLuser = modulus;
+				} else {
+					logger.severe(PLUG_NAME + "No user name specified for MySQL access!");
+				}
+				
+			// What is the password?
+			} else if (line.contains("password:")) {
+				modulus = line.replace("password:", "");
+				if (!modulus.isEmpty()) {
+					mySQLpassword = modulus;
+				} else {
+					logger.severe(PLUG_NAME + "No password given for MySQL Database!");
+				}
 			}
 		}
 	}

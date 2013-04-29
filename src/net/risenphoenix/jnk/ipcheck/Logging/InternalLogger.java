@@ -17,21 +17,25 @@ public class InternalLogger implements IpcLogger{
 		
 		String sender = e.getPlayer().getName();
 		
-		// Get Command ID
+		// Create Arguments Array for parsing
 		String message = e.getMessage();
 		message = message.replaceFirst("/c ", "");
 		String[] args = message.split(" ");
 		
+		// Get Internal Command ID
 		int commandID = ParseCommand.execute(args);
 		
-		//For Debugging Purposes
-		logger.info(IPcheck.PLUG_NAME + "User " + sender + " issued command: '" + e.getMessage() + 
-				"' (Command ID: " + commandID + ") on server " + Bukkit.getServerName() + " on " + 
-				ds.getDateStamp() + "."
-		);
-		
-		//TODO
-		// MySQL Logging Code to go here when test DB is set up. 
+		//Log to Database
+		if (commandID >= 0) {
+			// This log only for debugging purposes
+			logger.info(IPcheck.PLUG_NAME + "User " + sender + " issued command: '" + e.getMessage() + 
+					"' (Command ID: " + commandID + ") on server " + Bukkit.getServerName() + " on " + 
+					ds.getDateStamp() + "."
+			);
+			
+			//TODO
+			// MySQL Logging Code to go here when test DB is set up. 
+		}
 	}
 	
 }

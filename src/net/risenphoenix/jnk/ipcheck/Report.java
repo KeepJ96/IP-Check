@@ -30,7 +30,13 @@ public class Report {
 		}
 		
 		sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");
-		sender.sendMessage(ChatColor.GOLD + "Total Accounts found for: " + ip + " ... " + players.size());
+		
+		if (sender.hasPermission("ipcheck.showip") || sender.isOp()) {
+			sender.sendMessage(ChatColor.GOLD + "Total Accounts found for: " + ip + " ... " + players.size());
+		} else {
+			sender.sendMessage(ChatColor.GOLD + "Total Accounts found: " + players.size());
+		}
+		
 		sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");
 		sender.sendMessage(ChatColor.LIGHT_PURPLE + "The following players connect with the above IP address: " + ChatColor.YELLOW + sb);
 		sender.sendMessage("");
