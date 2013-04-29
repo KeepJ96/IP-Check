@@ -1,6 +1,6 @@
 IP-Check
 ========
-Current Build: **1.2.3**  
+Current Build: **1.2.4**  
 ##What is IP-Check?
 IP-Check is a server plugin designed to alert you (server administrator) and your staff about players with mutliple accounts on your server. It helps to notify you of possible situations, and helps with you getting of these "multi-accounters".  
 ##How does IP-Check work?
