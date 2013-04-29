@@ -21,11 +21,14 @@ private static Logger logger = Bukkit.getLogger();
 	private static final String PLUG_NAME = "[IP-Check] ";
 
 	// File paths
-	private static File dir = new File("plugins/IP-check");
- 	private static File path = new File("plugins/IP-check/Config.txt");
+	private static File dir = new File("plugins/IP-check"); // Plugin Directory
+ 	private static File path = new File("plugins/IP-check/Config.txt"); // Configuration File
+ 	private static File exempt = new File("plugins/IP-check/exempt.lst"); // Exemption List
  	
  	private static String confWriteErr = "Failed to generate Configuration File!";
  	private static String confReadErr = "Failed to read Configuration File!";
+ 	private static String exmpWriteErr = "Failed to write to Exemption File!";
+ 	private static String exmpReadErr = "Failed to read Exemption File!";
  	
  	public static String dateStampFormat = "EEEE, dd MMMM, yyyy 'at' hh:mm:ss a";
  	
@@ -66,19 +69,12 @@ private static Logger logger = Bukkit.getLogger();
  			"use-mysql: false\r\n" +													// 14
  			"database-address: \r\n" +													// 15
  			"user-name: \r\n" +															// 16
- 			"password: \r\n" +															// 17
- 			"===============================\r\n" +										// 18
- 			"Exemptions: IP\r\n" +														// 19
- 			"===============================\r\n" +										// 20
- 			"===============================\r\n" +										// 21
- 			"Exemptions: Player_Name\r\n" +												// 22
- 			"===============================\r\n" +										// 23
- 			"===============================\r\n";										// 24
+ 			"password: ";																// 17
 
  	public static void onLoad() {
  		defaultConfiguration(); // Generate Default Configuration if one does not exist.
- 		checkVersion();
  		parseConfigSettings(getConfiguration()); // Load and parse configuration.
+ 		checkVersion(); // Update Configuration
  	}
  	
  	//TODO Needs to be rewritten so as to prevent any possible glitches/entry duplications during updating.
@@ -109,55 +105,80 @@ private static Logger logger = Bukkit.getLogger();
 			}
 		}
 		
+		// Determine if the exemption sub-section of the configuration file exists, and if so, remove it and save it to a new file.
+		if (config.contains("Exemptions: IP") || config.contains("Exemptions: Player_Name")) {
+			ArrayList<String> exemptSplit = new ArrayList<String>();
+			int lineCount = 0;
+			
+			// Find where in the configuration file the exemption section is
+			while(!config.get(lineCount).equalsIgnoreCase("Exemptions: IP") && !config.get(lineCount).equalsIgnoreCase("Exemptions: Player_Name")) {
+				lineCount++;
+			}
+			
+			// Backup one line to encompass the "====" header.
+			lineCount -= 1;
+			
+			// Add the exemption block to the new exemptSplit list
+			while(lineCount < config.size()) {
+				exemptSplit.add(config.get(lineCount));
+				lineCount++;
+			}
+			
+			writeExemptionList(exemptSplit);
+		}
+		
 		// Check if Configuration Header indicates current version, else update.
 		if (!config.get(0).contains("1.3.0")) {
-			config.set(0, "# IP-Check 1.3.0 Configuration / Exemption List");
-			logger.info(PLUG_NAME + "Updated Configuration File!");
+			logger.info(PLUG_NAME + "Updating Configuration File!");
 		} else {
 			return; // Configuration is already up to date. There is no need to go further.
 		}
 		
-		// Check if Configuration contains options added in Update #1
-		if (!config.get(7).contains("use-flat-file:")) {
-			config.add(7, "use-flat-file: false");
+		ArrayList<String> currentConfiguration = getConfiguration();
+		ArrayList<String> newConfig = new ArrayList<String>(); // Contains the updated configuration
+		String[] blankConfiguration = defaultConfig.split("\r\n");
+		
+		// Convert blankConfiguration to arrayList
+		for(int i = 0; i < blankConfiguration.length; i++) {
+			newConfig.add(blankConfiguration[i]);
 		}
 		
-		// Check if Configuration contains options added in Update #7
-		if (!config.get(12).contains("logging-date-stamp-format:")) {
-			config.add(12, "logging-date-stamp-format: EEEE, MMMM dd, yyyy 'at' hh:mm:ss a, ZZZ");
-		}
-		
-		if (!config.get(13).contains("---------")) {
-			config.add(13, "-------------------------------");
-		}
-		
-		if (!config.get(14).contains("use-mysql:")) {
-			config.add(14, "use-mysql: false");
-		}
-		
-		if (!config.get(15).contains("database-address:")) {
-			config.add(15, "database-address: ");
-		}
-		
-		if (!config.get(16).contains("user-name:")) {
-			config.add(16, "user-name: ");
-		}
-		
-		if (!config.get(17).contains("password:")) {
-			config.add(17, "password: ");
+		// Create a new Configuration file with the settings of the old configuration.
+		for (int i = 4; i < newConfig.size(); i++) {
+			StringBuilder sb = new StringBuilder();
+			int charCount = 0;
+			
+			// Get Option Text
+			while(newConfig.get(i).charAt(charCount) != ':') {
+				sb.append(newConfig.get(i).charAt(charCount));
+				charCount++;
+				
+				// To prevent outOfBounds exception
+				if (charCount >= newConfig.get(i).length()) {
+					break;
+				}
+			}
+			
+			// Scan for option in current configuration, and if it's found, set the corresponding option in new config.
+			for(String s:currentConfiguration) {
+				if (s.contains(sb.toString())) {
+					newConfig.set(i, s);
+					break;
+				}
+			}
 		}
 		
 		if (DEBUG) {
 			logger.warning(PLUG_NAME + "DEBUG MODE IS ENABLED! IF YOU SEE THIS MESSAGE, PLEASE ALERT THE DEVELOPER.");
 			logger.warning(PLUG_NAME + "DISPLAYING MODIFIED CONFIGURATION. THIS CONFIGURATION WILL NOT BE SAVED TO FILE.");
 			logger.info("");
-			for(String s:config) {
+			for(String s:newConfig) {
 				logger.info(PLUG_NAME + s);
 			}
 			logger.info("");
 		}
 		
-		if (!DEBUG) writeConfiguration(config);
+		if (!DEBUG) writeConfiguration(newConfig);
  	}
  	
  	// Generate Default Configuration is one is needed.
@@ -221,6 +242,35 @@ private static Logger logger = Bukkit.getLogger();
 		return config;
 	}
 	
+	/*** Fetches Exemption List from File ***/
+	public static ArrayList<String> getExemptList() {
+		ArrayList<String> exemptList = new ArrayList<String>();
+		BufferedReader br = null;
+		
+		try {
+			FileInputStream fstream = new FileInputStream(exempt);
+			DataInputStream in = new DataInputStream(fstream);
+			br = new BufferedReader(new InputStreamReader(in));
+			String strLine;
+			
+			while ((strLine = br.readLine()) != null) {
+				exemptList.add(strLine);
+			}
+		} catch (Exception e) {
+			logger.severe(exmpReadErr);
+		} finally {
+			try {
+				if (br != null) {
+					br.close();
+				}
+			} catch (Exception e) {
+				logger.severe(e.getMessage());
+			}
+		}
+		
+		return exemptList;
+	}
+	
 	// Generate a Blank Configuration Document
 	public static void regenerateConfiguration() {
 		if (path.exists()) {
@@ -232,12 +282,10 @@ private static Logger logger = Bukkit.getLogger();
 	
 	public static boolean addExemption(int exemptionType, String exemption) {
 		if (exemptionType == 0) { // IP Exemption
-			writeConfiguration(addIpExemption(getConfiguration(), exemption));
-			getConfiguration();
+			writeExemptionList(addIpExemption(getExemptList(), exemption));
 			return true;
 		} else if (exemptionType == 1) { // Player Exemption
-			writeConfiguration(addPlayerExemption(getConfiguration(), exemption));
-			getConfiguration();
+			writeExemptionList(addPlayerExemption(getExemptList(), exemption));
 			return true;
 		}
 		
@@ -246,25 +294,25 @@ private static Logger logger = Bukkit.getLogger();
 	
 	// Add a Player Exemption to the configuration
 	/*** Writes the value of (String)player to the configuration file.*/
-	public static ArrayList<String> addPlayerExemption(ArrayList<String> config, String player) {
-		ArrayList<String> newConfig = new ArrayList<String>();
-		String EOC = config.get(config.size() - 1); 
+	public static ArrayList<String> addPlayerExemption(ArrayList<String> exemptList, String player) {
+		ArrayList<String> newExemptionList = new ArrayList<String>();
+		String EOC = exemptList.get(exemptList.size() - 1); 
 		
-		config.set(config.size() - 1, player);
-		config.add(EOC);
+		exemptList.set(exemptList.size() - 1, player);
+		exemptList.add(EOC);
 		
-		for (String s:config) newConfig.add(s);
+		for (String s:exemptList) newExemptionList.add(s);
 		
-		return newConfig;
+		return newExemptionList;
 	}
 	
-	public static ArrayList<String> addIpExemption(ArrayList<String> config, String ip) {
-		ArrayList<String> newConfig = new ArrayList<String>();
-		ArrayList<String> confBlock = new ArrayList<String>();
+	public static ArrayList<String> addIpExemption(ArrayList<String> exemptionList, String ip) {
+		ArrayList<String> newExmp = new ArrayList<String>();
+		ArrayList<String> exmpModify = new ArrayList<String>();
 		int lineCount = 0;
 		int line = 0;
 		
-		for (String s:config) {
+		for (String s:exemptionList) {
 			if (s.equalsIgnoreCase("Exemptions: IP")) {
 				lineCount += 2;
 				line = lineCount;
@@ -274,18 +322,46 @@ private static Logger logger = Bukkit.getLogger();
 			lineCount++;
 		}
 		
-		while (lineCount < config.size()) {
-			confBlock.add(config.get(lineCount));
+		while (lineCount < exemptionList.size()) {
+			exmpModify.add(exemptionList.get(lineCount));
 			lineCount++;
 		}
 		
-		config.subList(line, config.size()).clear();
-		config.add(ip);
+		exemptionList.subList(line, exemptionList.size()).clear();
+		exemptionList.add(ip);
 		
-		for (String s:confBlock) config.add(s);
-		for (String s:config) newConfig.add(s);
+		for (String s:exmpModify) exemptionList.add(s);
+		for (String s:exemptionList) newExmp.add(s);
 		
-		return newConfig;
+		return newExmp;
+	}
+	
+	// Write Modified Exemption List to File
+	public static void writeExemptionList(ArrayList<String> newExemptList) {
+		FileWriter f = null;
+		
+		try {
+			if (exempt.exists()) {
+				exempt.delete();
+			}
+			
+        	f = new FileWriter(exempt, true);
+	        
+	        for(String s:newExemptList) {
+	        	f.write(s + "\r\n");
+	        }
+		} catch (Exception e) {
+			e.printStackTrace();
+	    	logger.severe(exmpWriteErr);
+		} finally {
+			try {
+				if (f != null) {
+					f.close();
+				}
+			} catch (Exception e) {
+				logger.severe(e.getMessage());
+			}
+		}
 	}
 	
 	// Write Modified Configuration to File
@@ -433,10 +509,10 @@ private static Logger logger = Bukkit.getLogger();
 	// Returns list of exempt players from Configuration File
 	public static ArrayList<String> getPlayerExemptList() {
 		ArrayList<String> exemptList = new ArrayList<String>();
-		ArrayList<String> config = getConfiguration();
+		ArrayList<String> exempt = getExemptList();
 		int line = 0;
 		
-		for (String s:config) {
+		for (String s:exempt) {
 			if (s.equals("Exemptions: Player_Name")) {
 				line+=2;
 				break;
@@ -445,8 +521,8 @@ private static Logger logger = Bukkit.getLogger();
 			line++;
 		}
 		
-		while (!config.get(line).contains("=")) {
-			exemptList.add(config.get(line));
+		while (!exempt.get(line).contains("=")) {
+			exemptList.add(exempt.get(line));
 			line++;
 		}
 
@@ -455,10 +531,10 @@ private static Logger logger = Bukkit.getLogger();
 	
 	public static ArrayList<String> getIpExemptList() {
 		ArrayList<String> exemptList = new ArrayList<String>();
-		ArrayList<String> config = getConfiguration();
+		ArrayList<String> exempt = getExemptList();
 		int line = 0;
 		
-		for (String s:config) {
+		for (String s:exempt) {
 			if (s.equals("Exemptions: IP")) {
 				line+=2;
 				break;
@@ -467,8 +543,8 @@ private static Logger logger = Bukkit.getLogger();
 			line++;
 		}
 		
-		while (!config.get(line).contains("=")) {
-			exemptList.add(config.get(line));
+		while (!exempt.get(line).contains("=")) {
+			exemptList.add(exempt.get(line));
 			line++;
 		}
 
@@ -581,14 +657,13 @@ private static Logger logger = Bukkit.getLogger();
 	}
 	
 	public static boolean deleteExemption(String exemption) {
-		ArrayList<String> config = getConfiguration();
+		ArrayList<String> exemptList = getExemptList();
 		int line = 0;
 		
-		for (String s:config) {
+		for (String s:exemptList) {
 			if (s.equalsIgnoreCase(exemption)) {
-				config.remove(line);
-				writeConfiguration(config);
-				getConfiguration();
+				exemptList.remove(line);
+				writeExemptionList(exemptList);
 				return true;
 			}
 			

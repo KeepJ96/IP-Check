@@ -34,7 +34,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class IPcheck extends JavaPlugin implements Listener{
 	
-	//================== IP-Check v1.3.0 (BUILD_112) | April 27, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
+	//================== IP-Check v1.3.0 (BUILD_119) | April 27, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
 	//==================                 CraftBukkit Build: 2759 | Bukkit API Version: 1.5.1-R0-3                 ==================//
 	
 	//=================Root Command==================//

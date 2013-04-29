@@ -1,8 +1,8 @@
 name: IP-Check
 main: net.risenphoenix.jnk.ipcheck.IPcheck
-version: 1.2.3
+version: 1.3.0_DEV
 commands:
-   check:
+   c:
       description: Check for multi-accounting players via IP-Address or Player Name
       usage: /<command> [player_name | ip_address]
       permission: IPcheck.use

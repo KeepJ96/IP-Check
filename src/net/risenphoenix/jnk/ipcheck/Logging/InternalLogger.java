@@ -12,9 +12,11 @@ public class InternalLogger implements IpcLogger{
 
 	@Override
 	public void execute(PlayerCommandPreprocessEvent e) {
+		// Instantiate Logger and DateStamp systems
 		Logger logger = Bukkit.getLogger();
 		DateStamp ds = new DateStamp();
 		
+		// Get sender name
 		String sender = e.getPlayer().getName();
 		
 		// Create Arguments Array for parsing
