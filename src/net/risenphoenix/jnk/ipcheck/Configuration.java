@@ -77,7 +77,6 @@ private static Logger logger = Bukkit.getLogger();
  		checkVersion(); // Update Configuration
  	}
  	
- 	//TODO Needs to be rewritten so as to prevent any possible glitches/entry duplications during updating.
  	public static void checkVersion() {
  		ArrayList<String> config = new ArrayList<String>();
 		BufferedReader br = null;
