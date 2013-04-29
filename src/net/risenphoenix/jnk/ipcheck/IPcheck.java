@@ -2,7 +2,7 @@ package net.risenphoenix.jnk.ipcheck;
 
 import java.util.ArrayList;
 
-import net.risenphoenix.jnk.ipcheck.Listeners.PlayerChatListener;
+import net.risenphoenix.jnk.ipcheck.Listeners.PlayerCommandListener;
 import net.risenphoenix.jnk.ipcheck.Listeners.PlayerJoinListener;
 import net.risenphoenix.jnk.ipcheck.Listeners.PlayerLoginListener;
 import net.risenphoenix.jnk.ipcheck.commands.CmdAbout;
@@ -34,7 +34,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class IPcheck extends JavaPlugin implements Listener{
 	
-	//================== IP-Check v1.3.0 (BUILD_111) | April 27, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
+	//================== IP-Check v1.3.0 (BUILD_112) | April 27, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
 	//==================                 CraftBukkit Build: 2759 | Bukkit API Version: 1.5.1-R0-3                 ==================//
 	
 	//=================Root Command==================//
@@ -46,7 +46,7 @@ public class IPcheck extends JavaPlugin implements Listener{
 	//=============== Event Listeners ===============//
 	public static PlayerLoginListener PLL = new PlayerLoginListener();
 	public static PlayerJoinListener PJL = new PlayerJoinListener();
-	public static PlayerChatListener PCL = new PlayerChatListener();
+	public static PlayerCommandListener PCL = new PlayerCommandListener();
 	
 	//================== Commands ==================//
 	ArrayList<IpcCommand> commands = new ArrayList<IpcCommand>();
@@ -145,7 +145,7 @@ public class IPcheck extends JavaPlugin implements Listener{
 		PJL.execute(e);
 	}
 	
-	// Event Handler for PlayerChatEvents
+	// Event Handler for PlayerCommandEvents
 	@EventHandler (priority = EventPriority.HIGH)
 	public void onPlayerChat(PlayerCommandPreprocessEvent e) {
 		PCL.execute(e);
