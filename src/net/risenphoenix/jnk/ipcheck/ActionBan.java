@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ActionBan {
-	public ArrayList<String> banPlayers(ArrayList<String> players, CommandSender sender, String ip, boolean banning) {
+	public ArrayList<String> banPlayers(ArrayList<String> players, CommandSender sender, String ip, String message, boolean banning) {
 		// Ban or Unban IP Address
 		if (ip.equals("no-find")) {
 			sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + IPcheck.NO_FIND);
@@ -35,10 +35,21 @@ public class ActionBan {
 				Player player = Bukkit.getPlayer(s);
 				
 				if (player != null) {
-					player.kickPlayer(Configuration.banMessage);
+					if (message.length() > 0) {
+						player.kickPlayer(message);
+					} else {
+						player.kickPlayer(Configuration.banMessage);
+					}
 				}
 				
-				sender.sendMessage("Banned " + s);
+				Player[] online = Bukkit.getOnlinePlayers();
+				for (int i = 0; i < online.length; i++) {
+					if (message.length() > 0) {
+						online[i].sendMessage(ChatColor.GOLD + "Player " + ChatColor.GREEN + sender.getName() + ChatColor.GOLD + " banned " + ChatColor.RED + s + ChatColor.GOLD + " for " + message);
+					} else {
+						online[i].sendMessage(ChatColor.GOLD + "Player " + sender.getName() + " banned " + s + " for " + Configuration.banMessage);
+					}
+				}
 			} else if (!banning) {
 				sender.sendMessage("Pardoned " + s);
 			}
