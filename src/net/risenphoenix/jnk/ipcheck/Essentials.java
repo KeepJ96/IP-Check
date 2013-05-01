@@ -117,7 +117,7 @@ public class Essentials implements Backend{
 		for (String s:playerInfo) {
 			if (playerInfo.contains(sb.toString().toLowerCase())) {
 				return;
-			} else if (s.contains(player.toLowerCase())) {
+			} else if (s.contains(player.toLowerCase())) { // THIS CODE LIKELY CAUSING DUPLICATE ENTRIES
 				playerInfo.remove(index);
 				playerInfo.add(sb.toString());
 				return;
