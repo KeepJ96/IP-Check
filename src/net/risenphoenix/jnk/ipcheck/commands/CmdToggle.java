@@ -12,7 +12,8 @@ public class CmdToggle implements IpcCommand{
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
 		if (sender.hasPermission("ipcheck.toggle") || sender.isOp()) {
 			if (args.length == 2) {
-				if (args[1].equalsIgnoreCase("immediate-mode") || args[1].equalsIgnoreCase("immediate") || args[1].equalsIgnoreCase("im")) {
+				
+				if (args[1].equalsIgnoreCase("login-notify") || args[1].equalsIgnoreCase("notification") || args[1].equalsIgnoreCase("notify")) {
 					int response = Configuration.toggle(0);
 					
 					if (response == 0) {
@@ -22,7 +23,8 @@ public class CmdToggle implements IpcCommand{
 					} else {
 						sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.RED + IPcheck.TOGGLE_ERR);
 					}
-				} else if (args[1].equalsIgnoreCase("notification-mode") || args[1].equalsIgnoreCase("notification") || args[1].equalsIgnoreCase("notify")) {
+					
+				} else if (args[1].equalsIgnoreCase("detail-notify") || args[1].equalsIgnoreCase("detail") || args[1].equalsIgnoreCase("dn")) {
 					int response = Configuration.toggle(1);
 					
 					if (response == 0) {
@@ -32,6 +34,7 @@ public class CmdToggle implements IpcCommand{
 					} else {
 						sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.RED + IPcheck.TOGGLE_ERR);
 					}
+					
 				} else if (args[1].equalsIgnoreCase("secure-mode") || args[1].equalsIgnoreCase("secure")) {
 					int response = Configuration.toggle(2);
 					
@@ -42,6 +45,7 @@ public class CmdToggle implements IpcCommand{
 					} else {
 						sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.RED + IPcheck.TOGGLE_ERR);
 					}
+					
 				} else {
 					sender.sendMessage(IPcheck.ILL_ARGS_ERR);
 				}

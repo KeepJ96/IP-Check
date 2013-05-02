@@ -34,8 +34,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class IPcheck extends JavaPlugin implements Listener{
 	
-	//================== IP-Check v1.3.0 (BUILD_119) | April 27, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
-	//==================                 CraftBukkit Build: 2759 | Bukkit API Version: 1.5.1-R0-3                 ==================//
+	//================== IP-Check v1.3.0 | April 27, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
+	//==================           CraftBukkit Build: 2759 | Bukkit API Version: 1.5.1-R0-3           ==================//
 	
 	//=================Root Command==================//
 	public static final String ROOT_COMMAND = "c";
@@ -146,15 +146,15 @@ public class IPcheck extends JavaPlugin implements Listener{
 	}
 	
 	// Event Handler for PlayerCommandEvents
-	@EventHandler (priority = EventPriority.HIGH)
-	public void onPlayerChat(PlayerCommandPreprocessEvent e) {
+	//@EventHandler (priority = EventPriority.HIGH)
+	public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
 		PCL.execute(e);
 	}
 	
 	// Called when a command is entered
 	public boolean onCommand(CommandSender sender, Command root, String commandLabel, String[] args) {
 		if (root.getName().equalsIgnoreCase(ROOT_COMMAND)) {
-			if (sender.hasPermission("ipcheck.use")) {
+			if (sender.hasPermission("ipcheck.use") || sender.isOp()) {
 				int commandID = ParseCommand.execute(args);
 				
 				if (commandID == -1) {

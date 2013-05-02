@@ -38,7 +38,12 @@ public class Report {
 		}
 		
 		sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");
-		sender.sendMessage(ChatColor.LIGHT_PURPLE + "The following players connect with the above IP address: " + ChatColor.YELLOW + sb);
+		
+		if (sender.hasPermission("ipcheck.showip") || sender.isOp()) {
+			sender.sendMessage(ChatColor.LIGHT_PURPLE + "The following players connect with the above IP address: " + ChatColor.YELLOW + sb);
+		} else {
+			sender.sendMessage(ChatColor.LIGHT_PURPLE + "The following players connect using the same IP address: " + ChatColor.YELLOW + sb);
+		}
 		sender.sendMessage("");
 		
 		if (forPlayer) {

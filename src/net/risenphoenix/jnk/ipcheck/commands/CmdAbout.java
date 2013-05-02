@@ -9,7 +9,7 @@ public class CmdAbout implements IpcCommand{
 
 	@Override
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
-		sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + "IP-Check v1.3.0_DEV-RELEASE_01 by Jnk1296.");
+		sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + "IP-Check v1.3.0_DEV-RELEASE_02 by Jnk1296.");
 	}
 
 	@Override
