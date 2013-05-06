@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import net.risenphoenix.jnk.ipcheck.Listeners.PlayerCommandListener;
 import net.risenphoenix.jnk.ipcheck.Listeners.PlayerJoinListener;
 import net.risenphoenix.jnk.ipcheck.Listeners.PlayerLoginListener;
+import net.risenphoenix.jnk.ipcheck.Logging.DateStamp;
 import net.risenphoenix.jnk.ipcheck.commands.CmdAbout;
 import net.risenphoenix.jnk.ipcheck.commands.CmdBan;
 import net.risenphoenix.jnk.ipcheck.commands.CmdCheck;
+import net.risenphoenix.jnk.ipcheck.commands.CmdHelp;
 import net.risenphoenix.jnk.ipcheck.commands.CmdReload;
 import net.risenphoenix.jnk.ipcheck.commands.CmdToggle;
 import net.risenphoenix.jnk.ipcheck.commands.CmdUnban;
@@ -34,11 +36,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class IPcheck extends JavaPlugin implements Listener{
 	
-	//================== IP-Check v1.3.0 | April 27, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
-	//==================           CraftBukkit Build: 2759 | Bukkit API Version: 1.5.1-R0-3           ==================//
+	//================== IP-Check v1.3.0 | May 05, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
+	//==================          CraftBukkit Build: 2759 | Bukkit API Version: 1.5.1-R0-3          ==================//
 	
 	//=================Root Command==================//
 	public static final String ROOT_COMMAND = "c";
+	public static final String VER_STRING = "IP-Check v1.3.0_DEV-RELEASE_03";
+	public static final String COMP_DATE = "May 03, 2013";
 	
 	//=============== Backend Manager ===============//
 	public static Backend backend = null;
@@ -49,7 +53,7 @@ public class IPcheck extends JavaPlugin implements Listener{
 	public static PlayerCommandListener PCL = new PlayerCommandListener();
 	
 	//================== Commands ==================//
-	ArrayList<IpcCommand> commands = new ArrayList<IpcCommand>();
+	public static ArrayList<IpcCommand> commands = new ArrayList<IpcCommand>();
 	public static final IpcCommand check = new CmdCheck();
 	public static final IpcCommand ban = new CmdBan();
 	public static final IpcCommand unban = new CmdUnban();
@@ -62,6 +66,7 @@ public class IPcheck extends JavaPlugin implements Listener{
 	public static final IpcCommand exemptList_player = new CmdExmtListPlayer();
 	public static final IpcCommand reload = new CmdReload();
 	public static final IpcCommand about = new CmdAbout();
+	public static final IpcCommand help = new CmdHelp();
 	
 	//=============== Global Messages ===============//
 	public static final String PLUG_NAME = "[IP-Check] ";
@@ -81,9 +86,11 @@ public class IPcheck extends JavaPlugin implements Listener{
 	public static final String TOGGLE_ERR = "An error occurred while attempting to set state of toggle.";
 	public static final String EXEMPTION_DEL_SUC = "Exemption successfully removed!";
 	public static final String EXEMPTION_DEL_ERR = "Exemption specified does not exist.";
+	public static final String ERROR_LOG_RMDR = "An error occurred! A log summary of this error has been saved to IP-Check's directory under ''Error_Reports''";
 	
 	//============== Global Variables ==============//
 	public static boolean shouldCheck = true;
+	public static boolean isUsingMineBans = false;
 	public static String ipToCheck = "";
 	
 	//================== Methods ==================//
@@ -92,6 +99,15 @@ public class IPcheck extends JavaPlugin implements Listener{
 	@Override
 	public void onEnable() { 
 		getServer().getPluginManager().registerEvents(this, this); // Register the Player Login Listener
+		
+		DateStamp ds = new DateStamp();
+		String random = Functions.getSeasonalMessage(ds.getCustomStamp("MM-dd")); // Is there an overriding message coded for this date?
+		
+		if (random != null) {
+			Bukkit.getLogger().info(random);
+		} else {
+			Bukkit.getLogger().info(PLUG_NAME + Functions.getRandomMessage()); // A Nice random Message
+		}
 		
 		Configuration.onLoad();      // Load the Configuration File
 		
@@ -104,6 +120,8 @@ public class IPcheck extends JavaPlugin implements Listener{
 		
 		backend.onLoad();            // Initialize Backend
 		registerCommands();          // Register Commands
+		
+		
 	}
 	
 	// Called when plugin is disabled
@@ -128,6 +146,7 @@ public class IPcheck extends JavaPlugin implements Listener{
 		commands.add(exemptList_player);   //Exempt-List Command (Player)      || 9
 		commands.add(reload);              //Reload Command                    || 10
 		commands.add(about);               //About Command                     || 11
+		commands.add(help);				   //Help Command					   || 12
 		//=======================================================================================//
 		
 		Bukkit.getLogger().info(PLUG_NAME + "Registered " + commands.size() + " commands.");

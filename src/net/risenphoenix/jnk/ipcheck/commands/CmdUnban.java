@@ -5,6 +5,7 @@ import net.risenphoenix.jnk.ipcheck.IPcheck;
 import net.risenphoenix.jnk.ipcheck.Report;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.Permission;
 
 public class CmdUnban implements IpcCommand{
 
@@ -34,6 +35,30 @@ public class CmdUnban implements IpcCommand{
 	@Override
 	public int getID() {
 		return 2;
+	}
+
+	@Override
+	public String getHelp() {
+		return "Unbans the Player or IP specified. Additionally, unbans any associated accounts, plus the IP-address.";
+	}
+
+	@Override
+	public String getSyntax() {
+		return "unban <Player||IP-address>";
+	}
+
+	@Override
+	public Permission[] getPermissions() {
+		Permission perms[] = {
+			new Permission("ipcheck.unban")
+		};
+		
+		return perms;
+	}
+
+	@Override
+	public String getName() {
+		return "Unban";
 	}
 
 }

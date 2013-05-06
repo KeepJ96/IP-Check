@@ -2,6 +2,7 @@ package net.risenphoenix.jnk.ipcheck.commands.exempt;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.Permission;
 
 import net.risenphoenix.jnk.ipcheck.Configuration;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
@@ -31,6 +32,30 @@ public class CmdUnexempt implements IpcCommand{
 	@Override
 	public int getID() {
 		return 5;
+	}
+
+	@Override
+	public String getHelp() {
+		return "Removes the specified exemption from file.";
+	}
+
+	@Override
+	public String getSyntax() {
+		return "exempt remove <player||IP-address>";
+	}
+
+	@Override
+	public Permission[] getPermissions() {
+		Permission perms[] = {
+			new Permission("ipcheck.exempt.remove")
+		};
+		
+		return perms;
+	}
+
+	@Override
+	public String getName() {
+		return "Unexempt";
 	}
 
 }

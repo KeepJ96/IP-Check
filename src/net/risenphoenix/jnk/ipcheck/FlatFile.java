@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import net.risenphoenix.jnk.ipcheck.Logging.ErrorLogger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -19,6 +21,7 @@ public class FlatFile implements Backend{
 	
 	private static ArrayList<String> playerInfo = new ArrayList<String>();
 	private static Logger logger = Bukkit.getLogger();
+	private static String registrar = "Flat-File Backend Manager for IP-Check ver 2.5";
 	
 	// Messages
 	private static final String PLUG_NAME = "[IP-Check] ";
@@ -68,6 +71,8 @@ public class FlatFile implements Backend{
 			}
 			
 		} catch (Exception e) {
+			ErrorLogger EL = new ErrorLogger();
+			EL.execute(e);
 			logger.severe(FLAT_FILE_READ_ERR);
 			
 		} finally {
@@ -76,6 +81,8 @@ public class FlatFile implements Backend{
 					br.close();
 				}
 			} catch (Exception e) {
+				ErrorLogger EL = new ErrorLogger();
+				EL.execute(e);
 				logger.severe(e.getMessage());
 			}
 		}
@@ -97,7 +104,8 @@ public class FlatFile implements Backend{
 	        	f.write(s + "\r\n");
 	        }
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErrorLogger EL = new ErrorLogger();
+			EL.execute(e);
 	    	logger.severe(FLAT_FILE_WRITE_ERR);
 		} finally {
 			try {
@@ -105,6 +113,8 @@ public class FlatFile implements Backend{
 					f.close();
 				}
 			} catch (Exception e){
+				ErrorLogger EL = new ErrorLogger();
+				EL.execute(e);
 				logger.severe(e.getMessage());
 			}
 		}
@@ -144,6 +154,8 @@ public class FlatFile implements Backend{
 				f = new FileWriter(path, true);
 				
 			} catch (IOException e) {
+				ErrorLogger EL = new ErrorLogger();
+				EL.execute(e);
 				logger.severe(FLAT_FILE_GEN_ERR);
 				
 			} finally {
@@ -152,6 +164,8 @@ public class FlatFile implements Backend{
 						f.close();
 					}
 				} catch (IOException e) {
+					ErrorLogger EL = new ErrorLogger();
+					EL.execute(e);
 					logger.severe(e.getMessage());
 				}
 			}
@@ -199,6 +213,8 @@ public class FlatFile implements Backend{
 				}
 			}
 		} catch (Exception e) {
+			ErrorLogger EL = new ErrorLogger();
+			EL.execute(e);
 			logger.severe(BAN_LIST_READ_ERR);
 		} finally {
 			try {
@@ -206,6 +222,8 @@ public class FlatFile implements Backend{
 					br.close();
 				}
 			} catch (Exception e) {
+				ErrorLogger EL = new ErrorLogger();
+				EL.execute(e);
 				logger.severe(e.getMessage());
 			}
 		}
@@ -297,5 +315,15 @@ StringBuilder ip = new StringBuilder();
 		}
 		
 		return "no-find";
+	}
+
+	@Override
+	public String getRegistrar() {
+		return registrar;
+	}
+
+	@Override
+	public int getMemorySize() {
+		return playerInfo.size();
 	}
 }

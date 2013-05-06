@@ -5,10 +5,11 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.logging.Logger;
+
+import net.risenphoenix.jnk.ipcheck.Logging.ErrorLogger;
 
 import org.bukkit.Bukkit;
 
@@ -29,6 +30,10 @@ private static Logger logger = Bukkit.getLogger();
  	private static String confReadErr = "Failed to read Configuration File!";
  	private static String exmpWriteErr = "Failed to write to Exemption File!";
  	private static String exmpReadErr = "Failed to read Exemption File!";
+ 	private static String exmpGenErr = "Failed to generate Exemption File!";
+ 	
+ 	private static String COE1 = "Failed to parse configuration option: ";
+ 	private static String COE2 = ". Is the configuration file formatted correctly?";
  	
  	public static String dateStampFormat = "EEEE, dd MMMM, yyyy 'at' hh:mm:ss a";
  	
@@ -71,8 +76,18 @@ private static Logger logger = Bukkit.getLogger();
  			"user-name: \r\n" +															// 16
  			"password: ";																// 17
 
+ 	private static String defaultExemption =
+ 			"===============================\r\n" +
+ 			"Exemptions: IP\r\n" +
+ 			"===============================\r\n" +
+ 			"===============================\r\n" +
+ 			"Exemptions: Player_Name\r\n" +
+ 			"===============================\r\n" +
+ 			"===============================\r\n";
+ 	
  	public static void onLoad() {
  		defaultConfiguration(); // Generate Default Configuration if one does not exist.
+ 		defaultExemptionList();
  		parseConfigSettings(getConfiguration()); // Load and parse configuration.
  		checkVersion(); // Update Configuration
  	}
@@ -93,14 +108,19 @@ private static Logger logger = Bukkit.getLogger();
 			}
 			
 		} catch (Exception e) {
-			logger.severe(confReadErr);
+			ErrorLogger EL = new ErrorLogger();
+			EL.execute(e);
+			logger.severe(PLUG_NAME + confReadErr);
+			logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR); 
 		} finally {
 			try {
 				if (br != null) {
 					br.close();
 				}
 			} catch (Exception e) {
-				logger.severe(e.getMessage());
+				ErrorLogger EL = new ErrorLogger();
+				EL.execute(e);
+				logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
 			}
 		}
 		
@@ -185,7 +205,7 @@ private static Logger logger = Bukkit.getLogger();
 		FileWriter f = null;
 	    
 	    try {
-	    	// If VoteLinks folder does not exist, create it.
+	    	// If IP-Check folder does not exist, create it.
 	    	if (!dir.exists()) dir.mkdir();
 	        
 	    	// If configuration file does not exist, create it.
@@ -196,10 +216,39 @@ private static Logger logger = Bukkit.getLogger();
 		        f.close();
 	        }
 
-	    } catch (IOException e) {
-	    	// Console Output (in the event of an exception)
-	    	e.printStackTrace();
-	    	logger.info(confWriteErr);
+	    } catch (Exception e) {
+	    	ErrorLogger EL = new ErrorLogger();
+			EL.execute(e);
+	    	logger.info(PLUG_NAME + confWriteErr);
+	    	logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+	    }
+	}
+	
+	public static void defaultExemptionList() {
+		FileWriter f = null;
+	    
+	    try {
+	    	// If configuration file does not exist, create it.
+	        if (!exempt.exists()) {
+	        	f = new FileWriter(exempt, true);
+		        
+		        f.write(defaultExemption);
+	        }
+
+	    } catch (Exception e) {
+	    	ErrorLogger EL = new ErrorLogger();
+			EL.execute(e);
+	    	logger.info(exmpGenErr);
+	    } finally {
+	    	try {
+	    		if (f != null) {
+	    			f.close();
+	    		}
+    		} catch (Exception e) {
+    			ErrorLogger EL = new ErrorLogger();
+    			EL.execute(e);
+    			logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+    		}
 	    }
 	}
 	
@@ -235,7 +284,10 @@ private static Logger logger = Bukkit.getLogger();
 			
 			br.close();
 		} catch (Exception e) {
-			logger.severe(confReadErr);
+			ErrorLogger EL = new ErrorLogger();
+			EL.execute(e);
+			logger.severe(PLUG_NAME + confReadErr);
+			logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
 		}
 		
 		return config;
@@ -256,14 +308,19 @@ private static Logger logger = Bukkit.getLogger();
 				exemptList.add(strLine);
 			}
 		} catch (Exception e) {
-			logger.severe(exmpReadErr);
+			ErrorLogger EL = new ErrorLogger();
+			EL.execute(e);
+			logger.severe(PLUG_NAME + exmpReadErr);
+			logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
 		} finally {
 			try {
 				if (br != null) {
 					br.close();
 				}
 			} catch (Exception e) {
-				logger.severe(e.getMessage());
+				ErrorLogger EL = new ErrorLogger();
+				EL.execute(e);
+				logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
 			}
 		}
 		
@@ -350,15 +407,19 @@ private static Logger logger = Bukkit.getLogger();
 	        	f.write(s + "\r\n");
 	        }
 		} catch (Exception e) {
-			e.printStackTrace();
-	    	logger.severe(exmpWriteErr);
+			ErrorLogger EL = new ErrorLogger();
+			EL.execute(e);
+	    	logger.severe(PLUG_NAME + exmpWriteErr);
+	    	logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
 		} finally {
 			try {
 				if (f != null) {
 					f.close();
 				}
 			} catch (Exception e) {
-				logger.severe(e.getMessage());
+				ErrorLogger EL = new ErrorLogger();
+				EL.execute(e);
+				logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
 			}
 		}
 	}
@@ -380,8 +441,10 @@ private static Logger logger = Bukkit.getLogger();
 	        
 	        f.close();
 		} catch (Exception e) {
-			e.printStackTrace();
-	    	logger.severe(confWriteErr);
+			ErrorLogger EL = new ErrorLogger();
+			EL.execute(e);
+	    	logger.severe(PLUG_NAME + confWriteErr);
+	    	logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
 		}
 	}
 	
@@ -392,51 +455,65 @@ private static Logger logger = Bukkit.getLogger();
 			// Should use Login Checking?
 			if (line.contains("notify-on-login:")) {
 				modulus = line.replace("notify-on-login:", "");
+				modulus = modulus.trim();
 				if (modulus.equalsIgnoreCase("true")) {
 					notifyLogin = true;
-				} else {
+				} else if (modulus.equalsIgnoreCase("false")) {
 					notifyLogin = false;
+				} else {
+					logger.severe(PLUG_NAME + COE1 + "notify-on-login" + COE2);
 				}
 				
 			// Should show descriptive notifications?
 			} else if (line.contains("descriptive-notice:")) {
 				modulus = line.replace("descriptive-notice:", "");
+				modulus = modulus.trim();
 				if (modulus.equalsIgnoreCase("true")) {
 					detailNotify = true;
-				} else {
+				} else if (modulus.equalsIgnoreCase("false")) {
 					detailNotify = false;
+				} else {
+					logger.severe(PLUG_NAME + COE1 + "descriptive-notice" + COE2);
 				}
 			
 			// Should use Secure Mode?
 			} else if (line.contains("secure-mode:")) {
 				modulus = line.replace("secure-mode:", "");
+				modulus = modulus.trim();
 				if (modulus.equalsIgnoreCase("true")) {
 					secureMode = true;
-				} else {
+				} else if (modulus.equalsIgnoreCase("false")){
 					secureMode = false;
+				} else {
+					logger.severe(PLUG_NAME + COE1 + "secure-mode" + COE2);
 				}
 				
 			// Should use Database?
 			} else if (line.contains("use-flat-file:")) {
 				modulus = line.replace("use-flat-file:", "");
+				modulus = modulus.trim();
 				if (modulus.equalsIgnoreCase("true")) {
 					backend = 1;
-				} else {
+				} else if (modulus.equalsIgnoreCase("false")) {
 					backend = 0;
+				} else {
+					logger.severe(PLUG_NAME + COE1 + "use-flat-file" + COE2);
 				}
 				
 			// Set Logging Time/Date Stamp Format
 			} else if (line.contains("logging-date-stamp-format:")) {
 				modulus = line.replace("logging-date-stamp-format:", "");
+				modulus = modulus.trim();
 				dateStampFormat = modulus;
 								
 			// Set a minimum number of accounts to have before being notified
-			} else if (line.contains("min-account-notify-threshold: ")) {
-				modulus = line.replace("min-account-notify-threshold: ", "");
+			} else if (line.contains("min-account-notify-threshold:")) {
+				modulus = line.replace("min-account-notify-threshold:", "");
+				modulus = modulus.trim();
 				try {
 					notifyThreshold = Integer.parseInt(modulus);
 					if (notifyThreshold < 1) {
-						logger.warning("Value of Configuration option 'min-account-notify-threshold' was lower than the minumum limit! 'min-account-notify-threshold' has been set to the default value (1).");
+						logger.warning(PLUG_NAME + "Value of Configuration option 'min-account-notify-threshold' was lower than the minumum limit! 'min-account-notify-threshold' has been set to the default value (1).");
 						notifyThreshold = 1;
 					}
 				} catch (NumberFormatException e) {
@@ -444,12 +521,13 @@ private static Logger logger = Bukkit.getLogger();
 				}
 			
 			// Set a minimum number of accounts to have before being kicked
-			} else if (line.contains("secure-kick-threshold: ")) {
-				modulus = line.replace("secure-kick-threshold: ", "");
+			} else if (line.contains("secure-kick-threshold:")) {
+				modulus = line.replace("secure-kick-threshold:", "");
+				modulus = modulus.trim();
 				try {
 					secureThreshold = Integer.parseInt(modulus);
 					if (secureThreshold < 1) {
-						logger.warning("Value of Configuration option 'secure-kick-threshold' was lower than the minumum limit! 'secure-kick-threshold' has been set to the default value (1).");
+						logger.warning(PLUG_NAME + "Value of Configuration option 'secure-kick-threshold' was lower than the minumum limit! 'secure-kick-threshold' has been set to the default value (1).");
 						secureThreshold = 1;
 					}
 				} catch (NumberFormatException e) {
@@ -459,25 +537,31 @@ private static Logger logger = Bukkit.getLogger();
 			// Set Kick Message
 			} else if (line.contains("secure-kick-message:")) {
 				modulus = line.replace("secure-kick-message:", "");
+				modulus = modulus.trim();
 				secureKickMsg = modulus;
 				
 			// Set Ban Message
 			} else if (line.contains("ban-message:")) {
 				modulus = line.replace("ban-message:", "");
+				modulus = modulus.trim();
 				banMessage = modulus;
 				
 			// Are we using MySQL?
 			} else if (line.contains("use-mysql:")) {
 				modulus = line.replace("use-mysql:", "");
+				modulus = modulus.trim();
 				if (modulus.equalsIgnoreCase("true")) {
 					usingMySQL = true;
-				} else {
+				} else if (modulus.equalsIgnoreCase("false")){
 					usingMySQL = false;
+				} else {
+					logger.severe(PLUG_NAME + COE1 + "use-mysql" + COE2);
 				}
 			
 			// If yes, what is the DB address?
-			} else if (line.contains("database-address:")) {
+			} else if (line.contains("database-address:") && usingMySQL) {
 				modulus = line.replace("database-address:", "");
+				modulus = modulus.trim();
 				if (!modulus.isEmpty()) {
 					mySQLdb = modulus;
 				} else {
@@ -485,8 +569,9 @@ private static Logger logger = Bukkit.getLogger();
 				}
 				
 			// What is the username?
-			} else if (line.contains("user-name:")) {
+			} else if (line.contains("user-name:") && usingMySQL) {
 				modulus = line.replace("user-name:", "");
+				modulus = modulus.trim();
 				if (!modulus.isEmpty()) {
 					mySQLuser = modulus;
 				} else {
@@ -494,8 +579,9 @@ private static Logger logger = Bukkit.getLogger();
 				}
 				
 			// What is the password?
-			} else if (line.contains("password:")) {
+			} else if (line.contains("password:") && usingMySQL) {
 				modulus = line.replace("password:", "");
+				modulus = modulus.trim();
 				if (!modulus.isEmpty()) {
 					mySQLpassword = modulus;
 				} else {
@@ -580,7 +666,7 @@ private static Logger logger = Bukkit.getLogger();
 				notifyLogin = false;
 				toggleNotifyMode(getConfiguration(), notifyLogin);
 				return 0;
-			} else {
+			} else if (!notifyLogin){
 				notifyLogin = true;
 				toggleNotifyMode(getConfiguration(), notifyLogin);
 				return 1;

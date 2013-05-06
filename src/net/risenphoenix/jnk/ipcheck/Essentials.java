@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import net.risenphoenix.jnk.ipcheck.Logging.ErrorLogger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -19,6 +21,7 @@ public class Essentials implements Backend{
 	
 	private static ArrayList<String> playerInfo = new ArrayList<String>();
 	private static Logger logger = Bukkit.getLogger();
+	private static String registrar = "Essentials Backend Manager for IP-Check ver 3.2";
 	
 	// Messages
 	private static final String PLUG_NAME = "[IP-Check] ";
@@ -117,7 +120,7 @@ public class Essentials implements Backend{
 		for (String s:playerInfo) {
 			if (playerInfo.contains(sb.toString().toLowerCase())) {
 				return;
-			} else if (s.contains(player.toLowerCase())) { // THIS CODE LIKELY CAUSING DUPLICATE ENTRIES
+			} else if (s.contains(player.toLowerCase())) {
 				playerInfo.remove(index);
 				playerInfo.add(sb.toString());
 				return;
@@ -175,6 +178,8 @@ public class Essentials implements Backend{
 				}
 			}
 		} catch (Exception e) {
+			ErrorLogger EL = new ErrorLogger();
+			EL.execute(e);
 			logger.severe(BAN_LIST_READ_ERR);
 		} finally {
 			try {
@@ -182,6 +187,8 @@ public class Essentials implements Backend{
 					br.close();
 				}
 			} catch (Exception e) {
+				ErrorLogger EL = new ErrorLogger();
+				EL.execute(e);
 				logger.severe(e.getMessage());
 			}
 		}
@@ -274,5 +281,15 @@ public class Essentials implements Backend{
 		}
 		
 		return "no-find";
+	}
+
+	@Override
+	public String getRegistrar() {
+		return registrar;
+	}
+
+	@Override
+	public int getMemorySize() {
+		return playerInfo.size();
 	}
 }

@@ -5,6 +5,7 @@ import net.risenphoenix.jnk.ipcheck.IPcheck;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.Permission;
 
 public class CmdToggle implements IpcCommand{
 
@@ -35,7 +36,7 @@ public class CmdToggle implements IpcCommand{
 						sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.RED + IPcheck.TOGGLE_ERR);
 					}
 					
-				} else if (args[1].equalsIgnoreCase("secure-mode") || args[1].equalsIgnoreCase("secure")) {
+				} else if (args[1].equalsIgnoreCase("secure-mode") || args[1].equalsIgnoreCase("secure") || args[1].equalsIgnoreCase("sm")) {
 					int response = Configuration.toggle(2);
 					
 					if (response == 0) {
@@ -45,6 +46,15 @@ public class CmdToggle implements IpcCommand{
 					} else {
 						sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.RED + IPcheck.TOGGLE_ERR);
 					}
+					
+				} else if (args[1].equalsIgnoreCase("help")) {
+					
+					sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + "List of Toggle Options:");
+					sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");
+					sender.sendMessage(ChatColor.RED + "  Login-Notifications:" + ChatColor.YELLOW + " <" + ChatColor.LIGHT_PURPLE + " notify " + ChatColor.YELLOW + "|" + ChatColor.LIGHT_PURPLE + " notification " + ChatColor.YELLOW + "|" + ChatColor.LIGHT_PURPLE + " login-notify" + ChatColor.YELLOW + " >");
+					sender.sendMessage(ChatColor.RED + "  Detailed-Notifications:" + ChatColor.YELLOW + " <" + ChatColor.LIGHT_PURPLE + " detail " + ChatColor.YELLOW + "|" + ChatColor.LIGHT_PURPLE + " detail-notify " + ChatColor.YELLOW + "|" + ChatColor.LIGHT_PURPLE + " dn " + ChatColor.YELLOW + ">");
+					sender.sendMessage(ChatColor.RED + "  Secure-Mode:" + ChatColor.YELLOW + " <" + ChatColor.LIGHT_PURPLE + " secure-mode " + ChatColor.YELLOW + "|" + ChatColor.LIGHT_PURPLE + " secure " + ChatColor.YELLOW + "|" + ChatColor.LIGHT_PURPLE + " sm " + ChatColor.YELLOW + ">");
+					sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");
 					
 				} else {
 					sender.sendMessage(IPcheck.ILL_ARGS_ERR);
@@ -60,6 +70,30 @@ public class CmdToggle implements IpcCommand{
 	@Override
 	public int getID() {
 		return 6;
+	}
+
+	@Override
+	public String getHelp() {
+		return "Toggles the specified option. For a list of options, type ''/c toggle help''";
+	}
+
+	@Override
+	public String getSyntax() {
+		return "toggle <option>";
+	}
+
+	@Override
+	public Permission[] getPermissions() {
+		Permission perms[] = {
+			new Permission("ipcheck.toggle")
+		};
+		
+		return perms;
+	}
+
+	@Override
+	public String getName() {
+		return "Toggle";
 	}
 
 }

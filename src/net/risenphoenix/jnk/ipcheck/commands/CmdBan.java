@@ -5,6 +5,7 @@ import net.risenphoenix.jnk.ipcheck.IPcheck;
 import net.risenphoenix.jnk.ipcheck.Report;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.Permission;
 
 public class CmdBan implements IpcCommand{
 
@@ -46,6 +47,30 @@ public class CmdBan implements IpcCommand{
 	@Override
 	public int getID() {
 		return 1;
+	}
+
+	@Override
+	public String getHelp() {
+		return "Bans the player or IP specified. In addition, this command will also ban any alternative accounts associated, plus the IP-address.";
+	}
+
+	@Override
+	public String getSyntax() {
+		return "ban <Player||IP-address> [message]";
+	}
+
+	@Override
+	public Permission[] getPermissions() {
+		Permission perms[] = {
+			new Permission("ipcheck.ban")
+		};
+		
+		return perms;
+	}
+
+	@Override
+	public String getName() {
+		return "Ban";
 	}
 
 }

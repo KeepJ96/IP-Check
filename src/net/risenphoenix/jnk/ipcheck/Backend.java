@@ -19,6 +19,11 @@ public interface Backend {
 	 */
 	public void onDisable();
 	
+	/*** Returns the Registrat (Call-name) of the backend Manager in Use
+	 * @return Backened Manager Registrar String
+	 */
+	public String getRegistrar();
+	
 	/***
 	 * Loads Save File from hard-disk.
 	 * @return save file as ArrayList.
@@ -62,6 +67,11 @@ public interface Backend {
 	 * @return IP address.
 	 */
 	public String getIP(String player);
+	
+	/*** Returns the number of entries in the PlayerInfo array.
+	 * @return Integer
+	 */
+	public int getMemorySize();
 	
 	/***
 	 * Returns the Player Object based on the closest match between @arg and @alts, if one exists, otherwise returns the player object for the first entry in @alts.

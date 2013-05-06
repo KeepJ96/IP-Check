@@ -69,6 +69,9 @@ public class ParseCommand {
 			// About Command
 			if (args[0].equalsIgnoreCase("about")) return 11;
 			
+			// Help Command
+			if (args[0].equalsIgnoreCase("help")) return 12;
+			
 			if (args.length < 2) return 0; // If it was not one of the above commands and arguments is greater than 0, then pass it to the default check command.
 		} else {
 			return -3; // No Command was Given.

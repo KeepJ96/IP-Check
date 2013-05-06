@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.Permission;
 
 import net.risenphoenix.jnk.ipcheck.Configuration;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
@@ -48,6 +49,30 @@ public class CmdExmtListAll implements IpcCommand{
 	@Override
 	public int getID() {
 		return 7;
+	}
+
+	@Override
+	public String getHelp() {
+		return "Displays all players/ips that are exempt from login-checking.";
+	}
+
+	@Override
+	public String getSyntax() {
+		return "exempt-list";
+	}
+
+	@Override
+	public Permission[] getPermissions() {
+		Permission perms[] = {
+			new Permission("ipcheck.list")
+		};
+		
+		return perms;
+	}
+
+	@Override
+	public String getName() {
+		return "Exempt-List (all)";
 	}
 
 }

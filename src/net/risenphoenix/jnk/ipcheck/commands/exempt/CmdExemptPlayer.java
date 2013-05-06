@@ -2,6 +2,7 @@ package net.risenphoenix.jnk.ipcheck.commands.exempt;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.Permission;
 
 import net.risenphoenix.jnk.ipcheck.Configuration;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
@@ -35,6 +36,30 @@ public class CmdExemptPlayer implements IpcCommand{
 	@Override
 	public int getID() {
 		return 4;
+	}
+
+	@Override
+	public String getHelp() {
+		return "Exempts the player specified from login-checking.";
+	}
+
+	@Override
+	public String getSyntax() {
+		return "exempt player <player_name>";
+	}
+
+	@Override
+	public Permission[] getPermissions() {
+		Permission perms[] = {
+			new Permission("ipcheck.exempt")
+		};
+		
+		return perms;
+	}
+
+	@Override
+	public String getName() {
+		return "Exempt (Player)";
 	}
 
 }

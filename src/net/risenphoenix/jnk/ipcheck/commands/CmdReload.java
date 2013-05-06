@@ -4,6 +4,7 @@ import net.risenphoenix.jnk.ipcheck.Configuration;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.Permission;
 
 public class CmdReload implements IpcCommand{
 
@@ -24,6 +25,30 @@ public class CmdReload implements IpcCommand{
 	@Override
 	public int getID() {
 		return 10;
+	}
+
+	@Override
+	public String getHelp() {
+		return "Reloads the IP-Check plugin.";
+	}
+
+	@Override
+	public String getSyntax() {
+		return "reload";
+	}
+
+	@Override
+	public Permission[] getPermissions() {
+		Permission perms[] = {
+			new Permission("ipcheck.reload")
+		};
+		
+		return perms;
+	}
+
+	@Override
+	public String getName() {
+		return "Reload";
 	}
 
 }
