@@ -1,6 +1,7 @@
 package net.risenphoenix.jnk.ipcheck.commands;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.Permission;
 
 public interface IpcCommand {
 
@@ -9,4 +10,12 @@ public interface IpcCommand {
 	
 	/** Returns the ID of this command. **/
 	public int getID();
+        
+        public String getHelp();
+        
+        public String getSyntax();
+        
+        public Permission[] getPermissions();
+        
+        public String getName();
 }
