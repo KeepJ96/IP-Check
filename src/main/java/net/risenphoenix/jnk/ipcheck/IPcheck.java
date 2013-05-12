@@ -36,13 +36,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class IPcheck extends JavaPlugin implements Listener{
 	
-	//================== IP-Check v1.3.0 (dev) | May 06, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
-	//==================             CraftBukkit Build: 2759 | Bukkit API Version: 1.5.2-R0-1             ==================//
+	//================== IP-Check v1.3.0 | May 05, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
+	//==================          CraftBukkit Build: 2759 | Bukkit API Version: 1.5.1-R0-3          ==================//
 	
 	//=================Root Command==================//
 	public static final String ROOT_COMMAND = "c";
-	public static final String VER_STRING = "IP-Check v1.2.6 (1.3.0_DEV-RELEASE_04)";
-	public static final String COMP_DATE = "May 06, 2013";
+	public static final String VER_STRING = "IP-Check v1.3.0_DEV-RELEASE_03";
+	public static final String COMP_DATE = "May 03, 2013";
 	
 	//=============== Backend Manager ===============//
 	public static Backend backend = null;

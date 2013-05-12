@@ -10,13 +10,12 @@ public interface IpcCommand {
 	
 	/** Returns the ID of this command. **/
 	public int getID();
-
-	/** Returns the Help Information for this command. **/
-	public String getHelp();
-	
-	public String getSyntax();
-	
-	public Permission[] getPermissions();
-	
-	public String getName();
+        
+        public String getHelp();
+        
+        public String getSyntax();
+        
+        public Permission[] getPermissions();
+        
+        public String getName();
 }
