@@ -1,5 +1,7 @@
 package net.risenphoenix.jnk.ipcheck.commands;
 
+import java.util.ArrayList;
+
 import net.risenphoenix.jnk.ipcheck.IPcheck;
 
 import org.bukkit.ChatColor;
@@ -8,6 +10,8 @@ import org.bukkit.permissions.Permission;
 
 public class CmdHelp implements IpcCommand{
 
+	ArrayList<IpcCommand> commandList = new ArrayList<IpcCommand>();
+	
 	@Override
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
 		sender.sendMessage(ChatColor.GOLD + "=================[IP-Check]================");
@@ -20,15 +24,14 @@ public class CmdHelp implements IpcCommand{
 			} catch (NumberFormatException e) { }
 		}
 		
-		int[] bounds = getBounds(arg);
-		
-		for(int i = bounds[0]; i < bounds[1]; i++) {
+		// Fetch list of commands which apply to the sender.
+		for(int i = 0; i < IPcheck.commands.size(); i++) {
 			for(IpcCommand ic:IPcheck.commands) {
 				if (ic.getID() == i) {
 					boolean show = true;
 					Permission[] perms = ic.getPermissions();
 					
-					for(int ii = 0; i < perms.length; i++) {
+					for(int ii = 0; ii < perms.length; ii++) {
 						if (!sender.hasPermission(perms[ii])) {
 							show = false;
 							break;
@@ -36,19 +39,27 @@ public class CmdHelp implements IpcCommand{
 					}
 					
 					if (show) {
-						sender.sendMessage(ChatColor.GREEN + ic.getName() + ":");
-						sender.sendMessage(ChatColor.YELLOW + " " + ic.getHelp());
-						sender.sendMessage(ChatColor.RED + "    " + "Syntax:" + ChatColor.LIGHT_PURPLE + " /c " + ic.getSyntax());
-						if (i < bounds[1]) {
-							sender.sendMessage(ChatColor.GOLD + "------------------------------------------");
-						}
+						commandList.add(ic);
 					}
 				}
 			}
 		}
 		
+		int[] bounds = getBounds(arg);
+		
+		for (int i = bounds[0]; i < bounds[1]; i++) {
+			sender.sendMessage(ChatColor.GREEN + commandList.get(i).getName() + ":");
+			sender.sendMessage(ChatColor.YELLOW + " " + commandList.get(i).getHelp());
+			sender.sendMessage(ChatColor.RED + "    " + "Syntax:" + ChatColor.LIGHT_PURPLE + " /c " + commandList.get(i).getSyntax());
+			if (i < bounds[1]) {
+				sender.sendMessage(ChatColor.GOLD + "------------------------------------------");
+			}
+		}
+		
 		sender.sendMessage(ChatColor.RED + "Type " + ChatColor.YELLOW + "/c help " + (arg + 1) + ChatColor.RED + " to see more help.");
 		sender.sendMessage(ChatColor.GOLD + "==========================================");
+		
+		commandList.clear();
 	}
 
 	@Override
@@ -92,8 +103,8 @@ public class CmdHelp implements IpcCommand{
 			tick = 1;
 		}
 		
-		if (arg > ((IPcheck.commands.size() / 4) + 1)) {
-			tick = (IPcheck.commands.size() / 4) + 1;
+		if (arg > ((commandList.size() / 4) + 1)) {
+			tick = (commandList.size() / 4) + 1;
 		}
 		
 		// Create Start Value
@@ -103,6 +114,8 @@ public class CmdHelp implements IpcCommand{
 		
 		// Create End Value
 		end = start + 4;
+		
+		if (end > commandList.size()) end = commandList.size();
 		
 		bounds[0] = start;
 		bounds[1] = end;

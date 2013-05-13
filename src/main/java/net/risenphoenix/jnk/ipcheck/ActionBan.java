@@ -44,10 +44,12 @@ public class ActionBan {
 				
 				Player[] online = Bukkit.getOnlinePlayers();
 				for (int i = 0; i < online.length; i++) {
-					if (message.length() > 0) {
-						online[i].sendMessage(ChatColor.GOLD + "Player " + ChatColor.RED + s + ChatColor.GOLD + " was banned by " + ChatColor.GREEN + sender.getName() + ChatColor.GOLD + " for: " + message);
-					} else {
-						online[i].sendMessage(ChatColor.GOLD + "Player " + ChatColor.RED + s + ChatColor.GOLD + " was banned by " + ChatColor.GREEN + sender.getName() + ChatColor.GOLD + " for: " + Configuration.banMessage);
+					if (online[i].hasPermission("ipcheck.seeban")) {
+						if (message.length() > 0) {
+							online[i].sendMessage(ChatColor.GOLD + "Player " + ChatColor.RED + s + ChatColor.GOLD + " was banned by " + ChatColor.GREEN + sender.getName() + ChatColor.GOLD + " for: " + message);
+						} else {
+							online[i].sendMessage(ChatColor.GOLD + "Player " + ChatColor.RED + s + ChatColor.GOLD + " was banned by " + ChatColor.GREEN + sender.getName() + ChatColor.GOLD + " for: " + Configuration.banMessage);
+						}
 					}
 				}
 			} else if (!banning) {
