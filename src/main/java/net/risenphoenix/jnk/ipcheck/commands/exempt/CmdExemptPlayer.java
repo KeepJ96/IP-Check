@@ -18,7 +18,7 @@ public class CmdExemptPlayer implements IpcCommand{
 				
 				if (!args[2].toLowerCase().matches(ip_filter.toLowerCase())) {
 					if (Configuration.addExemption(1, args[2])) {
-						sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + IPcheck.IP_EXEMPT_SUC);
+						sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + IPcheck.PLAYER_EXEMPT_SUC);
 					} else {
 						sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + IPcheck.EXEMPTION_FAIL);
 					}
