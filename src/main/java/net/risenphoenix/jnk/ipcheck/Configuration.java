@@ -22,6 +22,7 @@ private static Logger logger = Bukkit.getLogger();
 	private static final String PLUG_NAME = "[IP-Check] ";
 
 	// File paths
+        private static File pluginPath = new File("plugins");
 	private static File dir = new File("plugins/IP-check"); // Plugin Directory
  	private static File path = new File("plugins/IP-check/Config.txt"); // Configuration File
  	private static File exempt = new File("plugins/IP-check/exempt.lst"); // Exemption List
@@ -86,6 +87,7 @@ private static Logger logger = Bukkit.getLogger();
  			"===============================\r\n";
  	
  	public static void onLoad() {
+                createDefaultDirectory();
  		defaultConfiguration(); // Generate Default Configuration if one does not exist.
  		defaultExemptionList();
  		parseConfigSettings(getConfiguration()); // Load and parse configuration.
@@ -111,7 +113,7 @@ private static Logger logger = Bukkit.getLogger();
 			ErrorLogger EL = new ErrorLogger();
 			EL.execute(e);
 			logger.severe(PLUG_NAME + confReadErr);
-			logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR); 
+			logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
 		} finally {
 			try {
 				if (br != null) {
@@ -757,4 +759,9 @@ private static Logger logger = Bukkit.getLogger();
 		
 		return false;
 	}
+
+    private static void createDefaultDirectory() {
+        if (!pluginPath.exists())
+        pluginPath.mkdir();
+    }
 }
