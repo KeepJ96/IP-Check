@@ -39,7 +39,7 @@ public class IPcheck extends JavaPlugin implements Listener{
 	
 	//=================Root Command==================//
 	public static final String ROOT_COMMAND = "c";
-	public static final String VER_STRING = "IP-Check v1.2.7 (1.3.0_DEV-RELEASE_05)";
+	public static final String VER_STRING = "IP-Check v1.2.8";
 	public static final String COMP_DATE = "May 06, 2013";
 	
 	//=============== Backend Manager ===============//

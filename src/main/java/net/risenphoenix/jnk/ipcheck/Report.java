@@ -14,6 +14,10 @@ public class Report {
 	public void execute(ArrayList<String> players, CommandSender sender, String ip, String arg, boolean forPlayer) {
 		OfflinePlayer player = null;
 		
+                if (sender == null) {
+                    return;
+                }
+                
 		if (ip.equals("no-find")) {
 			sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + NO_FIND);
 			return;
@@ -76,6 +80,15 @@ public class Report {
 		} else {
 			sender.sendMessage(ChatColor.LIGHT_PURPLE + "IP Exempt: " + ChatColor.RED + "False");
 		}
+                
+                if (sender.hasPermission("ipcheck.showbanreason")) {
+                    if (player != null) {
+                        if (player.isBanned()) {
+                            sender.sendMessage("");
+                            sender.sendMessage(ChatColor.LIGHT_PURPLE + "Banned Reason: " + ChatColor.YELLOW + Configuration.getBannedReason(player.getName()));
+                        }
+                    }
+                }
 		
 		sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");
 	}

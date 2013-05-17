@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -29,11 +30,19 @@ public class ActionBan {
 		
 		// Ban or Unban Players with corresponding IP Address
 		for(String s:players) {
-			Bukkit.getOfflinePlayer(s).setBanned(banning);
+                    OfflinePlayer offPlayer = Bukkit.getOfflinePlayer(s);
+                    
+			offPlayer.setBanned(banning);
+                        
+                        if (message.length() > 0) {
+                                Configuration.writeBannedEntry(offPlayer.getName(), message);
+                        } else {
+                                Configuration.writeBannedEntry(offPlayer.getName(), Configuration.banMessage);
+                        }
 			
 			if (banning) {
 				Player player = Bukkit.getPlayer(s);
-				
+                                
 				if (player != null) {
 					if (message.length() > 0) {
 						player.kickPlayer(message);

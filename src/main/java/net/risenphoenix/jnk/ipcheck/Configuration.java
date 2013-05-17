@@ -26,12 +26,16 @@ private static Logger logger = Bukkit.getLogger();
 	private static File dir = new File("plugins/IP-check"); // Plugin Directory
  	private static File path = new File("plugins/IP-check/Config.txt"); // Configuration File
  	private static File exempt = new File("plugins/IP-check/exempt.lst"); // Exemption List
+        private static File banned = new File("plugins/IP-check/banned.lst"); // Banned List
  	
  	private static String confWriteErr = "Failed to generate Configuration File!";
  	private static String confReadErr = "Failed to read Configuration File!";
  	private static String exmpWriteErr = "Failed to write to Exemption File!";
  	private static String exmpReadErr = "Failed to read Exemption File!";
  	private static String exmpGenErr = "Failed to generate Exemption File!";
+        private static String banGenErr = "Failed to generate Banned File!";
+        private static String banWriteErr = "Failed to write to Banned File!";
+        private static String banReadErr = "Failed to read Banned File!";
  	
  	private static String COE1 = "Failed to parse configuration option: ";
  	private static String COE2 = ". Is the configuration file formatted correctly?";
@@ -90,6 +94,7 @@ private static Logger logger = Bukkit.getLogger();
                 createDefaultDirectory();
  		defaultConfiguration(); // Generate Default Configuration if one does not exist.
  		defaultExemptionList();
+                createDefaultStorage();
  		parseConfigSettings(getConfiguration()); // Load and parse configuration.
  		checkVersion(); // Update Configuration
  	}
@@ -253,6 +258,93 @@ private static Logger logger = Bukkit.getLogger();
     		}
 	    }
 	}
+        
+        public static void createDefaultStorage() {
+            FileWriter f = null;
+
+            try {
+                // If Banned Info file does not exist, create it.
+                if (!banned.exists()) {
+                        f = new FileWriter(banned, true);
+
+                        f.write("### IP-Check Banned List ###\r\n");
+                }
+
+            } catch (Exception e) {
+                ErrorLogger EL = new ErrorLogger();
+                        EL.execute(e);
+                logger.info(banGenErr);
+            } finally {
+                try {
+                        if (f != null) {
+                                f.close();
+                        }
+                } catch (Exception e) {
+                        ErrorLogger EL = new ErrorLogger();
+                        EL.execute(e);
+                        logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+                }
+            }
+        }
+        
+        public static void writeBannedList(ArrayList<String> newBannedList) {
+            FileWriter f = null;
+		
+            try {
+                if (banned.exists()) {
+                    banned.delete();
+                }
+
+                f = new FileWriter(banned, true);
+
+                for(String s:newBannedList) {
+                    f.write(s + "\r\n");
+                }
+            } catch (Exception e) {
+                ErrorLogger EL = new ErrorLogger();
+                EL.execute(e);
+                logger.severe(PLUG_NAME + banWriteErr);
+                logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+            } finally {
+                try {
+                    if (f != null) {
+                        f.close();
+                    }
+                } catch (Exception e) {
+                    ErrorLogger EL = new ErrorLogger();
+                    EL.execute(e);
+                    logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+                }
+            }
+        }
+        
+        public static void writeBannedEntry(String playerName, String reason) {
+            if (!banned.exists()) {
+                createDefaultStorage();
+            }
+            
+            ArrayList<String> bannedList = getPluginBanlist();
+            
+            boolean shouldReplace = false;
+            String value = (playerName + " | " + reason);
+            String regex = new String();
+            
+            for (String e:bannedList) {
+                if (e.contains(playerName + " |")) {
+                    shouldReplace = true;
+                    regex = e;
+                    break;
+                }
+            }
+            
+            if (shouldReplace) {
+                bannedList.remove(regex);
+            }
+            
+            bannedList.add(value);
+            
+            writeBannedList(bannedList);
+        }
 	
 	public static String getMySQLUsername() {
 		return mySQLuser;
@@ -328,6 +420,53 @@ private static Logger logger = Bukkit.getLogger();
 		
 		return exemptList;
 	}
+        
+        public static ArrayList<String> getPluginBanlist() {
+            ArrayList<String> bannedList = new ArrayList<String>();
+            BufferedReader br = null;
+            
+            try {
+                FileInputStream fstream = new FileInputStream(banned);
+                DataInputStream in = new DataInputStream(fstream);
+                br = new BufferedReader(new InputStreamReader(in));
+                String strLine;
+                
+                while ((strLine = br.readLine()) != null) {
+                    bannedList.add(strLine);
+                }
+            } catch (Exception e) {
+                ErrorLogger EL = new ErrorLogger();
+                EL.execute(e);
+                logger.severe(PLUG_NAME + banReadErr);
+                logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+            } finally {
+                try {
+                    if (br != null) {
+                        br.close();
+                    } 
+                } catch (Exception e) {
+                    ErrorLogger EL = new ErrorLogger();
+                    EL.execute(e);
+                    logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+                }
+            }
+            
+            return bannedList;
+        }
+        
+        public static String getBannedReason(String playerName) {
+            ArrayList<String> banlist = getPluginBanlist();
+            String reason = "None";
+            
+            for (String e:banlist) {
+                if (e.contains(playerName + " | ")) {
+                    reason = e.replace(playerName + " | ", "");
+                    break;
+                }
+            }
+            
+            return reason;
+        }
 	
 	// Generate a Blank Configuration Document
 	public static void regenerateConfiguration() {
