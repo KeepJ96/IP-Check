@@ -37,6 +37,7 @@ public class Functions {
 			add("OPOSSUM!");
 			add("Now bringing you 500 channels of high-quality static. :D");
 			add("Insert witty comment here!");
+                        add("Bring us the one they call Nub!");
 	}};
 	
 	// Error Report Messages

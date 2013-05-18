@@ -19,7 +19,7 @@ public interface Backend {
 	 */
 	public void onDisable();
 	
-	/*** Returns the Registrat (Call-name) of the backend Manager in Use
+	/*** Returns the Registrar (Call-name) of the backend Manager in Use
 	 * @return Backened Manager Registrar String
 	 */
 	public String getRegistrar();
@@ -28,7 +28,7 @@ public interface Backend {
 	 * Loads Save File from hard-disk.
 	 * @return save file as ArrayList.
 	 */
-	public void loadFile();
+	public ArrayList<String> loadFile();
 	
 	/***
 	 * Writes the save file for the Backend Manager to disk.

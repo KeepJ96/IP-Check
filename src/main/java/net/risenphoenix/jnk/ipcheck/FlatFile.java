@@ -25,7 +25,7 @@ public class FlatFile implements Backend{
 	
 	// Messages
 	private static final String PLUG_NAME = "[IP-Check] ";
-	private static final String INIT_BACKEND = "Initizalizing Flat-File Backend Manager...";
+	private static final String INIT_BACKEND = "Initializing Flat-File Backend Manager...";
 	private static final String DEINIT_BACKEND = "Shutting down Backend Manager...";
 	private static final String BAN_LIST_READ_ERR = "Error occurred while attempting to read banned-ips.txt!";
 	private static final String FLAT_FILE_WRITE_ERR = "An error occurred while attempting to write to the database document.";
@@ -41,7 +41,7 @@ public class FlatFile implements Backend{
 		double initTime = System.currentTimeMillis();
 		logger.info(PLUG_NAME + INIT_BACKEND);
 		generateFile();
-		loadFile();
+		playerInfo = loadFile();
 		double haltTime = System.currentTimeMillis();
 		logger.info(PLUG_NAME + "Initialization complete! Time taken: " + ((haltTime - initTime) / 1000) + " seconds.");
 	}
@@ -56,8 +56,9 @@ public class FlatFile implements Backend{
 	}
 
 	@Override
-	public void loadFile() {
+	public ArrayList<String> loadFile() {
 		playerInfo.clear(); // To prevent spill-over in the event of an in-game reload.
+                ArrayList<String> list = new ArrayList<String>();
 		BufferedReader br = null;
 		
 		try {
@@ -67,7 +68,7 @@ public class FlatFile implements Backend{
 			String strLine;
 			
 			while ((strLine = br.readLine()) != null) {
-				playerInfo.add(strLine.toLowerCase());
+				list.add(strLine.toLowerCase());
 			}
 			
 		} catch (Exception e) {
@@ -86,7 +87,8 @@ public class FlatFile implements Backend{
 				logger.severe(e.getMessage());
 			}
 		}
-		
+                
+                return list;
 	}
 
 	@Override
@@ -119,30 +121,67 @@ public class FlatFile implements Backend{
 			}
 		}
 	}
+        
+        public void writeConversionFile(ArrayList<String> info) {
+            FileWriter f = null;
+		
+		try {
+			if (path.exists()) {
+				path.delete();
+			}
+			
+        	f = new FileWriter(path, true);
+	        
+	        for(String s:info) {
+	        	f.write(s + "\r\n");
+	        }
+		} catch (Exception e) {
+			ErrorLogger EL = new ErrorLogger();
+			EL.execute(e);
+	    	logger.severe(FLAT_FILE_WRITE_ERR);
+		} finally {
+			try {
+				if (f != null) {
+					f.close();
+				}
+			} catch (Exception e){
+				ErrorLogger EL = new ErrorLogger();
+				EL.execute(e);
+				logger.severe(e.getMessage());
+			}
+		}
+        }
 
 	@Override
 	public void log(String player, String ip) {
-		StringBuilder sb = new StringBuilder();
-		int index = 0;
+            String entry = (player + "|" + ip);
+            int index = 0;
 		
-		sb.append(player);
-		sb.append("|");
-		sb.append(ip);
-		
-		// Check if player is already in the list.
-		for (String s:playerInfo) {
-			if (playerInfo.contains(sb.toString().toLowerCase())) {
-				return;
-			} else if (s.contains(player.toLowerCase())) {
-				playerInfo.remove(index);
-				playerInfo.add(sb.toString());
-				return;
-			}
+            // Check if player is already in the list.
+            for (String s:playerInfo) {
+                StringBuilder currentIP = new StringBuilder();
+                int index2 = 0;
+                
+                for (int i = 0; (s.charAt(i) != '|') && i < s.length(); i++) {
+                    index2 ++;
+                }
+                
+                for (int i = index2; i < s.length(); i++) {
+                    currentIP.append(s.charAt(i));
+                }
+                
+                if (playerInfo.contains(entry.toLowerCase())) {
+                    return;
+                } else if (s.contains(player.toLowerCase() + "|" + currentIP.toString())) {
+                    playerInfo.remove(index);
+                    playerInfo.add(entry);
+                    return;
+                }
 			
-			index++;
-		}
+                index++;
+            }
 		
-		playerInfo.add(sb.toString().toLowerCase());
+            playerInfo.add(entry.toLowerCase());
 	}
 
 	@Override

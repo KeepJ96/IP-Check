@@ -14,7 +14,11 @@ public class ParseCommand {
 		Exempt-List_IP       = 8
 		Exempt-List_Player   = 9
 		Reload               = 10
-		About                = 11 
+		About                = 11
+                Help                 = 12
+                Convert              = 13
+                Kick                 = 14
+                SBan                 = 15
 		
 		See Javadoc for execute() in this class for explanation of negative return values.*/
 	
@@ -71,6 +75,15 @@ public class ParseCommand {
 			
 			// Help Command
 			if (args[0].equalsIgnoreCase("help")) return 12;
+                        
+                        // Convert Command
+                        if (args[0].equalsIgnoreCase("convert")) return 13;
+                        
+                        // Kick Command
+                        if (args[0].equalsIgnoreCase("kick")) return 14;
+                        
+                        // SBan Command
+                        if (args[0].equalsIgnoreCase("sban")) return 15;
 			
 			if (args.length < 2) return 0; // If it was not one of the above commands and arguments is greater than 0, then pass it to the default check command.
 		} else {

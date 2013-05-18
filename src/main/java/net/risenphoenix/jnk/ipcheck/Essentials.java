@@ -37,7 +37,7 @@ public class Essentials implements Backend{
 	public void onLoad() {
 		double initTime = System.currentTimeMillis();
 		logger.info(PLUG_NAME + INIT_BACKEND);
-		loadFile();
+		playerInfo = loadFile();
 		double haltTime = System.currentTimeMillis();
 		logger.info(PLUG_NAME + "Initialization complete! Time taken: " + ((haltTime - initTime) / 1000) + " seconds.");
 	}
@@ -48,8 +48,9 @@ public class Essentials implements Backend{
 	}
 
 	@Override
-	public void loadFile() {
+	public ArrayList<String> loadFile() {
 		playerInfo.clear();
+                ArrayList<String> list = new ArrayList<String>();
 		
 		File path = null;
 		File[] playerFiles = playersDir.listFiles(new FilenameFilter() {
@@ -88,6 +89,7 @@ public class Essentials implements Backend{
 				}
 			} catch (IOException e) {
 				logger.severe(PLAYER_FILE_READ_ERR);
+                                return null;
 			} finally {
 				try {
 					if (br != null) {
@@ -98,8 +100,10 @@ public class Essentials implements Backend{
 				}
 			}
 			
-			playerInfo.add(sb.toString().toLowerCase());
+			list.add(sb.toString().toLowerCase());
 		}
+                
+                return list;
 	}
 
 	@Override
@@ -109,27 +113,34 @@ public class Essentials implements Backend{
 
 	@Override
 	public void log(String player, String ip) {
-		StringBuilder sb = new StringBuilder();
-		int index = 0;
+            String entry = (player + "|" + ip);
+            int index = 0;
 		
-		sb.append(player);
-		sb.append("|");
-		sb.append(ip);
-		
-		// Check if player is already in the list.
-		for (String s:playerInfo) {
-			if (playerInfo.contains(sb.toString().toLowerCase())) {
-				return;
-			} else if (s.contains(player.toLowerCase())) {
-				playerInfo.remove(index);
-				playerInfo.add(sb.toString());
-				return;
-			}
+            // Check if player is already in the list.
+            for (String s:playerInfo) {
+                StringBuilder currentIP = new StringBuilder();
+                int index2 = 0;
+                
+                for (int i = 0; (s.charAt(i) != '|') && i < s.length(); i++) {
+                    index2 ++;
+                }
+                
+                for (int i = index2; i < s.length(); i++) {
+                    currentIP.append(s.charAt(i));
+                }
+                
+                if (playerInfo.contains(entry.toLowerCase())) {
+                    return;
+                } else if (s.contains(player.toLowerCase() + "|" + currentIP.toString())) {
+                    playerInfo.remove(index);
+                    playerInfo.add(entry);
+                    return;
+                }
 			
-			index++;
-		}
+                index++;
+            }
 		
-		playerInfo.add(sb.toString().toLowerCase());
+            playerInfo.add(entry.toLowerCase());
 	}
 
 	@Override

@@ -5,11 +5,15 @@ import net.risenphoenix.jnk.ipcheck.Listeners.PlayerCommandListener;
 import net.risenphoenix.jnk.ipcheck.Listeners.PlayerJoinListener;
 import net.risenphoenix.jnk.ipcheck.Listeners.PlayerLoginListener;
 import net.risenphoenix.jnk.ipcheck.Logging.DateStamp;
+import net.risenphoenix.jnk.ipcheck.Logging.ErrorLogger;
 import net.risenphoenix.jnk.ipcheck.commands.CmdAbout;
 import net.risenphoenix.jnk.ipcheck.commands.CmdBan;
 import net.risenphoenix.jnk.ipcheck.commands.CmdCheck;
+import net.risenphoenix.jnk.ipcheck.commands.CmdConvert;
 import net.risenphoenix.jnk.ipcheck.commands.CmdHelp;
+import net.risenphoenix.jnk.ipcheck.commands.CmdKick;
 import net.risenphoenix.jnk.ipcheck.commands.CmdReload;
+import net.risenphoenix.jnk.ipcheck.commands.CmdSBan;
 import net.risenphoenix.jnk.ipcheck.commands.CmdToggle;
 import net.risenphoenix.jnk.ipcheck.commands.CmdUnban;
 import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
@@ -34,13 +38,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class IPcheck extends JavaPlugin implements Listener{
 	
-	//================== IP-Check v1.3.0 (dev) | May 06, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
-	//==================             CraftBukkit Build: 2759 | Bukkit API Version: 1.5.2-R0-1             ==================//
+	//================== IP-Check v1.2.9 | May 18, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
 	
 	//=================Root Command==================//
 	public static final String ROOT_COMMAND = "c";
-	public static final String VER_STRING = "IP-Check v1.2.8";
-	public static final String COMP_DATE = "May 06, 2013";
+	public static final String VER_STRING = "IP-Check v1.2.9";
+	public static final String COMP_DATE = "May 18, 2013";
 	
 	//=============== Backend Manager ===============//
 	public static Backend backend = null;
@@ -65,6 +68,9 @@ public class IPcheck extends JavaPlugin implements Listener{
 	public static final IpcCommand reload = new CmdReload();
 	public static final IpcCommand about = new CmdAbout();
 	public static final IpcCommand help = new CmdHelp();
+        public static final IpcCommand convert = new CmdConvert();
+        public static final IpcCommand kick = new CmdKick();
+        public static final IpcCommand sban = new CmdSBan();
 	
 	//=============== Global Messages ===============//
 	public static final String PLUG_NAME = "[IP-Check] ";
@@ -144,7 +150,10 @@ public class IPcheck extends JavaPlugin implements Listener{
 		commands.add(exemptList_player);   //Exempt-List Command (Player)      || 9
 		commands.add(reload);              //Reload Command                    || 10
 		commands.add(about);               //About Command                     || 11
-		commands.add(help);				   //Help Command					   || 12
+		commands.add(help);                //Help Command                      || 12
+                commands.add(convert);             //Convert Command                   || 13
+                commands.add(kick);                //Kick Command                      || 14
+                commands.add(sban);                //SBan Command                      || 15
 		//=======================================================================================//
 		
 		Bukkit.getLogger().info(PLUG_NAME + "Registered " + commands.size() + " commands.");
@@ -191,8 +200,17 @@ public class IPcheck extends JavaPlugin implements Listener{
 				
 				for (IpcCommand cmd : commands) {
 					if (cmd.getID() == commandID) {
+                                            try {
 						cmd.execute(sender, commandLabel, args); // Execute
 						return true;
+                                            } catch (Exception e) {
+                                                ErrorLogger EL = new ErrorLogger();
+                                                EL.execute(e);
+                                                sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + "An error occured while attempting to perform the command." + 
+                                                        " Please check IP-Check's plugin folder in your servers plugin directory for a report of this error.");
+                                            } finally {
+                                                return true;
+                                            }
 					}
 				}
 				
