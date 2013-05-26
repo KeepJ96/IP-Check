@@ -31,13 +31,13 @@ public class CmdKick implements IpcCommand{
                                 int total;
                                 
 				if (args[1].toLowerCase().matches(ip_filter.toLowerCase())) {
-					// Command Instructions here
+                                    // Command Instructions here
                                     total = ab.kickPlayers(IPcheck.backend.getAlts(args[1]), sender, IPcheck.backend.checkIPaddress(args[1]), sb.toString());
 				} else {
-                                    total = ab.kickPlayers(IPcheck.backend.getAlts(IPcheck.backend.getIP(args[1])), sender, IPcheck.backend.getIP(args[1]), sb.toString());
+                                    total = ab.kickPlayers(IPcheck.backend.getAlts(IPcheck.backend.getLastKnownIP(args[1])), sender, IPcheck.backend.getLastKnownIP(args[1]), sb.toString());
 				}
                                 
-                                sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + "Kicked " + total + " players.");
+                               sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + "Kicked " + total + " players.");
 			} else {
 				sender.sendMessage(IPcheck.NUM_ARGS_ERR);
 			}

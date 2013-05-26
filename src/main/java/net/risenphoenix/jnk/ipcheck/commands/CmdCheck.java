@@ -11,14 +11,7 @@ public class CmdCheck implements IpcCommand{
 	@Override
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
 		Report report = new Report();
-		
-		String ip_filter = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
-		//Command Instructions here
-		if (args[0].toLowerCase().matches(ip_filter.toLowerCase())) {
-			report.execute(IPcheck.backend.getAlts(args[0]), sender, IPcheck.backend.getIP(args[0]), args[0], false);
-		} else {
-			report.execute(IPcheck.backend.getAlts(IPcheck.backend.getIP(args[0])), sender, IPcheck.backend.getIP(args[0]), args[0], true);
-		}
+                report.execute(sender, args[0]);
 	}
 
 	@Override

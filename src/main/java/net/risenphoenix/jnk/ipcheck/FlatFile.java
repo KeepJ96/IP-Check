@@ -5,364 +5,439 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-
 import net.risenphoenix.jnk.ipcheck.Logging.ErrorLogger;
-
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 
 public class FlatFile implements Backend{
 
-	// BACKEND MANAGER FOR FLAT-FILE
-	
-	private static ArrayList<String> playerInfo = new ArrayList<String>();
-	private static Logger logger = Bukkit.getLogger();
-	private static String registrar = "Flat-File Backend Manager for IP-Check ver 2.5";
-	
-	// Messages
-	private static final String PLUG_NAME = "[IP-Check] ";
-	private static final String INIT_BACKEND = "Initializing Flat-File Backend Manager...";
-	private static final String DEINIT_BACKEND = "Shutting down Backend Manager...";
-	private static final String BAN_LIST_READ_ERR = "Error occurred while attempting to read banned-ips.txt!";
-	private static final String FLAT_FILE_WRITE_ERR = "An error occurred while attempting to write to the database document.";
-	private static final String FLAT_FILE_READ_ERR = "An error occurred while attempting to read the database document.";
-	private static final String FLAT_FILE_GEN_ERR = "An error occurred while attempting to generate a new database document!";
-	
-	// Files
-	private static File bannedIPs = new File("banned-ips.txt");
-	private static File path = new File("plugins/IP-check/database.db");
+    // BACKEND MANAGER FOR FLAT-FILE - Last Updated May 25, 2013
+    private static final Logger logger = Bukkit.getLogger();
+    private static String registrar = "Flat-File Backend Manager for IP-Check ver 3.0";
 
-	@Override
-	public void onLoad() {
-		double initTime = System.currentTimeMillis();
-		logger.info(PLUG_NAME + INIT_BACKEND);
-		generateFile();
-		playerInfo = loadFile();
-		double haltTime = System.currentTimeMillis();
-		logger.info(PLUG_NAME + "Initialization complete! Time taken: " + ((haltTime - initTime) / 1000) + " seconds.");
-	}
+    // Messages
+    private static final String PLUG_NAME = "[IP-Check] ";
+    private static final String INIT_BACKEND = "Initializing Flat-File Backend Manager...";
+    private static final String DEINIT_BACKEND = "Shutting down Backend Manager...";
+    private static final String BAN_LIST_READ_ERR = "Error occurred while attempting to read banned-ips.txt!";
+    private static final String FLAT_FILE_WRITE_ERR = "An error occurred while attempting to write to a database document.";
+    private static final String FLAT_FILE_READ_ERR = "An error occurred while attempting to read a database document.";
+    private static final String FLAT_FILE_GEN_ERR = "An error occurred while attempting to generate a new database document!";
 
-	@Override
-	public void onDisable() {
-		double initTime = System.currentTimeMillis();
-		logger.info(PLUG_NAME + DEINIT_BACKEND);
-		saveFile();
-		double haltTime = System.currentTimeMillis();
-		logger.info(PLUG_NAME + "Backend Manager successfully shutdown! Time taken: " + ((haltTime - initTime) / 1000) + " seconds.");
-	}
+    // Files
+    private static File bannedIPs = new File("banned-ips.txt");
 
-	@Override
-	public ArrayList<String> loadFile() {
-		playerInfo.clear(); // To prevent spill-over in the event of an in-game reload.
-                ArrayList<String> list = new ArrayList<String>();
-		BufferedReader br = null;
-		
-		try {
-			FileInputStream fstream = new FileInputStream(path);
-			DataInputStream in = new DataInputStream(fstream);
-			br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
-			
-			while ((strLine = br.readLine()) != null) {
-				list.add(strLine.toLowerCase());
-			}
-			
-		} catch (Exception e) {
-			ErrorLogger EL = new ErrorLogger();
-			EL.execute(e);
-			logger.severe(FLAT_FILE_READ_ERR);
-			
-		} finally {
-			try {
-				if (br != null) {
-					br.close();
-				}
-			} catch (Exception e) {
-				ErrorLogger EL = new ErrorLogger();
-				EL.execute(e);
-				logger.severe(e.getMessage());
-			}
-		}
-                
-                return list;
-	}
+    // Folders
+    private static File dirRoot = new File("plugins/IP-check/DATABASE");
+    private static File dirPlayer = new File("plugins/IP-check/DATABASE/PLAYERS");
+    private static File dirIP = new File("plugins/IP-check/DATABASE/IPS");
 
-	@Override
-	public void saveFile() {
-		FileWriter f = null;
-		
-		try {
-			if (path.exists()) {
-				path.delete();
-			}
-			
-        	f = new FileWriter(path, true);
-	        
-	        for(String s:playerInfo) {
-	        	f.write(s + "\r\n");
-	        }
-		} catch (Exception e) {
-			ErrorLogger EL = new ErrorLogger();
-			EL.execute(e);
-	    	logger.severe(FLAT_FILE_WRITE_ERR);
-		} finally {
-			try {
-				if (f != null) {
-					f.close();
-				}
-			} catch (Exception e){
-				ErrorLogger EL = new ErrorLogger();
-				EL.execute(e);
-				logger.severe(e.getMessage());
-			}
-		}
-	}
-        
-        public void writeConversionFile(ArrayList<String> info) {
-            FileWriter f = null;
-		
-		try {
-			if (path.exists()) {
-				path.delete();
-			}
-			
-        	f = new FileWriter(path, true);
-	        
-	        for(String s:info) {
-	        	f.write(s + "\r\n");
-	        }
-		} catch (Exception e) {
-			ErrorLogger EL = new ErrorLogger();
-			EL.execute(e);
-	    	logger.severe(FLAT_FILE_WRITE_ERR);
-		} finally {
-			try {
-				if (f != null) {
-					f.close();
-				}
-			} catch (Exception e){
-				ErrorLogger EL = new ErrorLogger();
-				EL.execute(e);
-				logger.severe(e.getMessage());
-			}
-		}
+    @Override
+    public void onLoad() {
+        generateFile();
+    }
+
+    @Override
+    public void onDisable() {
+        // Not used
+    }
+
+    @Override
+    public void generateFile() {
+        if (!dirRoot.exists()) {
+            dirRoot.mkdir();
         }
 
-	@Override
-	public void log(String player, String ip) {
-            String entry = (player + "|" + ip);
-            int index = 0;
-		
-            // Check if player is already in the list.
-            for (String s:playerInfo) {
-                StringBuilder currentIP = new StringBuilder();
-                int index2 = 0;
-                
-                for (int i = 0; (s.charAt(i) != '|') && i < s.length(); i++) {
-                    index2 ++;
-                }
-                
-                for (int i = index2; i < s.length(); i++) {
-                    currentIP.append(s.charAt(i));
-                }
-                
-                if (playerInfo.contains(entry.toLowerCase())) {
-                    return;
-                } else if (s.contains(player.toLowerCase() + "|" + currentIP.toString())) {
-                    playerInfo.remove(index);
-                    playerInfo.add(entry);
-                    return;
-                }
-			
-                index++;
+        if (!dirPlayer.exists()) {
+            dirPlayer.mkdir();
+        }
+
+        if (!dirIP.exists()) {
+            dirIP.mkdir();
+        }
+    }
+
+    @Override
+    public String getRegistrar() {
+        return registrar;
+    }
+
+    @Override
+    public ArrayList<String> loadFile(File file) {
+        ArrayList<String> list = new ArrayList<String>();
+        BufferedReader br = null;
+
+        // FILE READER
+        try {
+            // Open a file stream to read the file
+            FileInputStream fstream = new FileInputStream(file);
+            DataInputStream in = new DataInputStream(fstream);
+            br = new BufferedReader(new InputStreamReader(in));
+            String strLine;
+
+            while ((strLine = br.readLine()) != null) {
+                list.add(strLine.toLowerCase()); // Add each line of the file to memory
             }
-		
-            playerInfo.add(entry.toLowerCase());
-	}
 
-	@Override
-	public void generateFile() {
-		if (!path.exists()) {
-			FileWriter f = null;
-			
-			try {
-				f = new FileWriter(path, true);
-				
-			} catch (IOException e) {
-				ErrorLogger EL = new ErrorLogger();
-				EL.execute(e);
-				logger.severe(FLAT_FILE_GEN_ERR);
-				
-			} finally {
-				try {
-					if (f != null) {
-						f.close();
-					}
-				} catch (IOException e) {
-					ErrorLogger EL = new ErrorLogger();
-					EL.execute(e);
-					logger.severe(e.getMessage());
-				}
-			}
-		}
-	}
+        } catch (Exception e) {
+            list = null; // Set list to null so that the calling method can deal with the error
+            
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (Exception e) {
+                ErrorLogger EL = new ErrorLogger(); // Catch the error, pass to handler
+                EL.execute(e);
+                logger.severe(e.getMessage());
+            }
+        }
+        // END FILE READER
+        
+        return list;
+    }
 
-	@Override
-	public ArrayList<String> getAlts(String ip) {
-		ArrayList<String> players = new ArrayList<String>();
+    @Override
+    public void log(String player, String ip) {
+        // Generate the File Path for the player log
+        File playerFile = new File("plugins/IP-check/DATABASE/PLAYERS/" + player + ".log");
+        
+        // Convert IP from XXX.XXX.XXX.XXX to XXX_XXX_XXX_XXX
+        String convertedIP = convertIPFormat(ip);
+        
+        // Generate the File Path for the ip log
+        File ipFile = new File("plugins/IP-check/DATABASE/IPS/" + convertedIP + ".log");
+        
+        //### IP-LOG SECTOR ###//
+        if (!ipFile.exists()) {
+            
+            // FILE WRITER
+            FileWriter f = null;
 		
-		for (String s:playerInfo) {
-			if (s.contains(ip)) {
-				StringBuilder sb = new StringBuilder();
-				int index = 0;
-				
-				while (s.charAt(index) != '|') {
-					sb.append(s.charAt(index));
-					index++;
-				}
-				
-				players.add(sb.toString());
-			}
-		}
-		
-		return players;
-	}
+            try {
+                f = new FileWriter(ipFile, true);
+                f.write(player + "\r\n"); //Store the player name passed to the log file.
+                
+            } catch (Exception e) {
+                ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
+                EL.execute(e);
+                logger.severe(FLAT_FILE_GEN_ERR);
+                
+            } finally {
+                try {
+                    if (f != null) {
+                        f.close(); // Close the file writer
+                    }
+                } catch (Exception e){
+                    ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
+                    EL.execute(e);
+                    logger.severe(e.getMessage());
+                }
+            }
+            // END FILE WRITER
+            
+        // If the file does exist, read it into memory
+        } else {
+            ArrayList<String> list = new ArrayList<String>();
+            BufferedReader br = null;
+            boolean shouldWrite = true;
 
-	@Override
-	public boolean isBannedIP(String ip) {
-		BufferedReader br = null;
-		
-		try {
-			FileInputStream fstream = new FileInputStream(bannedIPs);
-			DataInputStream in = new DataInputStream(fstream);
-			br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
-			
-			/* Skip the first three lines of the file to prevent the while statement
-			*  from terminating prematurely. */
-			for (int lineSkip = 0; lineSkip < 3; lineSkip++) br.readLine(); 
-			
-			while ((strLine = br.readLine()) != null) {
-				if (strLine.contains(ip)) {
-					return true;
-				}
-			}
-		} catch (Exception e) {
-			ErrorLogger EL = new ErrorLogger();
-			EL.execute(e);
-			logger.severe(BAN_LIST_READ_ERR);
-		} finally {
-			try {
-				if (br != null) {
-					br.close();
-				}
-			} catch (Exception e) {
-				ErrorLogger EL = new ErrorLogger();
-				EL.execute(e);
-				logger.severe(e.getMessage());
-			}
-		}
-		
-		return false;
-	}
+            // FILE READER
+            try {
+                // Open a file stream to read the file
+                FileInputStream fstream = new FileInputStream(ipFile);
+                DataInputStream in = new DataInputStream(fstream);
+                br = new BufferedReader(new InputStreamReader(in));
+                String strLine;
 
-	@Override
-	public String getIP(String player) {
-StringBuilder ip = new StringBuilder();
-		
-		// First look for exact name
-		for(String s:playerInfo) {
-			StringBuilder name = new StringBuilder();
-			int indexName = 0;
-			int index = 0;
-			
-			while (s.charAt(indexName) != '|') {
-				name.append(s.charAt(indexName));
-				indexName++;
-			}
-			
-			if (name.toString().toLowerCase().equals(player.toLowerCase())) {
-				while (s.charAt(index) != '|') {
-					index++;
-				}
-				
-				index++; // Skip the '|' character
-				
-				while (index < s.length()) {
-					ip.append(s.charAt(index));
-					index++;
-				}
-				
-				return ip.toString();
-			}
-		}
-		
-		// If the exact name could not be found
-		for(String s:playerInfo) {
-			int index = 0;
-			
-			if (s.toLowerCase().contains(player.toLowerCase())) {
-				while (s.charAt(index) != '|') {
-					index++;
-				}
-				
-				index++;
-				
-				while (index < s.length()) {
-					ip.append(s.charAt(index));
-					index++;
-				}
-				
-				return ip.toString();
-			}
-		}
-		
-		// If neither loop returned a match, then return.
-		return "no-find";
-	}
+                while ((strLine = br.readLine()) != null) {
+                    list.add(strLine.toLowerCase()); // Add each line of the file to memory
+                }
 
-	@Override
-	public OfflinePlayer getPlayer(String arg, ArrayList<String> alts) {
-		String getPlayer = null;
-		
-		// Check for a match between the argument given and the list of alts returned from the IP
-		for (String s:alts) {
-			if (s.toLowerCase().contains(arg.toLowerCase())) {
-				getPlayer = s;
-			}
-		}
-		
-		// If, for whatever reason, the string is still null after the above, then set it equal to the first element in alts
-		if (getPlayer == null) {
-			getPlayer = alts.get(0);
-		}
-		
-		// return player object
-		return Bukkit.getOfflinePlayer(getPlayer);
-	}
+            } catch (Exception e) {
+                ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
+                EL.execute(e);
+                logger.severe(FLAT_FILE_READ_ERR);
+                list = null; // If we encountered an error reading the file, set the memory location to NULL so that we can handle the error.
 
-	@Override
-	public String checkIPaddress(String ip) {
-		for (String s:playerInfo) {
-			if (s.contains(ip)) {
-				return ip;
-			}
-		}
+            } finally {
+                try {
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (Exception e) {
+                    ErrorLogger EL = new ErrorLogger(); // Catch the error, pass to handler
+                    EL.execute(e);
+                    logger.severe(e.getMessage());
+                }
+            }
+            // END FILE READER
+            
+            for (String s:list) {
+                if (s.equals(player.toLowerCase())) {
+                    shouldWrite = false; // If the file already exists and the IP is already logged, do not write the log file
+                }
+            }
+            
+            // If we did not find the IP
+            if (shouldWrite) {
+                list.add(player); // Add the IP to the file's memory block
+
+                // Write the log file to disk
+
+                // FILE WRITER
+                FileWriter f = null;
+
+                try {
+                    if (ipFile.exists()) ipFile.delete(); // Delete the old log file
+
+                    f = new FileWriter(ipFile, true);
+
+                    for (String s:list) {
+                        f.write(s + "\r\n"); //Write each line in memory to the file, plus a line break and carriage return.
+                    }
+
+                } catch (Exception e) {
+                    ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
+                    EL.execute(e);
+                    logger.severe(FLAT_FILE_WRITE_ERR);
+
+                } finally {
+                    try {
+                        if (f != null) {
+                            f.close(); // Close the file writer
+                        }
+                    } catch (Exception e){
+                        ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
+                        EL.execute(e);
+                        logger.severe(e.getMessage());
+                    }
+                }
+                // END FILE WRITER
+            }
+        }
+        
+        //### PLAYER-LOG SECTOR ###/
+        // If the player log path does not exist, generate it
+        if (!playerFile.exists()) {
+            
+            // FILE WRITER
+            FileWriter f = null;
 		
-		return "no-find";
-	}
+            try {
+                f = new FileWriter(playerFile, true);
+                f.write(ip + "-lastknown\r\n"); //Store the IP-Address passed to the log file.
+                
+            } catch (Exception e) {
+                ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
+                EL.execute(e);
+                logger.severe(FLAT_FILE_GEN_ERR);
+                
+            } finally {
+                try {
+                    if (f != null) {
+                        f.close(); // Close the file writer
+                    }
+                } catch (Exception e){
+                    ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
+                    EL.execute(e);
+                    logger.severe(e.getMessage());
+                }
+            }
+            // END FILE WRITER
+            
+        // If the file does exist, read it into memory
+        } else {
+            ArrayList<String> list = new ArrayList<String>();
+            BufferedReader br = null;
 
-	@Override
-	public String getRegistrar() {
-		return registrar;
-	}
+            // FILE READER
+            try {
+                // Open a file stream to read the file
+                FileInputStream fstream = new FileInputStream(playerFile);
+                DataInputStream in = new DataInputStream(fstream);
+                br = new BufferedReader(new InputStreamReader(in));
+                String strLine;
 
-	@Override
-	public int getMemorySize() {
-		return playerInfo.size();
-	}
+                while ((strLine = br.readLine()) != null) {
+                    list.add(strLine.toLowerCase()); // Add each line of the file to memory
+                }
+
+            } catch (Exception e) {
+                ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
+                EL.execute(e);
+                logger.severe(FLAT_FILE_READ_ERR);
+                list = null; // If we encountered an error reading the file, set the memory location to NULL so that we can handle the error.
+
+            } finally {
+                try {
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (Exception e) {
+                    ErrorLogger EL = new ErrorLogger(); // Catch the error, pass to handler
+                    EL.execute(e);
+                    logger.severe(e.getMessage());
+                }
+            }
+            // END FILE READER
+            
+            boolean shouldAdd = true;
+            
+            for (String s:list) {
+                if (s.equals(ip + "-lastknown")) {
+                    return; // If the file already exists and the IP is already logged, we're done.
+                } else if (s.equals(ip)) {
+                    shouldAdd = false; // We should not log a new entry, we should modify an existing entry
+                    break;
+                }
+            }
+            
+            // If we did not find the IP
+            if (shouldAdd) {
+                list.add(ip + "-lastknown"); // Add the IP to the file's memory block
+            } else if (!shouldAdd) {
+                list.remove(ip);
+                list.add(ip + "-lastknown");
+            }
+            
+            // Write the log file to disk
+            
+            // FILE WRITER
+            FileWriter f = null;
+		
+            try {
+                if (playerFile.exists()) playerFile.delete(); // Delete the old log file
+                
+                f = new FileWriter(playerFile, true);
+                
+                for (String s:list) {
+                    if (s.contains("-lastknown") && !s.equals(ip + "-lastknown")) {
+                        s = s.replace("-lastknown", ""); // If this is not the latest IP, then remove the -lastKnown tag
+                    }
+                    
+                    f.write(s + "\r\n"); //Write each line in memory to the file, plus a line break and carriage return.
+                }
+                
+            } catch (Exception e) {
+                ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
+                EL.execute(e);
+                logger.severe(FLAT_FILE_WRITE_ERR);
+                
+            } finally {
+                try {
+                    if (f != null) {
+                        f.close(); // Close the file writer
+                    }
+                } catch (Exception e){
+                    ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
+                    EL.execute(e);
+                    logger.severe(e.getMessage());
+                }
+            }
+            // END FILE WRITER
+        }
+    }
+
+    @Override
+    public ArrayList<String> getAlts(String ip) {
+        // Convert IP from XXX.XXX.XXX.XXX to XXX_XXX_XXX_XXX
+        String convertedIP = convertIPFormat(ip);
+        // Create the file path to load
+        File ipPath = new File("plugins/IP-check/DATABASE/IPS/" + convertedIP + ".log");
+        // Load the file path
+        ArrayList<String> players = loadFile(ipPath);
+        
+        return players;
+    }
+
+    @Override
+    public boolean isBannedIP(String ip) {
+       BufferedReader br = null;
+		
+        try {
+            FileInputStream fstream = new FileInputStream(bannedIPs);
+            DataInputStream in = new DataInputStream(fstream);
+            br = new BufferedReader(new InputStreamReader(in));
+            String strLine;
+
+            /* Skip the first three lines of the file to prevent the while statement
+            *  from terminating prematurely. */
+            for (int lineSkip = 0; lineSkip < 3; lineSkip++) br.readLine(); 
+
+            while ((strLine = br.readLine()) != null) {
+                if (strLine.contains(ip)) {
+                        return true;
+                }
+            }
+        } catch (Exception e) {
+            ErrorLogger EL = new ErrorLogger();
+            EL.execute(e);
+            logger.severe(BAN_LIST_READ_ERR);
+        } finally {
+            try {
+                if (br != null) {
+                        br.close();
+                }
+            } catch (Exception e) {
+                ErrorLogger EL = new ErrorLogger();
+                EL.execute(e);
+                logger.severe(e.getMessage());
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public String getLastKnownIP(String player) {
+        ArrayList<String> IPs = loadFile(new File("plugins/IP-check/DATABASE/PLAYERS/" + player.toLowerCase() + ".log"));
+        
+        for (String s:IPs) {
+            if (s.contains("-lastknown")) {
+                return s.replace("-lastknown", "");
+            }
+        }
+        
+        return "0.0.0.0";
+    }
+    
+    @Override
+    public ArrayList<String> getIPs(String player) {
+        ArrayList<String> IPs = loadFile(new File("plugins/IP-check/DATABASE/PLAYERS/" + player.toLowerCase() + ".log"));
+        
+        if (IPs == null) {
+            return null;
+        }
+        
+        return IPs;
+    }
+    
+    @Override
+    public String checkIPaddress(String ip) {
+        ArrayList<String> check = loadFile(new File("plugins/IP-check/DATABASE/IPS/" + convertIPFormat(ip) + ".log"));
+        if (check == null) {
+            return "no-find";
+        }
+        
+        return ip;
+    }
+    
+    // Backend Specific
+    // Converts IP-Address passed from XXX.XXX.XXX.XXX to XXX_XXX_XXX_XXX
+    public String convertIPFormat(String ip) {
+        StringBuilder convertedIP = new StringBuilder();
+        for (int i = 0; i < ip.length(); i++) {
+            if (ip.charAt(i) != '.') {
+                convertedIP.append(ip.charAt(i));
+            } else {
+                convertedIP.append('_');
+            }
+        }
+        
+        return convertedIP.toString();
+    }
 }

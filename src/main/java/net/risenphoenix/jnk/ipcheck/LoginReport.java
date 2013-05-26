@@ -12,7 +12,7 @@ public class LoginReport {
 		Player[] online = Bukkit.getServer().getOnlinePlayers();
 		Player curPlayer = player;
 		
-		if ((curPlayer.hasPlayedBefore() && (accounts - 1) >= Configuration.notifyThreshold) || (!curPlayer.hasPlayedBefore() && accounts >= Configuration.notifyThreshold)) {
+		if ((curPlayer.hasPlayedBefore() && (accounts - 1) >= Configuration.notifyThreshold) || (!curPlayer.hasPlayedBefore() && accounts > Configuration.notifyThreshold)) {
 			if (!Configuration.isExemptPlayer(player.getName()) && !Configuration.isExemptIp(ip)) { // If number of accounts is greater than threshold and player is not exempt
 				
 				if (curPlayer.hasPlayedBefore()) {

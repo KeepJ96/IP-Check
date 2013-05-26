@@ -1,5 +1,6 @@
 package net.risenphoenix.jnk.ipcheck;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.bukkit.OfflinePlayer;
@@ -20,7 +21,7 @@ public interface Backend {
 	public void onDisable();
 	
 	/*** Returns the Registrar (Call-name) of the backend Manager in Use
-	 * @return Backened Manager Registrar String
+	 * @return Backend Manager Registrar String
 	 */
 	public String getRegistrar();
 	
@@ -28,13 +29,7 @@ public interface Backend {
 	 * Loads Save File from hard-disk.
 	 * @return save file as ArrayList.
 	 */
-	public ArrayList<String> loadFile();
-	
-	/***
-	 * Writes the save file for the Backend Manager to disk.
-	 * @param current
-	 */
-	public void saveFile();
+	public ArrayList<String> loadFile(File file);
 	
 	/***
 	 * Writes a User-Name/IP entry to an active copy of the Backend Manager's save-file.
@@ -49,7 +44,7 @@ public interface Backend {
 	public void generateFile();
 	
 	/***
-	 * Scans the active copy of the Backend Manager's save file in order to detect alternate player accounts
+	 * Scans the database to return a list of all accounts associated with the IP Specified
 	 * @param player
 	 * @return ArrayList of player accounts.
 	 */
@@ -61,24 +56,26 @@ public interface Backend {
 	 */
 	public boolean isBannedIP(String ip);
 	
-	/***
-	 * Returns the IP address of the player name given, if one exists.
+        /***
+	 * Returns the last known IP address of the player name given, if one exists.
 	 * @param player
 	 * @return IP address.
 	 */
-	public String getIP(String player);
-	
-	/*** Returns the number of entries in the PlayerInfo array.
-	 * @return Integer
+        public String getLastKnownIP(String player);
+        
+	/***
+	 * Returns the IP address of the player name given, if one exists.
+	 * @param player
+	 * @return IP addresses.
 	 */
-	public int getMemorySize();
+	public ArrayList<String> getIPs(String player);
 	
 	/***
 	 * Returns the Player Object based on the closest match between @arg and @alts, if one exists, otherwise returns the player object for the first entry in @alts.
 	 * @param
 	 * @return Player object.
 	 */
-	public OfflinePlayer getPlayer(String arg, ArrayList<String> alts);
+	//public OfflinePlayer getPlayer(String arg, ArrayList<String> alts);
 	
 	/***
 	 * Checks if IP address given exists or not.

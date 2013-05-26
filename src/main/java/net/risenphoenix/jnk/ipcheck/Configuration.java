@@ -49,7 +49,6 @@ private static Logger logger = Bukkit.getLogger();
  	public static boolean secureMode = false;
  	public static boolean notifyLogin = true;
  	public static boolean detailNotify = false;
- 	public static boolean usingMySQL = false;
  	
  	public static int notifyThreshold = 1;
  	public static int secureThreshold = 1;
@@ -57,29 +56,19 @@ private static Logger logger = Bukkit.getLogger();
  	public static String secureKickMsg = "Multiple Accounts Not Permitted.";
  	public static String banMessage = "Banned for Multi-Accounting.";
  	
- 	private static String mySQLdb = null;
- 	private static String mySQLuser = null;
- 	private static String mySQLpassword = null;
- 	
  	private static String defaultConfig =
- 			"# IP-Check 1.3.0 Configuration / Exemption List\r\n" +						// 0
- 			"===============================\r\n" + 									// 1
- 			"Configuration Options\r\n" +        										// 2
- 			"===============================\r\n" +										// 3			
- 			"notify-on-login: true\r\n" +												// 4
- 			"descriptive-notice: false\r\n" +											// 5
- 			"secure-mode: false\r\n" +													// 6
- 			"use-flat-file: false\r\n" +												// 7 - Added Update #1
- 			"min-account-notify-threshold: 1\r\n" +										// 8
- 			"secure-kick-threshold: 1\r\n" +											// 9
- 			"secure-kick-message: Multiple Accounts Not Permitted.\r\n" +				// 10
- 			"ban-message: Banned for Multi-Accounting.\r\n" +							// 11
- 			"logging-date-stamp-format: EEEE, MMMM dd, yyyy 'at' hh:mm:ss a, ZZZ\r\n" +	// 12 - Added Update #7
- 			"-------------------------------\r\n" +										// 13
- 			"use-mysql: false\r\n" +													// 14
- 			"database-address: \r\n" +													// 15
- 			"user-name: \r\n" +															// 16
- 			"password: ";																// 17
+ 			"# IP-Check 1.3.0_1 Configuration / Exemption List\r\n" +
+ 			"===============================\r\n" +
+ 			"Configuration Options\r\n" +
+ 			"===============================\r\n" +	
+ 			"notify-on-login: true\r\n" +
+ 			"descriptive-notice: false\r\n" +
+ 			"secure-mode: false\r\n" +
+ 			"min-account-notify-threshold: 1\r\n" +
+ 			"secure-kick-threshold: 1\r\n" +
+ 			"secure-kick-message: Multiple Accounts Not Permitted.\r\n" +
+ 			"ban-message: Banned for Multi-Accounting.\r\n" +
+ 			"logging-date-stamp-format: EEEE, MMMM dd, yyyy 'at' hh:mm:ss a, ZZZ\r\n";
 
  	private static String defaultExemption =
  			"===============================\r\n" +
@@ -154,7 +143,7 @@ private static Logger logger = Bukkit.getLogger();
 		}
 		
 		// Check if Configuration Header indicates current version, else update.
-		if (!config.get(0).contains("1.3.0")) {
+		if (!config.get(0).contains("1.3.0_1")) {
 			logger.info(PLUG_NAME + "Updating Configuration File!");
 		} else {
 			return; // Configuration is already up to date. There is no need to go further.
@@ -345,18 +334,6 @@ private static Logger logger = Bukkit.getLogger();
             
             writeBannedList(bannedList);
         }
-	
-	public static String getMySQLUsername() {
-		return mySQLuser;
-	}
-	
-	public static String getMySQLpassword() {
-		return mySQLpassword;
-	}
-	
-	public static String getMySQLdatabase() {
-		return mySQLdb;
-	}
 	
 	/***
 	 * Fetches Current Configuration from File for use in editing.
@@ -686,48 +663,6 @@ private static Logger logger = Bukkit.getLogger();
 				modulus = line.replace("ban-message:", "");
 				modulus = modulus.trim();
 				banMessage = modulus;
-				
-			// Are we using MySQL?
-			} else if (line.contains("use-mysql:")) {
-				modulus = line.replace("use-mysql:", "");
-				modulus = modulus.trim();
-				if (modulus.equalsIgnoreCase("true")) {
-					usingMySQL = true;
-				} else if (modulus.equalsIgnoreCase("false")){
-					usingMySQL = false;
-				} else {
-					logger.severe(PLUG_NAME + COE1 + "use-mysql" + COE2);
-				}
-			
-			// If yes, what is the DB address?
-			} else if (line.contains("database-address:") && usingMySQL) {
-				modulus = line.replace("database-address:", "");
-				modulus = modulus.trim();
-				if (!modulus.isEmpty()) {
-					mySQLdb = modulus;
-				} else {
-					logger.severe(PLUG_NAME + "No address given for MySQL Database!");
-				}
-				
-			// What is the username?
-			} else if (line.contains("user-name:") && usingMySQL) {
-				modulus = line.replace("user-name:", "");
-				modulus = modulus.trim();
-				if (!modulus.isEmpty()) {
-					mySQLuser = modulus;
-				} else {
-					logger.severe(PLUG_NAME + "No user name specified for MySQL access!");
-				}
-				
-			// What is the password?
-			} else if (line.contains("password:") && usingMySQL) {
-				modulus = line.replace("password:", "");
-				modulus = modulus.trim();
-				if (!modulus.isEmpty()) {
-					mySQLpassword = modulus;
-				} else {
-					logger.severe(PLUG_NAME + "No password given for MySQL Database!");
-				}
 			}
 		}
 	}
