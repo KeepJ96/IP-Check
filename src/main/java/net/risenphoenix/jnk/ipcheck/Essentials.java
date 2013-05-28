@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-import net.risenphoenix.jnk.ipcheck.Logging.ErrorLogger;
+import net.risenphoenix.jnk.ipcheck.logging.ErrorLogger;
 import org.bukkit.Bukkit;
 
 public class Essentials{

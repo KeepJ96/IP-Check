@@ -8,9 +8,6 @@ import org.bukkit.command.CommandSender;
 
 public class Report {
 	
-    private static final String PLUG_NAME = "[IP-Check] ";
-    private static final String NO_FIND = "The player or IP specified could not be found.";
-
     public void execute(CommandSender sender, String arg) {
         ArrayList<String> IPs; // For use with player check
         ArrayList<StringBuilder> SBs = new ArrayList<StringBuilder>(); // For use with player check
@@ -36,7 +33,7 @@ public class Report {
             IPs = IPcheck.backend.getIPs(arg); // Load list of IPs from backend
 
             if (IPs == null) {
-                sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + NO_FIND);
+                sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.NO_FIND);
                 return;
             }
             
@@ -68,7 +65,7 @@ public class Report {
             singleAlts = IPcheck.backend.getAlts(arg);
             
             if (singleAlts == null) {
-                sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + NO_FIND);
+                sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.NO_FIND);
                 return;
             }
         }
@@ -183,7 +180,7 @@ public class Report {
                     sender.sendMessage(ChatColor.RED + "ERROR: " + ChatColor.GOLD + "Player object returned was NULL");
             }
 
-            if (Configuration.isExemptPlayer(player.getName())) {
+            if (IPcheck.Configuration.isExemptPlayer(player.getName())) {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Exempt: " + ChatColor.GREEN + "True");
             } else {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Exempt: " + ChatColor.RED + "False");
@@ -197,7 +194,7 @@ public class Report {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "IP Banned: " + ChatColor.GREEN + "False");
             }
 
-            if (Configuration.isExemptIp(arg)) {
+            if (IPcheck.Configuration.isExemptIp(arg)) {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "IP Exempt: " + ChatColor.GREEN + "True");
             } else {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "IP Exempt: " + ChatColor.RED + "False");
@@ -209,7 +206,7 @@ public class Report {
                 if (player != null) {
                     if (player.isBanned()) {
                         sender.sendMessage("");
-                        sender.sendMessage(ChatColor.LIGHT_PURPLE + "Banned Reason: " + ChatColor.YELLOW + Configuration.getBannedReason(player.getName()));
+                        sender.sendMessage(ChatColor.LIGHT_PURPLE + "Banned Reason: " + ChatColor.YELLOW + IPcheck.Configuration.getBannedReason(player.getName()));
                     }
                 }
             }

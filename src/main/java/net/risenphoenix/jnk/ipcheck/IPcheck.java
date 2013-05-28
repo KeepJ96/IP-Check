@@ -1,10 +1,18 @@
 package net.risenphoenix.jnk.ipcheck;
 
+import net.risenphoenix.jnk.ipcheck.configuration.ConfigurationManager;
+import java.io.IOException;
+import net.risenphoenix.jnk.ipcheck.backend.flatfile.FlatFile;
+import net.risenphoenix.jnk.ipcheck.backend.Backend;
 import java.util.ArrayList;
-import net.risenphoenix.jnk.ipcheck.Listeners.PlayerJoinListener;
-import net.risenphoenix.jnk.ipcheck.Listeners.PlayerLoginListener;
-import net.risenphoenix.jnk.ipcheck.Logging.DateStamp;
-import net.risenphoenix.jnk.ipcheck.Logging.ErrorLogger;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.risenphoenix.jnk.ipcheck.backend.mysql.MySQL;
+import net.risenphoenix.jnk.ipcheck.listeners.PlayerJoinListener;
+import net.risenphoenix.jnk.ipcheck.listeners.PlayerLoginListener;
+import net.risenphoenix.jnk.ipcheck.logging.DateStamp;
+import net.risenphoenix.jnk.ipcheck.logging.ErrorLogger;
 import net.risenphoenix.jnk.ipcheck.commands.CmdAbout;
 import net.risenphoenix.jnk.ipcheck.commands.CmdBan;
 import net.risenphoenix.jnk.ipcheck.commands.CmdCheck;
@@ -33,24 +41,27 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-
+/**
+ * @version 1.3.0 
+ * @author Jacob Keep (Jnk1296)
+ */
 public class IPcheck extends JavaPlugin implements Listener{
-	
-    //================== IP-Check v1.3.0 | May 25, 2013 - JNK1296-PC | Author: Jacob Keep (Jnk1296) ==================//
-
-    //=================Root Command==================//
+    public static IPcheck Instance;	
+    //Root Command
     public static final String ROOT_COMMAND = "c";
-    public static final String VER_STRING = "IP-Check v1.3.0";
-    public static final String COMP_DATE = "May 26, 2013";
+    public static String VER_STRING;
+    public static Date COMP_DATE;
+    
+    public static ConfigurationManager Configuration;
 
-    //=============== Backend Manager ===============//
-    public static Backend backend = new FlatFile();
+    //Backend Manager
+    public static Backend backend;
 
-    //=============== Event Listeners ===============//
+    //Event Listeners
     public static PlayerLoginListener PLL = new PlayerLoginListener();
     public static PlayerJoinListener PJL = new PlayerJoinListener();
 
-    //================== Commands ==================//
+    //Commands
     public static ArrayList<IpcCommand> commands = new ArrayList<IpcCommand>();
     public static final IpcCommand check = new CmdCheck();
     public static final IpcCommand ban = new CmdBan();
@@ -69,30 +80,20 @@ public class IPcheck extends JavaPlugin implements Listener{
     public static final IpcCommand kick = new CmdKick();
     public static final IpcCommand sban = new CmdSBan();
 
-    //=============== Global Messages ===============//
-    public static final String PLUG_NAME = "[IP-Check] ";
-    public static final String BAN_LIST_READ_ERR = "Error occurred while attempting to read banned-ips.txt!";
-    public static final String PLAYER_FILE_READ_ERR = "Error occurred while attempting to read player file!";
-    public static final String NO_PERM_ERR = "You don't have permission to do that!";
-    public static final String NUM_ARGS_ERR = "Incorrect Number of Arguments.";
-    public static final String ILL_ARGS_ERR = "Illegal Argument(s) were passed into the command.";
-    public static final String NO_FIND = "The player specified could not be found.";
-    public static final String NO_RECENT = "You have not searched a player yet.";
-    public static final String PLAYER_EXEMPT_SUC = "Player added to exemption list!";
-    public static final String IP_EXEMPT_SUC = "IP-Address added to exemption list!";
-    public static final String EXEMPTION_FAIL = "Sorry. :( Something went wrong. The exemption could not be added.";
-    public static final String TOGGLE_SECURE = "Secure-Mode set to: ";
-    public static final String TOGGLE_NOTIFY = "Notify-On-Login set to: ";
-    public static final String TOGGLE_DETAIL = "Descriptive-Notify set to: ";
-    public static final String TOGGLE_ERR = "An error occurred while attempting to set state of toggle.";
-    public static final String EXEMPTION_DEL_SUC = "Exemption successfully removed!";
-    public static final String EXEMPTION_DEL_ERR = "Exemption specified does not exist.";
-    public static final String ERROR_LOG_RMDR = "An error occurred! A log summary of this error has been saved to IP-Check's directory under ''Error_Reports''";
-
-    //================== Methods ==================//
+    //Methods
     // Called when plugin is enabled
     @Override
     public void onEnable() { 
+        this.saveDefaultConfig(); // Create config if there is none
+        Instance=this;
+        Configuration = new ConfigurationManager(this); 
+        
+        VER_STRING = this.getDescription().getVersion(); // Getting Version from plugin.yml 
+        try {
+            COMP_DATE = new Date(IPcheck.class.getResource("IPcheck.class").openConnection().getLastModified()); //Getting compiletime from class file
+        } catch (IOException ex) {
+            Logger.getLogger(IPcheck.class.getName()).log(Level.SEVERE, null, ex);
+        }
         getServer().getPluginManager().registerEvents(this, this); // Register the Player Login Listener
 
         DateStamp ds = new DateStamp();
@@ -101,10 +102,17 @@ public class IPcheck extends JavaPlugin implements Listener{
         if (random != null) {
             Bukkit.getLogger().info(random);
         } else {
-            Bukkit.getLogger().info(PLUG_NAME + Functions.getRandomMessage()); // A Nice random Message
+            Bukkit.getLogger().info(Language.PLUG_NAME + Functions.getRandomMessage()); // A Nice random Message
         }
 
-        Configuration.onLoad();      // Load the Configuration File
+        if(getConfig().getString("backend").toLowerCase()=="mysql"){
+            backend = new MySQL();
+            Bukkit.getLogger().info(Language.PLUG_NAME + "Loading backend MySql...");
+        }
+        else{   
+            backend = new FlatFile();
+            Bukkit.getLogger().info(Language.PLUG_NAME + "Loading backend FlatFile...");
+        }
         backend.onLoad();            // Initialize Backend
         registerCommands();          // Register Commands
     }
@@ -113,6 +121,9 @@ public class IPcheck extends JavaPlugin implements Listener{
     @Override
     public void onDisable() {
         backend.onDisable();
+    }
+    public static JavaPlugin getInstance(){
+        return Instance;
     }
 
     // Registers all existing commands with the global arraylist
@@ -137,7 +148,7 @@ public class IPcheck extends JavaPlugin implements Listener{
         commands.add(sban);                //SBan Command                      || 15
         //=======================================================================================//
 
-        Bukkit.getLogger().info(PLUG_NAME + "Registered " + commands.size() + " commands.");
+        Bukkit.getLogger().info(Language.PLUG_NAME + "Registered " + commands.size() + " commands.");
     }
 
     // Event Handler for PlayerLoginEvents
@@ -160,12 +171,12 @@ public class IPcheck extends JavaPlugin implements Listener{
                 int commandID = ParseCommand.execute(args);
 
                 if (commandID == -1) {
-                    sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + "An invalid command was specified.");
+                    sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + "An invalid command was specified.");
                     return true;
                 }
 
                 if (commandID == -2) {
-                    sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + "An invalid sub-command or no sub-command was specified.");
+                    sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + "An invalid sub-command or no sub-command was specified.");
                     return true;
                 }
 
@@ -181,7 +192,7 @@ public class IPcheck extends JavaPlugin implements Listener{
                         } catch (Exception e) {
                             ErrorLogger EL = new ErrorLogger();
                             EL.execute(e);
-                            sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + ERROR_LOG_RMDR);
+                            sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.ERROR_LOG_RMDR);
                         } finally {
                             return true;
                         }
@@ -189,7 +200,7 @@ public class IPcheck extends JavaPlugin implements Listener{
                 }
 
             } else {
-                sender.sendMessage(NO_PERM_ERR);
+                sender.sendMessage(Language.NO_PERM_ERR);
                 return true;
             }
         }

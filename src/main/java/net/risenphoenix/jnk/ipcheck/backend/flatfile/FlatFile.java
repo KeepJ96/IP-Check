@@ -1,5 +1,6 @@
-package net.risenphoenix.jnk.ipcheck;
+package net.risenphoenix.jnk.ipcheck.backend.flatfile;
 
+import net.risenphoenix.jnk.ipcheck.backend.Backend;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -8,7 +9,8 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-import net.risenphoenix.jnk.ipcheck.Logging.ErrorLogger;
+import net.risenphoenix.jnk.ipcheck.Language;
+import net.risenphoenix.jnk.ipcheck.logging.ErrorLogger;
 import org.bukkit.Bukkit;
 
 public class FlatFile implements Backend{
@@ -16,15 +18,6 @@ public class FlatFile implements Backend{
     // BACKEND MANAGER FOR FLAT-FILE - Last Updated May 25, 2013
     private static final Logger logger = Bukkit.getLogger();
     private static String registrar = "Flat-File Backend Manager for IP-Check ver 3.0";
-
-    // Messages
-    private static final String PLUG_NAME = "[IP-Check] ";
-    private static final String INIT_BACKEND = "Initializing Flat-File Backend Manager...";
-    private static final String DEINIT_BACKEND = "Shutting down Backend Manager...";
-    private static final String BAN_LIST_READ_ERR = "Error occurred while attempting to read banned-ips.txt!";
-    private static final String FLAT_FILE_WRITE_ERR = "An error occurred while attempting to write to a database document.";
-    private static final String FLAT_FILE_READ_ERR = "An error occurred while attempting to read a database document.";
-    private static final String FLAT_FILE_GEN_ERR = "An error occurred while attempting to generate a new database document!";
 
     // Files
     private static File bannedIPs = new File("banned-ips.txt");
@@ -36,7 +29,7 @@ public class FlatFile implements Backend{
 
     @Override
     public void onLoad() {
-        generateFile();
+        initializeBackend();
     }
 
     @Override
@@ -45,7 +38,7 @@ public class FlatFile implements Backend{
     }
 
     @Override
-    public void generateFile() {
+    public void initializeBackend() {
         if (!dirRoot.exists()) {
             dirRoot.mkdir();
         }
@@ -124,7 +117,7 @@ public class FlatFile implements Backend{
             } catch (Exception e) {
                 ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
                 EL.execute(e);
-                logger.severe(FLAT_FILE_GEN_ERR);
+                logger.severe(Language.FLAT_FILE_GEN_ERR);
                 
             } finally {
                 try {
@@ -160,7 +153,7 @@ public class FlatFile implements Backend{
             } catch (Exception e) {
                 ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
                 EL.execute(e);
-                logger.severe(FLAT_FILE_READ_ERR);
+                logger.severe(Language.FLAT_FILE_READ_ERR);
                 list = null; // If we encountered an error reading the file, set the memory location to NULL so that we can handle the error.
 
             } finally {
@@ -203,7 +196,7 @@ public class FlatFile implements Backend{
                 } catch (Exception e) {
                     ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
                     EL.execute(e);
-                    logger.severe(FLAT_FILE_WRITE_ERR);
+                    logger.severe(Language.FLAT_FILE_WRITE_ERR);
 
                 } finally {
                     try {
@@ -234,7 +227,7 @@ public class FlatFile implements Backend{
             } catch (Exception e) {
                 ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
                 EL.execute(e);
-                logger.severe(FLAT_FILE_GEN_ERR);
+                logger.severe(Language.FLAT_FILE_GEN_ERR);
                 
             } finally {
                 try {
@@ -269,7 +262,7 @@ public class FlatFile implements Backend{
             } catch (Exception e) {
                 ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
                 EL.execute(e);
-                logger.severe(FLAT_FILE_READ_ERR);
+                logger.severe(Language.FLAT_FILE_READ_ERR);
                 list = null; // If we encountered an error reading the file, set the memory location to NULL so that we can handle the error.
 
             } finally {
@@ -325,7 +318,7 @@ public class FlatFile implements Backend{
             } catch (Exception e) {
                 ErrorLogger EL = new ErrorLogger(); // Catch the exception and pass it to the error logger
                 EL.execute(e);
-                logger.severe(FLAT_FILE_WRITE_ERR);
+                logger.severe(Language.FLAT_FILE_WRITE_ERR);
                 
             } finally {
                 try {
@@ -376,7 +369,7 @@ public class FlatFile implements Backend{
         } catch (Exception e) {
             ErrorLogger EL = new ErrorLogger();
             EL.execute(e);
-            logger.severe(BAN_LIST_READ_ERR);
+            logger.severe(Language.BAN_LIST_READ_ERR);
         } finally {
             try {
                 if (br != null) {

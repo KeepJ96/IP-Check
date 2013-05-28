@@ -92,12 +92,12 @@ public class Functions {
 	}
 	
 	public static String getSeasonalMessage(String date) {
-		if (date.equals("05-05")) return IPcheck.PLUG_NAME + "So who here likes Mayonase?";
-		if (date.equals("04-01")) return IPcheck.PLUG_NAME + "Your current subscription expires today! Renew immediately! The current subscription price is: $19.95";
-		if (date.equals("04-02")) return IPcheck.PLUG_NAME + "April fools! Of course this plugin is free! :)";
-		if (date.equals("04-12")) return IPcheck.PLUG_NAME + "Happy Birthday Jnk!";
-		if (date.equals("12-25")) return IPcheck.PLUG_NAME + "Merry Christmas from IP-Check. =D";
-		if (date.equals("02-14")) return IPcheck.PLUG_NAME + "Won't you be my Valentine? <3";
+		if (date.equals("05-05")) return Language.PLUG_NAME + "So who here likes Mayonase?";
+		if (date.equals("04-01")) return Language.PLUG_NAME + "Your current subscription expires today! Renew immediately! The current subscription price is: $19.95";
+		if (date.equals("04-02")) return Language.PLUG_NAME + "April fools! Of course this plugin is free! :)";
+		if (date.equals("04-12")) return Language.PLUG_NAME + "Happy Birthday Jnk!";
+		if (date.equals("12-25")) return Language.PLUG_NAME + "Merry Christmas from IP-Check. =D";
+		if (date.equals("02-14")) return Language.PLUG_NAME + "Won't you be my Valentine? <3";
 		
 		return null;
 	}

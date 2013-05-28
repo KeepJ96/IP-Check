@@ -1,9 +1,8 @@
-package net.risenphoenix.jnk.ipcheck;
+package net.risenphoenix.jnk.ipcheck.backend;
 
 import java.io.File;
 import java.util.ArrayList;
 
-import org.bukkit.OfflinePlayer;
 
 /***
  * Main Interface for backend management. Contains all method declarations required by any and all Backend Managers for IP-Check.
@@ -41,7 +40,7 @@ public interface Backend {
 	/***
 	 * Generates a blank save file on disk for use with the Backend Manager.
 	 */
-	public void generateFile();
+	public void initializeBackend();
 	
 	/***
 	 * Scans the database to return a list of all accounts associated with the IP Specified
