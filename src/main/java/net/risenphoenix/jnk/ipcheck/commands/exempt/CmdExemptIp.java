@@ -4,8 +4,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 
-import net.risenphoenix.jnk.ipcheck.Configuration;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
+import net.risenphoenix.jnk.ipcheck.Language;
 import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
 
 public class CmdExemptIp implements IpcCommand{
@@ -17,19 +17,19 @@ public class CmdExemptIp implements IpcCommand{
 				String ip_filter = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
 				
 				if (args[2].toLowerCase().matches(ip_filter.toLowerCase())) {
-					if (Configuration.addExemption(0, args[2])) {
-						sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + IPcheck.IP_EXEMPT_SUC);
+					if (IPcheck.Configuration.addExemption(0, args[2])) {
+						sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.IP_EXEMPT_SUC);
 					} else {
-						sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + IPcheck.EXEMPTION_FAIL);
+						sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.EXEMPTION_FAIL);
 					}
 				} else {
-					sender.sendMessage(IPcheck.ILL_ARGS_ERR);
+					sender.sendMessage(Language.ILL_ARGS_ERR);
 				}
 			} else {
-				sender.sendMessage(IPcheck.NUM_ARGS_ERR);
+				sender.sendMessage(Language.NUM_ARGS_ERR);
 			}
 		} else {
-			sender.sendMessage(IPcheck.NO_PERM_ERR);
+			sender.sendMessage(Language.NO_PERM_ERR);
 		}
 	}
 

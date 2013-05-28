@@ -3,8 +3,8 @@ package net.risenphoenix.jnk.ipcheck.commands;
 import java.io.File;
 import java.util.ArrayList;
 import net.risenphoenix.jnk.ipcheck.Essentials;
-import net.risenphoenix.jnk.ipcheck.FlatFile;
-import net.risenphoenix.jnk.ipcheck.IPcheck;
+import net.risenphoenix.jnk.ipcheck.Language;
+import net.risenphoenix.jnk.ipcheck.backend.flatfile.FlatFile;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -20,7 +20,7 @@ public class CmdConvert implements IpcCommand{
             if (args[1].equals("-e")) {
                 convertEssentials = true;
             } else {
-                sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + "Invalid parameter passed!");
+                sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + "Invalid parameter passed!");
                 return;
             }
         }
@@ -35,7 +35,7 @@ public class CmdConvert implements IpcCommand{
         }
         
         if (playerInfo == null) {
-            sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + "Conversion failed!");
+            sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + "Conversion failed!");
             return; // Return because there were no files found to convert from.
         } else {
             for (String s:playerInfo) {
@@ -61,7 +61,7 @@ public class CmdConvert implements IpcCommand{
         
         long endTime = System.currentTimeMillis();
         
-        sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + "Conversion complete! Time taken: " + ((endTime - startTime) / 1000) + " seconds. " +
+        sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + "Conversion complete! Time taken: " + ((endTime - startTime) / 1000) + " seconds. " +
             "Total number of entries converted: " + playerInfo.size() + ".");
     }
     

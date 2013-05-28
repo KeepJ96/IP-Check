@@ -2,6 +2,7 @@ package net.risenphoenix.jnk.ipcheck.commands;
 
 import net.risenphoenix.jnk.ipcheck.ActionBan;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
+import net.risenphoenix.jnk.ipcheck.Language;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -37,12 +38,12 @@ public class CmdKick implements IpcCommand{
                                     total = ab.kickPlayers(IPcheck.backend.getAlts(IPcheck.backend.getLastKnownIP(args[1])), sender, IPcheck.backend.getLastKnownIP(args[1]), sb.toString());
 				}
                                 
-                               sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + "Kicked " + total + " players.");
+                               sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + "Kicked " + total + " players.");
 			} else {
-				sender.sendMessage(IPcheck.NUM_ARGS_ERR);
+				sender.sendMessage(Language.NUM_ARGS_ERR);
 			}
 		} else {
-			sender.sendMessage(IPcheck.NO_PERM_ERR);
+			sender.sendMessage(Language.NO_PERM_ERR);
 		}
     }
 

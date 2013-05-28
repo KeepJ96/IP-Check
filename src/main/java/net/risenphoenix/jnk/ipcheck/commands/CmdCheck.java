@@ -1,6 +1,5 @@
 package net.risenphoenix.jnk.ipcheck.commands;
 
-import net.risenphoenix.jnk.ipcheck.IPcheck;
 import net.risenphoenix.jnk.ipcheck.Report;
 
 import org.bukkit.command.CommandSender;

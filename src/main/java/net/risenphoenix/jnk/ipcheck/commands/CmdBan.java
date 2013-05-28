@@ -2,6 +2,7 @@ package net.risenphoenix.jnk.ipcheck.commands;
 
 import net.risenphoenix.jnk.ipcheck.ActionBan;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
+import net.risenphoenix.jnk.ipcheck.Language;
 import net.risenphoenix.jnk.ipcheck.Report;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -36,10 +37,10 @@ public class CmdBan implements IpcCommand{
 					ab.banPlayers(IPcheck.backend.getAlts(IPcheck.backend.getLastKnownIP(args[1])), sender, IPcheck.backend.getLastKnownIP(args[1]), sb.toString(), true);
 				}
 			} else {
-				sender.sendMessage(IPcheck.NUM_ARGS_ERR);
+				sender.sendMessage(Language.NUM_ARGS_ERR);
 			}
 		} else {
-			sender.sendMessage(IPcheck.NO_PERM_ERR);
+			sender.sendMessage(Language.NO_PERM_ERR);
 		}
 	}
 

@@ -1,13 +1,14 @@
 package net.risenphoenix.jnk.ipcheck.commands.exempt.list;
 
 import java.util.ArrayList;
+import net.risenphoenix.jnk.ipcheck.IPcheck;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 
-import net.risenphoenix.jnk.ipcheck.Configuration;
-import net.risenphoenix.jnk.ipcheck.IPcheck;
+import net.risenphoenix.jnk.ipcheck.configuration.ConfigurationManager;
+import net.risenphoenix.jnk.ipcheck.Language;
 import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
 
 public class CmdExmtListAll implements IpcCommand{
@@ -15,8 +16,8 @@ public class CmdExmtListAll implements IpcCommand{
 	@Override
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
 		if (sender.hasPermission("ipcheck.list") || sender.isOp()) {
-			ArrayList<String> list = Configuration.getPlayerExemptList();
-			ArrayList<String> list2 = Configuration.getIpExemptList();
+			ArrayList<String> list = IPcheck.Configuration.getPlayerExemptList();
+			ArrayList<String> list2 = IPcheck.Configuration.getIpExemptList();
 			
 			StringBuilder sb1 = new StringBuilder();
 			StringBuilder sb2 = new StringBuilder();
@@ -35,14 +36,14 @@ public class CmdExmtListAll implements IpcCommand{
 				}
 				sender.sendMessage(sb2.toString());
 			} else {
-				sender.sendMessage(IPcheck.NO_PERM_ERR);
+				sender.sendMessage(Language.NO_PERM_ERR);
 			}
 			
 			sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");
 			sender.sendMessage(ChatColor.YELLOW + "Total exemptions on file: " + ChatColor.LIGHT_PURPLE + (list.size() + list2.size()));
 			sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");
 		} else {
-			sender.sendMessage(IPcheck.NO_PERM_ERR);
+			sender.sendMessage(Language.NO_PERM_ERR);
 		}
 	}
 
