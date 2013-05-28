@@ -1,0 +1,39 @@
+# IP-Check -- Author: Jnk1296, FR34KYN01535 
+# For more information visit http://dev.bukkit.org/server-mods/ip-check-jnk/
+
+# Define backend (flatfile or mysql)
+backend: flatfile
+
+# Login details if backend is mysql
+dbUsername: "root"
+dbPassword: ""
+dbHostname: "127.0.0.1"
+dbName: "minecraft"
+dbPort: 3306
+
+#Should use Login Checking?
+notify-on-login: true
+
+#Should show descriptive notifications?
+descriptive-notice: false
+
+# Should use Secure Mode?
+secure-mode: false
+
+# Set a minimum number of accounts to have before being notified
+min-account-notify-threshold: 1
+
+# Set a minimum number of accounts to have before being kicked
+secure-kick-threshold: 1
+
+#Set Kick Message
+secure-kick-message: "Multiple Accounts Not Permitted."
+
+#Set Ban Message
+ban-message: "Banned for Multi-Accounting."
+
+#Set Logging Time/Date Stamp Format
+logging-date-stamp-format: "EEEE, MMMM dd, yyyy 'at' hh:mm:ss a, ZZZ"
+
+#MC Hammer!
+config-version: 1
