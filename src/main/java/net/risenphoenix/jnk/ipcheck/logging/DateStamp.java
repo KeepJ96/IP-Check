@@ -1,15 +1,15 @@
-package net.risenphoenix.jnk.ipcheck.Logging;
+package net.risenphoenix.jnk.ipcheck.logging;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import net.risenphoenix.jnk.ipcheck.Configuration;
+import net.risenphoenix.jnk.ipcheck.configuration.ConfigurationManager;
 
 public class DateStamp {
 
 	public String getDateStamp() {
-		DateFormat dateFormat = new SimpleDateFormat(Configuration.dateStampFormat);
+		DateFormat dateFormat = new SimpleDateFormat(ConfigurationManager.dateStampFormat);
 
        //get current date time with Calendar()
        Calendar cal = Calendar.getInstance();

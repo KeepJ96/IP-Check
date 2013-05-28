@@ -1,7 +1,6 @@
-package net.risenphoenix.jnk.ipcheck.Listeners;
+package net.risenphoenix.jnk.ipcheck.listeners;
 
 import java.net.InetAddress;
-import net.risenphoenix.jnk.ipcheck.Configuration;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -32,7 +31,7 @@ public class PlayerLoginListener {
         IPcheck.backend.log(player.getName(), ip.toString()); // Log the Playername and IP-Address
         shouldCheck = true;
 
-        if (Configuration.secureMode) {
+        if (IPcheck.Configuration.secureMode) {
             shouldCheck = lc.secureCheck(ip.toString(), e);
         }
     }

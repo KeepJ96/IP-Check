@@ -1,6 +1,5 @@
-package net.risenphoenix.jnk.ipcheck.Listeners;
+package net.risenphoenix.jnk.ipcheck.listeners;
 
-import net.risenphoenix.jnk.ipcheck.Configuration;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
 import net.risenphoenix.jnk.ipcheck.LoginReport;
 import org.bukkit.entity.Player;
@@ -16,7 +15,7 @@ public class PlayerJoinListener {
 
         // Do not perform check on operators or players with the "ipcheck.getnotify permission.
         if (!player.isOp() && !player.hasPermission("ipcheck.getnotify")) {
-            if (Configuration.notifyLogin && PLL.shouldCheck) {
+            if (IPcheck.Configuration.notifyLogin && PLL.shouldCheck) {
                 int accounts = (IPcheck.backend.getAlts(PLL.ipToCheck)).size();
                 Player playerCheck = e.getPlayer();
                 lr.execute(PLL.ipToCheck, playerCheck, accounts);

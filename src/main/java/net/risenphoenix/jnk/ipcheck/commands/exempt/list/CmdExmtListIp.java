@@ -1,13 +1,13 @@
 package net.risenphoenix.jnk.ipcheck.commands.exempt.list;
 
 import java.util.ArrayList;
+import net.risenphoenix.jnk.ipcheck.IPcheck;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 
-import net.risenphoenix.jnk.ipcheck.Configuration;
-import net.risenphoenix.jnk.ipcheck.IPcheck;
+import net.risenphoenix.jnk.ipcheck.Language;
 import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
 
 public class CmdExmtListIp implements IpcCommand{
@@ -15,7 +15,7 @@ public class CmdExmtListIp implements IpcCommand{
 	@Override
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
 		if ((sender.hasPermission("ipcheck.list") && sender.hasPermission("ipcheck.showip")) || sender.isOp()) {
-			ArrayList<String> list = Configuration.getIpExemptList();
+			ArrayList<String> list = IPcheck.Configuration.getIpExemptList();
 			StringBuilder sb = new StringBuilder();
 			
 			sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");
@@ -30,7 +30,7 @@ public class CmdExmtListIp implements IpcCommand{
 			sender.sendMessage(ChatColor.YELLOW + "Total players in exemption list: " + ChatColor.LIGHT_PURPLE + list.size());
 			sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");
 		} else {
-			sender.sendMessage(IPcheck.NO_PERM_ERR);
+			sender.sendMessage(Language.NO_PERM_ERR);
 		}
 	}
 

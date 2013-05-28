@@ -1,4 +1,4 @@
-package net.risenphoenix.jnk.ipcheck.Logging;
+package net.risenphoenix.jnk.ipcheck.logging;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.util.logging.Logger;
 import net.risenphoenix.jnk.ipcheck.Functions;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
+import net.risenphoenix.jnk.ipcheck.Language;
 import org.bukkit.Bukkit;
 
 public class ErrorLogger {
@@ -51,13 +52,13 @@ public class ErrorLogger {
             f = new FileWriter(path, true);
             f.write(message);
         } catch (Exception ee) {
-            logger.severe(IPcheck.PLUG_NAME + ee.getMessage());
+            logger.severe(Language.PLUG_NAME + ee.getMessage());
         } finally {
             if (f != null) {
                 try {
                     f.close();
                 } catch (Exception eee) {
-                    logger.severe(IPcheck.PLUG_NAME + eee.getMessage());
+                    logger.severe(Language.PLUG_NAME + eee.getMessage());
                 }
             }
         }

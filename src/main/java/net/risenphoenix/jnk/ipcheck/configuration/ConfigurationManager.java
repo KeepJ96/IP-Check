@@ -1,4 +1,4 @@
-package net.risenphoenix.jnk.ipcheck;
+package net.risenphoenix.jnk.ipcheck.configuration;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -8,69 +8,45 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.logging.Logger;
+import net.risenphoenix.jnk.ipcheck.Language;
 
-import net.risenphoenix.jnk.ipcheck.Logging.ErrorLogger;
+import net.risenphoenix.jnk.ipcheck.logging.ErrorLogger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public class Configuration {
+public class ConfigurationManager {
 	
-private static Logger logger = Bukkit.getLogger();
-	
-	private static final boolean DEBUG = false;
-
-	private static final String PLUG_NAME = "[IP-Check] ";
-
-	// File paths
-        private static File pluginPath = new File("plugins");
-	private static File dir = new File("plugins/IP-check"); // Plugin Directory
- 	private static File path = new File("plugins/IP-check/Config.txt"); // Configuration File
- 	private static File exempt = new File("plugins/IP-check/exempt.lst"); // Exemption List
-        private static File banned = new File("plugins/IP-check/banned.lst"); // Banned List
- 	
- 	private static String confWriteErr = "Failed to generate Configuration File!";
- 	private static String confReadErr = "Failed to read Configuration File!";
- 	private static String exmpWriteErr = "Failed to write to Exemption File!";
- 	private static String exmpReadErr = "Failed to read Exemption File!";
- 	private static String exmpGenErr = "Failed to generate Exemption File!";
-        private static String banGenErr = "Failed to generate Banned File!";
-        private static String banWriteErr = "Failed to write to Banned File!";
-        private static String banReadErr = "Failed to read Banned File!";
- 	
- 	private static String COE1 = "Failed to parse configuration option: ";
- 	private static String COE2 = ". Is the configuration file formatted correctly?";
+        private static final Logger logger = Bukkit.getLogger();
+        private JavaPlugin plugin;
+	private final boolean DEBUG = false;
+        
+        private File pluginPath = new File("plugins");
+ 	private File exempt = new File("plugins/IP-check/exempt.lst"); // Exemption List
+        private File banned = new File("plugins/IP-check/banned.lst"); // Banned List
  	
  	public static String dateStampFormat = "EEEE, dd MMMM, yyyy 'at' hh:mm:ss a";
  	
- 	// 0 = Essentials
- 	// 1 = FlatFile
- 	public static int backend = 0;
+ 	public String backend = "flatfile";
+        public String dbUsername="root";
+        public String dbPassword="";
+        public String dbName="minecraft";
+        public String dbHostname="127.0.0.1";
+        public int dbPort=3306;
  	
- 	public static boolean secureMode = false;
- 	public static boolean notifyLogin = true;
- 	public static boolean detailNotify = false;
+        
+        
+ 	public boolean secureMode = false;
+ 	public boolean notifyLogin = true;
+ 	public boolean detailNotify = false;
  	
- 	public static int notifyThreshold = 1;
- 	public static int secureThreshold = 1;
+ 	public int notifyThreshold = 1;
+ 	public int secureThreshold = 1;
  	
- 	public static String secureKickMsg = "Multiple Accounts Not Permitted.";
- 	public static String banMessage = "Banned for Multi-Accounting.";
+ 	public String secureKickMsg = "Multiple Accounts Not Permitted.";
+ 	public String banMessage = "Banned for Multi-Accounting.";
  	
- 	private static String defaultConfig =
- 			"# IP-Check 1.3.0_1 Configuration / Exemption List\r\n" +
- 			"===============================\r\n" +
- 			"Configuration Options\r\n" +
- 			"===============================\r\n" +	
- 			"notify-on-login: true\r\n" +
- 			"descriptive-notice: false\r\n" +
- 			"secure-mode: false\r\n" +
- 			"min-account-notify-threshold: 1\r\n" +
- 			"secure-kick-threshold: 1\r\n" +
- 			"secure-kick-message: Multiple Accounts Not Permitted.\r\n" +
- 			"ban-message: Banned for Multi-Accounting.\r\n" +
- 			"logging-date-stamp-format: EEEE, MMMM dd, yyyy 'at' hh:mm:ss a, ZZZ\r\n";
-
- 	private static String defaultExemption =
+ 	private String defaultExemption =
  			"===============================\r\n" +
  			"Exemptions: IP\r\n" +
  			"===============================\r\n" +
@@ -79,148 +55,49 @@ private static Logger logger = Bukkit.getLogger();
  			"===============================\r\n" +
  			"===============================\r\n";
  	
- 	public static void onLoad() {
+        public ConfigurationManager(JavaPlugin plugin){
+                this.plugin=plugin;
+                initialize();
+        }
+        public void initialize(){
+                plugin.saveConfig();
+                plugin.reloadConfig();
+                createConfiguration();
                 createDefaultDirectory();
- 		defaultConfiguration(); // Generate Default Configuration if one does not exist.
  		defaultExemptionList();
                 createDefaultStorage();
- 		parseConfigSettings(getConfiguration()); // Load and parse configuration.
- 		checkVersion(); // Update Configuration
- 	}
+        }
+        
+        public void createConfiguration(){
+            
+        
+            dbUsername = plugin.getConfig().getString("dbUsername");
+            dbPassword = plugin.getConfig().getString("dbPassword");
+            dbName = plugin.getConfig().getString("dbName");
+            dbHostname = plugin.getConfig().getString("dbHostname");
+            dbPort = plugin.getConfig().getInt("dbPort");
+        
+            backend = plugin.getConfig().getString("backend");
+            notifyLogin = plugin.getConfig().getBoolean("notify-on-login");
+            detailNotify = plugin.getConfig().getBoolean("descriptive-notice");
+            secureMode = plugin.getConfig().getBoolean("secure-mode");
+            dateStampFormat = plugin.getConfig().getString("logging-date-stamp-format");
+            notifyThreshold = plugin.getConfig().getInt("min-account-notify-threshold");
+            if (notifyThreshold < 1) {
+                    logger.warning(Language.PLUG_NAME + "Value of Configuration option 'min-account-notify-threshold' was lower than the minumum limit! 'min-account-notify-threshold' has been set to the default value (1).");
+                    notifyThreshold = 1;
+            }
+            secureThreshold = plugin.getConfig().getInt("secure-kick-threshold");
+            if (secureThreshold < 1) {
+                    logger.warning(Language.PLUG_NAME + "Value of Configuration option 'secure-kick-threshold' was lower than the minumum limit! 'secure-kick-threshold' has been set to the default value (1).");
+                    secureThreshold = 1;
+            }
+            secureKickMsg = plugin.getConfig().getString("secure-kick-message");
+            banMessage = plugin.getConfig().getString("ban-message");
+            plugin.saveConfig();
+        }
  	
- 	public static void checkVersion() {
- 		ArrayList<String> config = new ArrayList<String>();
-		BufferedReader br = null;
- 		
-		// Load Config from file
-		try {
-			FileInputStream fstream = new FileInputStream(path);
-			DataInputStream in = new DataInputStream(fstream);
-			br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
-			
-			while ((strLine = br.readLine()) != null) {
-				config.add(strLine);
-			}
-			
-		} catch (Exception e) {
-			ErrorLogger EL = new ErrorLogger();
-			EL.execute(e);
-			logger.severe(PLUG_NAME + confReadErr);
-			logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
-		} finally {
-			try {
-				if (br != null) {
-					br.close();
-				}
-			} catch (Exception e) {
-				ErrorLogger EL = new ErrorLogger();
-				EL.execute(e);
-				logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
-			}
-		}
-		
-		// Determine if the exemption sub-section of the configuration file exists, and if so, remove it and save it to a new file.
-		if (config.contains("Exemptions: IP") || config.contains("Exemptions: Player_Name")) {
-			ArrayList<String> exemptSplit = new ArrayList<String>();
-			int lineCount = 0;
-			
-			// Find where in the configuration file the exemption section is
-			while(!config.get(lineCount).equalsIgnoreCase("Exemptions: IP") && !config.get(lineCount).equalsIgnoreCase("Exemptions: Player_Name")) {
-				lineCount++;
-			}
-			
-			// Backup one line to encompass the "====" header.
-			lineCount -= 1;
-			
-			// Add the exemption block to the new exemptSplit list
-			while(lineCount < config.size()) {
-				exemptSplit.add(config.get(lineCount));
-				lineCount++;
-			}
-			
-			writeExemptionList(exemptSplit);
-		}
-		
-		// Check if Configuration Header indicates current version, else update.
-		if (!config.get(0).contains("1.3.0_1")) {
-			logger.info(PLUG_NAME + "Updating Configuration File!");
-		} else {
-			return; // Configuration is already up to date. There is no need to go further.
-		}
-		
-		ArrayList<String> currentConfiguration = getConfiguration();
-		ArrayList<String> newConfig = new ArrayList<String>(); // Contains the updated configuration
-		String[] blankConfiguration = defaultConfig.split("\r\n");
-		
-		// Convert blankConfiguration to arrayList
-		for(int i = 0; i < blankConfiguration.length; i++) {
-			newConfig.add(blankConfiguration[i]);
-		}
-		
-		// Create a new Configuration file with the settings of the old configuration.
-		for (int i = 4; i < newConfig.size(); i++) {
-			StringBuilder sb = new StringBuilder();
-			int charCount = 0;
-			
-			// Get Option Text
-			while(newConfig.get(i).charAt(charCount) != ':') {
-				sb.append(newConfig.get(i).charAt(charCount));
-				charCount++;
-				
-				// To prevent outOfBounds exception
-				if (charCount >= newConfig.get(i).length()) {
-					break;
-				}
-			}
-			
-			// Scan for option in current configuration, and if it's found, set the corresponding option in new config.
-			for(String s:currentConfiguration) {
-				if (s.contains(sb.toString())) {
-					newConfig.set(i, s);
-					break;
-				}
-			}
-		}
-		
-		if (DEBUG) {
-			logger.warning(PLUG_NAME + "DEBUG MODE IS ENABLED! IF YOU SEE THIS MESSAGE, PLEASE ALERT THE DEVELOPER.");
-			logger.warning(PLUG_NAME + "DISPLAYING MODIFIED CONFIGURATION. THIS CONFIGURATION WILL NOT BE SAVED TO FILE.");
-			logger.info("");
-			for(String s:newConfig) {
-				logger.info(PLUG_NAME + s);
-			}
-			logger.info("");
-		}
-		
-		if (!DEBUG) writeConfiguration(newConfig);
- 	}
- 	
- 	// Generate Default Configuration is one is needed.
-	public static void defaultConfiguration() {
-		FileWriter f = null;
-	    
-	    try {
-	    	// If IP-Check folder does not exist, create it.
-	    	if (!dir.exists()) dir.mkdir();
-	        
-	    	// If configuration file does not exist, create it.
-	        if (!path.exists()) {
-	        	f = new FileWriter(path, true);
-		        
-		        f.write(defaultConfig);
-		        f.close();
-	        }
-
-	    } catch (Exception e) {
-	    	ErrorLogger EL = new ErrorLogger();
-			EL.execute(e);
-	    	logger.info(PLUG_NAME + confWriteErr);
-	    	logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
-	    }
-	}
-	
-	public static void defaultExemptionList() {
+	public void defaultExemptionList() {
 		FileWriter f = null;
 	    
 	    try {
@@ -234,7 +111,7 @@ private static Logger logger = Bukkit.getLogger();
 	    } catch (Exception e) {
 	    	ErrorLogger EL = new ErrorLogger();
 			EL.execute(e);
-	    	logger.info(exmpGenErr);
+	    	logger.info( Language.exmpGenErr);
 	    } finally {
 	    	try {
 	    		if (f != null) {
@@ -243,12 +120,12 @@ private static Logger logger = Bukkit.getLogger();
     		} catch (Exception e) {
     			ErrorLogger EL = new ErrorLogger();
     			EL.execute(e);
-    			logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+    			logger.severe(Language.PLUG_NAME + Language.ERROR_LOG_RMDR);
     		}
 	    }
 	}
         
-        public static void createDefaultStorage() {
+        public void createDefaultStorage() {
             FileWriter f = null;
 
             try {
@@ -262,7 +139,7 @@ private static Logger logger = Bukkit.getLogger();
             } catch (Exception e) {
                 ErrorLogger EL = new ErrorLogger();
                         EL.execute(e);
-                logger.info(banGenErr);
+                logger.info(Language.banGenErr);
             } finally {
                 try {
                         if (f != null) {
@@ -271,12 +148,12 @@ private static Logger logger = Bukkit.getLogger();
                 } catch (Exception e) {
                         ErrorLogger EL = new ErrorLogger();
                         EL.execute(e);
-                        logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+                        logger.severe(Language.PLUG_NAME + Language.ERROR_LOG_RMDR);
                 }
             }
         }
         
-        public static void writeBannedList(ArrayList<String> newBannedList) {
+        public void writeBannedList(ArrayList<String> newBannedList) {
             FileWriter f = null;
 		
             try {
@@ -292,8 +169,8 @@ private static Logger logger = Bukkit.getLogger();
             } catch (Exception e) {
                 ErrorLogger EL = new ErrorLogger();
                 EL.execute(e);
-                logger.severe(PLUG_NAME + banWriteErr);
-                logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+                logger.severe(Language.PLUG_NAME +  Language.banWriteErr);
+                logger.severe(Language.PLUG_NAME + Language.ERROR_LOG_RMDR);
             } finally {
                 try {
                     if (f != null) {
@@ -302,12 +179,12 @@ private static Logger logger = Bukkit.getLogger();
                 } catch (Exception e) {
                     ErrorLogger EL = new ErrorLogger();
                     EL.execute(e);
-                    logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+                    logger.severe(Language.PLUG_NAME + Language.ERROR_LOG_RMDR);
                 }
             }
         }
         
-        public static void writeBannedEntry(String playerName, String reason) {
+        public void writeBannedEntry(String playerName, String reason) {
             if (!banned.exists()) {
                 createDefaultStorage();
             }
@@ -335,37 +212,8 @@ private static Logger logger = Bukkit.getLogger();
             writeBannedList(bannedList);
         }
 	
-	/***
-	 * Fetches Current Configuration from File for use in editing.
-	 * 
-	 * @return ArrayList<String> containing the current Configuration.
-	 */
-	public static ArrayList<String> getConfiguration() {
-		ArrayList<String> config = new ArrayList<String>();
-		
-		try {
-			FileInputStream fstream = new FileInputStream(path);
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
-			
-			while ((strLine = br.readLine()) != null) {
-				config.add(strLine);
-			}
-			
-			br.close();
-		} catch (Exception e) {
-			ErrorLogger EL = new ErrorLogger();
-			EL.execute(e);
-			logger.severe(PLUG_NAME + confReadErr);
-			logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
-		}
-		
-		return config;
-	}
-	
 	/*** Fetches Exemption List from File ***/
-	public static ArrayList<String> getExemptList() {
+	public ArrayList<String> getExemptList() {
 		ArrayList<String> exemptList = new ArrayList<String>();
 		BufferedReader br = null;
 		
@@ -381,8 +229,8 @@ private static Logger logger = Bukkit.getLogger();
 		} catch (Exception e) {
 			ErrorLogger EL = new ErrorLogger();
 			EL.execute(e);
-			logger.severe(PLUG_NAME + exmpReadErr);
-			logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+			logger.severe(Language.PLUG_NAME +  Language.exmpReadErr);
+			logger.severe(Language.PLUG_NAME + Language.ERROR_LOG_RMDR);
 		} finally {
 			try {
 				if (br != null) {
@@ -391,14 +239,14 @@ private static Logger logger = Bukkit.getLogger();
 			} catch (Exception e) {
 				ErrorLogger EL = new ErrorLogger();
 				EL.execute(e);
-				logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+				logger.severe(Language.PLUG_NAME + Language.ERROR_LOG_RMDR);
 			}
 		}
 		
 		return exemptList;
 	}
         
-        public static ArrayList<String> getPluginBanlist() {
+        public ArrayList<String> getPluginBanlist() {
             ArrayList<String> bannedList = new ArrayList<String>();
             BufferedReader br = null;
             
@@ -414,8 +262,8 @@ private static Logger logger = Bukkit.getLogger();
             } catch (Exception e) {
                 ErrorLogger EL = new ErrorLogger();
                 EL.execute(e);
-                logger.severe(PLUG_NAME + banReadErr);
-                logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+                logger.severe(Language.PLUG_NAME +  Language.banReadErr);
+                logger.severe(Language.PLUG_NAME + Language.ERROR_LOG_RMDR);
             } finally {
                 try {
                     if (br != null) {
@@ -424,14 +272,14 @@ private static Logger logger = Bukkit.getLogger();
                 } catch (Exception e) {
                     ErrorLogger EL = new ErrorLogger();
                     EL.execute(e);
-                    logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+                    logger.severe(Language.PLUG_NAME + Language.ERROR_LOG_RMDR);
                 }
             }
             
             return bannedList;
         }
         
-        public static String getBannedReason(String playerName) {
+        public String getBannedReason(String playerName) {
             ArrayList<String> banlist = getPluginBanlist();
             String reason = "None";
             
@@ -445,16 +293,7 @@ private static Logger logger = Bukkit.getLogger();
             return reason;
         }
 	
-	// Generate a Blank Configuration Document
-	public static void regenerateConfiguration() {
-		if (path.exists()) {
-			path.delete();
-		}
-		
-		defaultConfiguration();
-	}
-	
-	public static boolean addExemption(int exemptionType, String exemption) {
+	public boolean addExemption(int exemptionType, String exemption) {
 		if (exemptionType == 0) { // IP Exemption
 			writeExemptionList(addIpExemption(getExemptList(), exemption));
 			return true;
@@ -468,7 +307,7 @@ private static Logger logger = Bukkit.getLogger();
 	
 	// Add a Player Exemption to the configuration
 	/*** Writes the value of (String)player to the configuration file.*/
-	public static ArrayList<String> addPlayerExemption(ArrayList<String> exemptList, String player) {
+	public ArrayList<String> addPlayerExemption(ArrayList<String> exemptList, String player) {
 		ArrayList<String> newExemptionList = new ArrayList<String>();
 		String EOC = exemptList.get(exemptList.size() - 1); 
 		
@@ -480,7 +319,7 @@ private static Logger logger = Bukkit.getLogger();
 		return newExemptionList;
 	}
 	
-	public static ArrayList<String> addIpExemption(ArrayList<String> exemptionList, String ip) {
+	public ArrayList<String> addIpExemption(ArrayList<String> exemptionList, String ip) {
 		ArrayList<String> newExmp = new ArrayList<String>();
 		ArrayList<String> exmpModify = new ArrayList<String>();
 		int lineCount = 0;
@@ -511,7 +350,7 @@ private static Logger logger = Bukkit.getLogger();
 	}
 	
 	// Write Modified Exemption List to File
-	public static void writeExemptionList(ArrayList<String> newExemptList) {
+	public void writeExemptionList(ArrayList<String> newExemptList) {
 		FileWriter f = null;
 		
 		try {
@@ -527,8 +366,8 @@ private static Logger logger = Bukkit.getLogger();
 		} catch (Exception e) {
 			ErrorLogger EL = new ErrorLogger();
 			EL.execute(e);
-	    	logger.severe(PLUG_NAME + exmpWriteErr);
-	    	logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+	    	logger.severe(Language.PLUG_NAME +  Language.exmpWriteErr);
+	    	logger.severe(Language.PLUG_NAME + Language.ERROR_LOG_RMDR);
 		} finally {
 			try {
 				if (f != null) {
@@ -537,138 +376,14 @@ private static Logger logger = Bukkit.getLogger();
 			} catch (Exception e) {
 				ErrorLogger EL = new ErrorLogger();
 				EL.execute(e);
-				logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
+				logger.severe(Language.PLUG_NAME + Language.ERROR_LOG_RMDR);
 			}
 		}
 	}
 	
-	// Write Modified Configuration to File
-	public static void writeConfiguration(ArrayList<String> newConfig) {
-		FileWriter f = null;
-		
-		try {
-			if (path.exists()) {
-				path.delete();
-			}
-			
-        	f = new FileWriter(path, true);
-	        
-	        for(String s:newConfig) {
-	        	f.write(s + "\r\n");
-	        }
-	        
-	        f.close();
-		} catch (Exception e) {
-			ErrorLogger EL = new ErrorLogger();
-			EL.execute(e);
-	    	logger.severe(PLUG_NAME + confWriteErr);
-	    	logger.severe(PLUG_NAME + IPcheck.ERROR_LOG_RMDR);
-		}
-	}
-	
-	public static void parseConfigSettings(ArrayList<String> config) {
-		String modulus;
-		
-		for (String line:config) {
-			// Should use Login Checking?
-			if (line.contains("notify-on-login:")) {
-				modulus = line.replace("notify-on-login:", "");
-				modulus = modulus.trim();
-				if (modulus.equalsIgnoreCase("true")) {
-					notifyLogin = true;
-				} else if (modulus.equalsIgnoreCase("false")) {
-					notifyLogin = false;
-				} else {
-					logger.severe(PLUG_NAME + COE1 + "notify-on-login" + COE2);
-				}
-				
-			// Should show descriptive notifications?
-			} else if (line.contains("descriptive-notice:")) {
-				modulus = line.replace("descriptive-notice:", "");
-				modulus = modulus.trim();
-				if (modulus.equalsIgnoreCase("true")) {
-					detailNotify = true;
-				} else if (modulus.equalsIgnoreCase("false")) {
-					detailNotify = false;
-				} else {
-					logger.severe(PLUG_NAME + COE1 + "descriptive-notice" + COE2);
-				}
-			
-			// Should use Secure Mode?
-			} else if (line.contains("secure-mode:")) {
-				modulus = line.replace("secure-mode:", "");
-				modulus = modulus.trim();
-				if (modulus.equalsIgnoreCase("true")) {
-					secureMode = true;
-				} else if (modulus.equalsIgnoreCase("false")){
-					secureMode = false;
-				} else {
-					logger.severe(PLUG_NAME + COE1 + "secure-mode" + COE2);
-				}
-				
-			// Should use Database?
-			} else if (line.contains("use-flat-file:")) {
-				modulus = line.replace("use-flat-file:", "");
-				modulus = modulus.trim();
-				if (modulus.equalsIgnoreCase("true")) {
-					backend = 1;
-				} else if (modulus.equalsIgnoreCase("false")) {
-					backend = 0;
-				} else {
-					logger.severe(PLUG_NAME + COE1 + "use-flat-file" + COE2);
-				}
-				
-			// Set Logging Time/Date Stamp Format
-			} else if (line.contains("logging-date-stamp-format:")) {
-				modulus = line.replace("logging-date-stamp-format:", "");
-				modulus = modulus.trim();
-				dateStampFormat = modulus;
-								
-			// Set a minimum number of accounts to have before being notified
-			} else if (line.contains("min-account-notify-threshold:")) {
-				modulus = line.replace("min-account-notify-threshold:", "");
-				modulus = modulus.trim();
-				try {
-					notifyThreshold = Integer.parseInt(modulus);
-					if (notifyThreshold < 1) {
-						logger.warning(PLUG_NAME + "Value of Configuration option 'min-account-notify-threshold' was lower than the minumum limit! 'min-account-notify-threshold' has been set to the default value (1).");
-						notifyThreshold = 1;
-					}
-				} catch (NumberFormatException e) {
-					logger.warning(PLUG_NAME + "Failed to parse Configuration option 'min-account-notify-threshold': was not valid integer.");
-				}
-			
-			// Set a minimum number of accounts to have before being kicked
-			} else if (line.contains("secure-kick-threshold:")) {
-				modulus = line.replace("secure-kick-threshold:", "");
-				modulus = modulus.trim();
-				try {
-					secureThreshold = Integer.parseInt(modulus);
-					if (secureThreshold < 1) {
-						logger.warning(PLUG_NAME + "Value of Configuration option 'secure-kick-threshold' was lower than the minumum limit! 'secure-kick-threshold' has been set to the default value (1).");
-						secureThreshold = 1;
-					}
-				} catch (NumberFormatException e) {
-					logger.warning(PLUG_NAME + "Failed to parse Configuration option 'secure-kick-threshold': was not valid integer.");
-				}
-				
-			// Set Kick Message
-			} else if (line.contains("secure-kick-message:")) {
-				modulus = line.replace("secure-kick-message:", "");
-				modulus = modulus.trim();
-				secureKickMsg = modulus;
-				
-			// Set Ban Message
-			} else if (line.contains("ban-message:")) {
-				modulus = line.replace("ban-message:", "");
-				modulus = modulus.trim();
-				banMessage = modulus;
-			}
-		}
-	}
 	
 	// Returns list of exempt players from Configuration File
-	public static ArrayList<String> getPlayerExemptList() {
+	public ArrayList<String> getPlayerExemptList() {
 		ArrayList<String> exemptList = new ArrayList<String>();
 		ArrayList<String> exempt = getExemptList();
 		int line = 0;
@@ -690,7 +405,7 @@ private static Logger logger = Bukkit.getLogger();
 		return exemptList;
 	}
 	
-	public static ArrayList<String> getIpExemptList() {
+	public ArrayList<String> getIpExemptList() {
 		ArrayList<String> exemptList = new ArrayList<String>();
 		ArrayList<String> exempt = getExemptList();
 		int line = 0;
@@ -712,7 +427,7 @@ private static Logger logger = Bukkit.getLogger();
 		return exemptList;
 	}
 	
-	public static boolean isExemptPlayer(String player) {
+	public boolean isExemptPlayer(String player) {
 		ArrayList<String> list = getPlayerExemptList();
 		
 		for (String s:list) {
@@ -724,7 +439,7 @@ private static Logger logger = Bukkit.getLogger();
 		return false;
 	}
 	
-	public static boolean isExemptIp(String ip) {
+	public boolean isExemptIp(String ip) {
 		ArrayList<String> list = getIpExemptList();
 		
 		for (String s:list) {
@@ -736,88 +451,50 @@ private static Logger logger = Bukkit.getLogger();
 		return false;
 	}
 	
-	public static int toggle(int toggleID) {
+	public int toggle(int toggleID) {
 		if (toggleID == 0) {
 			if (notifyLogin) {
 				notifyLogin = false;
-				toggleNotifyMode(getConfiguration(), notifyLogin);
+				plugin.getConfig().set("notify-on-login", false);
+                                plugin.saveConfig();
 				return 0;
 			} else if (!notifyLogin){
 				notifyLogin = true;
-				toggleNotifyMode(getConfiguration(), notifyLogin);
+				plugin.getConfig().set("notify-on-login", true);
+                                plugin.saveConfig();
 				return 1;
 			}
 		} else if (toggleID == 1) {
 			if (detailNotify) {
 				detailNotify = false;
-				toggleNotifyDetail(getConfiguration(), detailNotify);
+				plugin.getConfig().set("descriptive-notice", false);
+                                plugin.saveConfig();
 				return 0;
 			} else {
 				detailNotify = true;
-				toggleNotifyDetail(getConfiguration(), detailNotify);
+				plugin.getConfig().set("descriptive-notice", true);
+                                plugin.saveConfig();
 				return 1;
 			}
 		} else if (toggleID == 2) {
 			if (secureMode) {
 				secureMode = false;
-				toggleSecureMode(getConfiguration(), secureMode);
+				plugin.getConfig().set("secure-mode", false);
+                                plugin.saveConfig();
 				return 0;
 			} else {
 				secureMode = true;
-				toggleSecureMode(getConfiguration(), secureMode);
+				plugin.getConfig().set("secure-mode", true);
+                                plugin.saveConfig();
 				return 1;
 			}
 		}
 		
 		return 2;
 	}
-	
-	public static void toggleSecureMode(ArrayList<String> config, boolean value) {
-		int line = 0;
-		
-		for (String s:config) {
-			if (s.contains("secure-mode: ")) {
-				config.set(line, "secure-mode: " + value);
-				break;
-			}
-			
-			line++;
-		}
-		writeConfiguration(config);
-		parseConfigSettings(getConfiguration());
-	}
-	
-	public static void toggleNotifyMode(ArrayList<String> config, boolean value) {
-		int line = 0;
-		
-		for (String s:config) {
-			if (s.contains("notify-on-login: ")) {
-				config.set(line, "notify-on-login: " + value);
-				break;
-			}
-			
-			line++;
-		}
-		writeConfiguration(config);
-		parseConfigSettings(getConfiguration());
-	}
 
-	public static void toggleNotifyDetail(ArrayList<String> config, boolean value) {
-		int line = 0;
-		
-		for (String s:config) {
-			if (s.contains("descriptive-notice: ")) {
-				config.set(line, "descriptive-notice: " + value);
-				break;
-			}
-			
-			line++;
-		}
-		writeConfiguration(config);
-		parseConfigSettings(getConfiguration());
-	}
-	
-	public static boolean deleteExemption(String exemption) {
+
+	public boolean deleteExemption(String exemption) {
 		ArrayList<String> exemptList = getExemptList();
 		int line = 0;
 		
@@ -833,9 +510,9 @@ private static Logger logger = Bukkit.getLogger();
 		
 		return false;
 	}
-
-    private static void createDefaultDirectory() {
-        if (!pluginPath.exists())
-        pluginPath.mkdir();
-    }
+        
+        private void createDefaultDirectory() {
+            if (!pluginPath.exists())
+            pluginPath.mkdir();
+        }
 }

@@ -1,4 +1,4 @@
-package net.risenphoenix.jnk.ipcheck.Logging;
+package net.risenphoenix.jnk.ipcheck.logging;
 
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
