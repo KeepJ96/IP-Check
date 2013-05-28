@@ -1,15 +1,22 @@
 package net.risenphoenix.jnk.ipcheck;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Logger;
+import net.risenphoenix.jnk.ipcheck.logging.ErrorLogger;
+import org.bukkit.Bukkit;
 
 public class Functions {
-
+        private static final Logger logger = Bukkit.getLogger();
 	// Start-up/Misc. use Random Messages.
 	private static final ArrayList<String> MESSAGES_RANDOM_1 = new ArrayList<String>() {
-		
-		private static final long serialVersionUID = 3159470443160594003L;
 
+        private static final long serialVersionUID = 3159470443160594003L;
 		{
 			add("Now in cool blue!");
 			add("I like apples!");
@@ -77,6 +84,47 @@ public class Functions {
 			add("Sadface. :(");
 	}};
 	
+        
+        public static boolean isBannedIP(String ip) {
+        BufferedReader br = null;
+		
+        try {
+            // Files
+            File bannedIPs = new File("banned-ips.txt");
+            FileInputStream fstream = new FileInputStream(bannedIPs);
+            DataInputStream in = new DataInputStream(fstream);
+            br = new BufferedReader(new InputStreamReader(in));
+            String strLine;
+
+            /* Skip the first three lines of the file to prevent the while statement
+            *  from terminating prematurely. */
+            for (int lineSkip = 0; lineSkip < 3; lineSkip++) br.readLine(); 
+
+            while ((strLine = br.readLine()) != null) {
+                if (strLine.contains(ip)) {
+                        return true;
+                }
+            }
+        } catch (Exception e) {
+            ErrorLogger EL = new ErrorLogger();
+            EL.execute(e);
+            logger.severe(Language.BAN_LIST_READ_ERR);
+        } finally {
+            try {
+                if (br != null) {
+                        br.close();
+                }
+            } catch (Exception e) {
+                ErrorLogger EL = new ErrorLogger();
+                EL.execute(e);
+                logger.severe(e.getMessage());
+            }
+        }
+
+        return false;
+    }
+
+        
 	// Get Random Message
 	public static String getRandomMessage() {
 		int random = new Random().nextInt(MESSAGES_RANDOM_1.size());

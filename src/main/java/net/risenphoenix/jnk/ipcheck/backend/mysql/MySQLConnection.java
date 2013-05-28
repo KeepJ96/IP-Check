@@ -11,12 +11,12 @@ public class MySQLConnection extends Database
     String user = ""; 
     String database = ""; 
     String password = ""; 
-    String port = ""; 
+    int port = 3306; 
     String hostname = ""; 
     Connection c = null; 
   
   
-    public MySQLConnection(String hostname, String portnmbr, String database, String username, String password) { 
+    public MySQLConnection(String hostname, int portnmbr, String database, String username, String password) { 
         this.hostname = hostname; 
         this.port = portnmbr; 
         this.database = database; 

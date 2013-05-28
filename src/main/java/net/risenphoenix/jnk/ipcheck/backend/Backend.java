@@ -28,7 +28,7 @@ public interface Backend {
 	 * Loads Save File from hard-disk.
 	 * @return save file as ArrayList.
 	 */
-	public ArrayList<String> loadFile(File file);
+	//public ArrayList<String> loadFile(File file);
 	
 	/***
 	 * Writes a User-Name/IP entry to an active copy of the Backend Manager's save-file.
@@ -53,7 +53,7 @@ public interface Backend {
 	 * Checks if IP given is banned or not.
 	 * @return true if IP is banned, return false if IP is not banned.
 	 */
-	public boolean isBannedIP(String ip);
+	//public boolean isBannedIP(String ip);
 	
         /***
 	 * Returns the last known IP address of the player name given, if one exists.

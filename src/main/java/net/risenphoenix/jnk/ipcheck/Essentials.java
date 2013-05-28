@@ -27,6 +27,7 @@ public class Essentials{
     public ArrayList<String> loadFile() {
         ArrayList<String> list = new ArrayList<String>();
 
+        
         File path = null;
         File[] playerFiles = playersDir.listFiles(new FilenameFilter() {
             @Override

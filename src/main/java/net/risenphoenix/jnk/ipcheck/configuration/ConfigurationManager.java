@@ -32,6 +32,7 @@ public class ConfigurationManager {
         public String dbPassword="";
         public String dbName="minecraft";
         public String dbHostname="127.0.0.1";
+        public boolean dbGenerated=true;
         public int dbPort=3306;
  	
         
@@ -62,20 +63,20 @@ public class ConfigurationManager {
         public void initialize(){
                 plugin.saveConfig();
                 plugin.reloadConfig();
-                createConfiguration();
+                readConfiguration();
                 createDefaultDirectory();
  		defaultExemptionList();
                 createDefaultStorage();
         }
         
-        public void createConfiguration(){
+        public void readConfiguration(){
             
-        
             dbUsername = plugin.getConfig().getString("dbUsername");
             dbPassword = plugin.getConfig().getString("dbPassword");
             dbName = plugin.getConfig().getString("dbName");
             dbHostname = plugin.getConfig().getString("dbHostname");
             dbPort = plugin.getConfig().getInt("dbPort");
+            dbGenerated = plugin.getConfig().getBoolean("dbGenerated");
         
             backend = plugin.getConfig().getString("backend");
             notifyLogin = plugin.getConfig().getBoolean("notify-on-login");

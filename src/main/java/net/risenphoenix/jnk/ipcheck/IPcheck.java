@@ -42,7 +42,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 /**
- * @version 1.3.0 
+ * @version 1.3.1
  * @author Jacob Keep (Jnk1296)
  */
 public class IPcheck extends JavaPlugin implements Listener{
@@ -105,7 +105,7 @@ public class IPcheck extends JavaPlugin implements Listener{
             Bukkit.getLogger().info(Language.PLUG_NAME + Functions.getRandomMessage()); // A Nice random Message
         }
 
-        if(getConfig().getString("backend").toLowerCase()=="mysql"){
+        if(getConfig().getString("backend").toLowerCase().equals("mysql")){
             backend = new MySQL();
             Bukkit.getLogger().info(Language.PLUG_NAME + "Loading backend MySql...");
         }

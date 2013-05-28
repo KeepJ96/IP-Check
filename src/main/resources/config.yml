@@ -10,6 +10,8 @@ dbPassword: ""
 dbHostname: "127.0.0.1"
 dbName: "minecraft"
 dbPort: 3306
+# Set this to false if you want the tables to be regenerated
+dbGenerated: false
 
 #Should use Login Checking?
 notify-on-login: true

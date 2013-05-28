@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.logging.Logger;
+import net.risenphoenix.jnk.ipcheck.IPcheck;
 import net.risenphoenix.jnk.ipcheck.Language;
 import net.risenphoenix.jnk.ipcheck.logging.ErrorLogger;
 import org.bukkit.Bukkit;
@@ -18,9 +19,6 @@ public class FlatFile implements Backend{
     // BACKEND MANAGER FOR FLAT-FILE - Last Updated May 25, 2013
     private static final Logger logger = Bukkit.getLogger();
     private static String registrar = "Flat-File Backend Manager for IP-Check ver 3.0";
-
-    // Files
-    private static File bannedIPs = new File("banned-ips.txt");
 
     // Folders
     private static File dirRoot = new File("plugins/IP-check/DATABASE");
@@ -57,7 +55,6 @@ public class FlatFile implements Backend{
         return registrar;
     }
 
-    @Override
     public ArrayList<String> loadFile(File file) {
         ArrayList<String> list = new ArrayList<String>();
         BufferedReader br = null;
@@ -345,44 +342,6 @@ public class FlatFile implements Backend{
         ArrayList<String> players = loadFile(ipPath);
         
         return players;
-    }
-
-    @Override
-    public boolean isBannedIP(String ip) {
-       BufferedReader br = null;
-		
-        try {
-            FileInputStream fstream = new FileInputStream(bannedIPs);
-            DataInputStream in = new DataInputStream(fstream);
-            br = new BufferedReader(new InputStreamReader(in));
-            String strLine;
-
-            /* Skip the first three lines of the file to prevent the while statement
-            *  from terminating prematurely. */
-            for (int lineSkip = 0; lineSkip < 3; lineSkip++) br.readLine(); 
-
-            while ((strLine = br.readLine()) != null) {
-                if (strLine.contains(ip)) {
-                        return true;
-                }
-            }
-        } catch (Exception e) {
-            ErrorLogger EL = new ErrorLogger();
-            EL.execute(e);
-            logger.severe(Language.BAN_LIST_READ_ERR);
-        } finally {
-            try {
-                if (br != null) {
-                        br.close();
-                }
-            } catch (Exception e) {
-                ErrorLogger EL = new ErrorLogger();
-                EL.execute(e);
-                logger.severe(e.getMessage());
-            }
-        }
-
-        return false;
     }
 
     @Override

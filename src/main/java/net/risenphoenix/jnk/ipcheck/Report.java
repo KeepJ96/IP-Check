@@ -41,11 +41,8 @@ public class Report {
                 ArrayList<String> altAccounts;
 
                 // Get alt accounts for the IP Address
-                if (s.contains("-lastknown")) {
-                    altAccounts = IPcheck.backend.getAlts(s.replace("-lastknown", ""));
-                } else {
-                    altAccounts = IPcheck.backend.getAlts(s);
-                }
+               altAccounts = IPcheck.backend.getAlts(s.replace("-lastknown", ""));
+              
 
                 // Create New String Builder
                 StringBuilder sb = new StringBuilder();
@@ -188,7 +185,7 @@ public class Report {
         }
 
         if (!forPlayer) {
-            if (IPcheck.backend.isBannedIP(arg)) {
+            if (Functions.isBannedIP(arg)) {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "IP Banned: " + ChatColor.RED + "True");
             } else {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "IP Banned: " + ChatColor.GREEN + "False");

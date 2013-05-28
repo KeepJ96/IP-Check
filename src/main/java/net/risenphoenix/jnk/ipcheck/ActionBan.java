@@ -41,7 +41,7 @@ public class ActionBan {
                 } else {
                     IPcheck.Configuration.writeBannedEntry(offPlayer.getName(), IPcheck.Configuration.banMessage);
                 }
-
+                
                 if (banning) {
                     Player player = Bukkit.getPlayer(s);
 
