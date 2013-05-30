@@ -46,7 +46,7 @@ public class DatabaseManager{
         connection.query("CREATE TABLE IF NOT EXISTS ipcheck_user ( "+
                             "username varchar(255) NOT NULL,"+
                             "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
-                            "banmessage varchar(255) NOT NULL,"+
+                            "banmessage varchar(255),"+
                             "banned bit(1) NOT NULL DEFAULT b'0',"+
                             "exempted bit(1) NOT NULL DEFAULT b'0',"+
                             "PRIMARY KEY (username)"+
