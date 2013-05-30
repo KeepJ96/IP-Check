@@ -4,7 +4,7 @@
 
   <groupId>net.risenphoenix.jnk</groupId>
   <artifactId>IP-Check</artifactId>
-  <version>1.3.2</version>
+  <version>1.3.1</version>
   <packaging>jar</packaging>
 
   <name>IP-Check</name>
