@@ -17,7 +17,7 @@ public class CmdExemptIp implements IpcCommand{
 				String ip_filter = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
 				
 				if (args[2].toLowerCase().matches(ip_filter.toLowerCase())) {
-					if (IPcheck.Configuration.addExemption(0, args[2])) {
+					if (IPcheck.Database.exemptIP(args[2])) {
 						sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.IP_EXEMPT_SUC);
 					} else {
 						sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.EXEMPTION_FAIL);

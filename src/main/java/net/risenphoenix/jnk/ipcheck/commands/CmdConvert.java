@@ -1,71 +1,168 @@
 package net.risenphoenix.jnk.ipcheck.commands;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import net.risenphoenix.jnk.ipcheck.Essentials;
-import net.risenphoenix.jnk.ipcheck.Language;
-import net.risenphoenix.jnk.ipcheck.backend.flatfile.FlatFile;
-import org.bukkit.ChatColor;
+import java.util.logging.Logger;
+import net.risenphoenix.jnk.ipcheck.IPcheck;
+import net.risenphoenix.jnk.ipcheck.logging.ErrorLogger;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 
 public class CmdConvert implements IpcCommand{
 
+    private static final Logger logger = Bukkit.getLogger();
+    
+    private static File dirPlayer = new File("plugins/IP-check/DATABASE/PLAYERS");
+    private static File playersDir = new File("plugins/Essentials/userdata");
+    
     public void execute(CommandSender sender, String commandLabel, String[] args) {
-        ArrayList<String> playerInfo = new ArrayList<String>();
-        FlatFile f = new FlatFile();
-        boolean convertEssentials = false;
+        ArrayList<String> load;
+        if (args[1].equals("-e")) {
+            load=loadEssentials();
+        }else{
+            load=loadPlainText();
+        }
         
-        if (args.length > 1) {
-            if (args[1].equals("-e")) {
-                convertEssentials = true;
-            } else {
-                sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + "Invalid parameter passed!");
-                return;
+        for (String s:load) {
+            String[] sArray = s.split("|");
+            IPcheck.Database.log(sArray[0],sArray[1]);
+        }
+    }
+    
+    public ArrayList<String> loadEssentials() {
+        ArrayList<String> list = new ArrayList<String>();
+
+        File path = null;
+        File[] playerFiles = playersDir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File path, String name) {
+                if (name.toLowerCase().endsWith(".yml") && !name.toLowerCase().startsWith("nation_") && !name.toLowerCase().startsWith("town_")) {
+                    return true; 
+                } else {
+                    return false;
+                }
             }
-        }
-        
-        long startTime = System.currentTimeMillis();
-        
-        if (convertEssentials) {
-            Essentials e = new Essentials();
-            playerInfo = e.loadFile();
-        } else {
-            playerInfo = f.loadFile(new File("plugins/IP-check/database.db"));
-        }
-        
-        if (playerInfo == null) {
-            sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + "Conversion failed!");
-            return; // Return because there were no files found to convert from.
-        } else {
-            for (String s:playerInfo) {
-                StringBuilder player = new StringBuilder();
-                StringBuilder ip = new StringBuilder();
-                
-                boolean hasName = false;
-                
-                // Split the name and IP into separate strings so that we can log them into the new database
-                for (int i = 0; i < s.length(); i++) {
-                    if (s.charAt(i) != '|' && !hasName) { // If we have not hit a '|' yet, then we are scanning the name
-                        player.append(s.charAt(i));
-                    } else if (s.charAt(i) != '|' && hasName) { // If we have already hit a '|', then we are scanning the IP
-                        ip.append(s.charAt(i));
-                    } else if (s.charAt(i) == '|') { // If we hit a '|', then we have finished scanning the name.
-                        hasName = true;
+        });
+
+        for (int i = 0; i < playerFiles.length; i++) {
+            path = new File("" + playerFiles[i]);
+            BufferedReader br = null;
+            StringBuilder sb = new StringBuilder();
+
+            String player = playerFiles[i].toString();
+            player = player.replace(playersDir.toString(), "");
+            player = player.replace("" + player.charAt(0), "");
+            sb.append(player.replace(".yml", ""));
+            sb.append("|");
+
+            try {
+                FileInputStream fstream = new FileInputStream(path);
+                DataInputStream in = new DataInputStream(fstream);
+                br = new BufferedReader(new InputStreamReader(in));
+                String strLine;
+
+                while ((strLine = br.readLine()) != null) {
+                    if (strLine.startsWith("ipAddress: ")) {
+                        strLine = strLine.replace("ipAddress: ", "");
+                        sb.append(strLine);
                     }
                 }
                 
-                f.log(player.toString(), ip.toString()); // Log the information to the new Database
+            } catch (IOException e) {
+                ErrorLogger EL = new ErrorLogger();
+                EL.execute(e);
+                logger.severe("Error occurred while attempting to read essentials player file!");
+                return null;
+                
+            } finally {
+                try {
+                    if (br != null) {
+                        br.close();
+                    }
+                } catch (Exception e) {
+                    logger.severe(e.getMessage());
+                }
             }
+
+            list.add(sb.toString().toLowerCase());
         }
+
+        logger.info("Number of files read: " + list.size());
         
-        long endTime = System.currentTimeMillis();
-        
-        sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + "Conversion complete! Time taken: " + ((endTime - startTime) / 1000) + " seconds. " +
-            "Total number of entries converted: " + playerInfo.size() + ".");
+        return list;
     }
     
+    public static ArrayList<String> loadPlainText() {
+        ArrayList<String> manifest = new ArrayList<String>();
+            File[] players = dirPlayer.listFiles();
+       
+        StringBuilder sb = new StringBuilder();
+       
+        for (File f:players) {
+            String path = f.getAbsolutePath();
+            path = path.replace(System.getProperty("user.dir"), "");
+            path = path.replace("\\plugins\\IP-check\\DATABASE\\PLAYERS\\", "");
+            path = path.replace(".log", "");
+            sb.append(path + "|");
+           
+            ArrayList<String> list = loadFile(f);
+           
+            for (String s:list) {
+                if (s.contains("-lastknown")) {
+                    sb.append(s.replace("-lastknown", ""));
+                    break;
+                }
+            }
+           
+            manifest.add(sb.toString());
+            Bukkit.getLogger().info(sb.toString());
+            sb = new StringBuilder();
+        }
+       
+        return manifest;
+    }
     
+    public static ArrayList<String> loadFile(File file) {
+        ArrayList<String> list = new ArrayList<String>();
+        BufferedReader br = null;
+
+        // FILE READER
+        try {
+            // Open a file stream to read the file
+            FileInputStream fstream = new FileInputStream(file);
+            DataInputStream in = new DataInputStream(fstream);
+            br = new BufferedReader(new InputStreamReader(in));
+            String strLine;
+
+            while ((strLine = br.readLine()) != null) {
+                list.add(strLine.toLowerCase()); // Add each line of the file to memory
+            }
+
+        } catch (Exception e) {
+            list = null; // Set list to null so that the calling method can deal with the error
+            
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (Exception e) {
+                ErrorLogger EL = new ErrorLogger(); // Catch the error, pass to handler
+                EL.execute(e);
+                logger.severe(e.getMessage());
+            }
+        }
+        // END FILE READER
+        
+        return list;
+    }
 
     public int getID() {
         return 13;

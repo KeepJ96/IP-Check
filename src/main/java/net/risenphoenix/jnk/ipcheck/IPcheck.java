@@ -2,13 +2,10 @@ package net.risenphoenix.jnk.ipcheck;
 
 import net.risenphoenix.jnk.ipcheck.configuration.ConfigurationManager;
 import java.io.IOException;
-import net.risenphoenix.jnk.ipcheck.backend.flatfile.FlatFile;
-import net.risenphoenix.jnk.ipcheck.backend.Backend;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.risenphoenix.jnk.ipcheck.backend.mysql.MySQL;
 import net.risenphoenix.jnk.ipcheck.listeners.PlayerJoinListener;
 import net.risenphoenix.jnk.ipcheck.listeners.PlayerLoginListener;
 import net.risenphoenix.jnk.ipcheck.logging.DateStamp;
@@ -31,6 +28,7 @@ import net.risenphoenix.jnk.ipcheck.commands.exempt.CmdUnexempt;
 import net.risenphoenix.jnk.ipcheck.commands.exempt.list.CmdExmtListAll;
 import net.risenphoenix.jnk.ipcheck.commands.exempt.list.CmdExmtListIp;
 import net.risenphoenix.jnk.ipcheck.commands.exempt.list.CmdExmtListPlayer;
+import net.risenphoenix.jnk.ipcheck.database.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -55,7 +53,7 @@ public class IPcheck extends JavaPlugin implements Listener{
     public static ConfigurationManager Configuration;
 
     //Backend Manager
-    public static Backend backend;
+    public static DatabaseManager Database;
 
     //Event Listeners
     public static PlayerLoginListener PLL = new PlayerLoginListener();
@@ -86,7 +84,8 @@ public class IPcheck extends JavaPlugin implements Listener{
     public void onEnable() { 
         this.saveDefaultConfig(); // Create config if there is none
         Instance=this;
-        Configuration = new ConfigurationManager(this); 
+        
+        Configuration = new ConfigurationManager(); 
         
         VER_STRING = this.getDescription().getVersion(); // Getting Version from plugin.yml 
         try {
@@ -105,22 +104,14 @@ public class IPcheck extends JavaPlugin implements Listener{
             Bukkit.getLogger().info(Language.PLUG_NAME + Functions.getRandomMessage()); // A Nice random Message
         }
 
-        if(getConfig().getString("backend").toLowerCase().equals("mysql")){
-            backend = new MySQL();
-            Bukkit.getLogger().info(Language.PLUG_NAME + "Loading backend MySql...");
-        }
-        else{   
-            backend = new FlatFile();
-            Bukkit.getLogger().info(Language.PLUG_NAME + "Loading backend FlatFile...");
-        }
-        backend.onLoad();            // Initialize Backend
+        Database = new DatabaseManager(getConfig().getBoolean("use-mysql")); 
         registerCommands();          // Register Commands
     }
 
     // Called when plugin is disabled
     @Override
     public void onDisable() {
-        backend.onDisable();
+        Database.close();
     }
     public static JavaPlugin getInstance(){
         return Instance;

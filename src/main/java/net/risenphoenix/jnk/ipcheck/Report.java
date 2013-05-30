@@ -30,7 +30,7 @@ public class Report {
         
         // Get all alt accounts linked to the player
         if (forPlayer) {
-            IPs = IPcheck.backend.getIPs(arg); // Load list of IPs from backend
+            IPs = IPcheck.Database.getIPs(arg); // Load list of IPs from backend
 
             if (IPs == null) {
                 sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.NO_FIND);
@@ -41,7 +41,7 @@ public class Report {
                 ArrayList<String> altAccounts;
 
                 // Get alt accounts for the IP Address
-               altAccounts = IPcheck.backend.getAlts(s.replace("-lastknown", ""));
+               altAccounts = IPcheck.Database.getAlts(s.replace("-lastknown", ""));
               
 
                 // Create New String Builder
@@ -59,7 +59,7 @@ public class Report {
                 SBs.add(sb); 
             }
         } else {
-            singleAlts = IPcheck.backend.getAlts(arg);
+            singleAlts = IPcheck.Database.getAlts(arg);
             
             if (singleAlts == null) {
                 sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.NO_FIND);

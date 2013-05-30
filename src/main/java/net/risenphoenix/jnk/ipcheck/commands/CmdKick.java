@@ -33,9 +33,9 @@ public class CmdKick implements IpcCommand{
                                 
 				if (args[1].toLowerCase().matches(ip_filter.toLowerCase())) {
                                     // Command Instructions here
-                                    total = ab.kickPlayers(IPcheck.backend.getAlts(args[1]), sender, IPcheck.backend.checkIPaddress(args[1]), sb.toString());
+                                    total = ab.kickPlayers(IPcheck.Database.getAlts(args[1]), sender, IPcheck.Database.checkIPaddress(args[1]), sb.toString());
 				} else {
-                                    total = ab.kickPlayers(IPcheck.backend.getAlts(IPcheck.backend.getLastKnownIP(args[1])), sender, IPcheck.backend.getLastKnownIP(args[1]), sb.toString());
+                                    total = ab.kickPlayers(IPcheck.Database.getAlts(IPcheck.Database.getLastKnownIP(args[1])), sender, IPcheck.Database.getLastKnownIP(args[1]), sb.toString());
 				}
                                 
                                sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + "Kicked " + total + " players.");

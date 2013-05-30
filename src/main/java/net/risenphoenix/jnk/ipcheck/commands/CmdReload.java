@@ -13,7 +13,6 @@ public class CmdReload implements IpcCommand{
 		if (sender.hasPermission("ipcheck.reload") || sender.isOp()) {
 			if (args.length == 1) {
 				IPcheck.Configuration.initialize();
-				IPcheck.backend.onLoad();
 			} else {
 				sender.sendMessage(Language.NUM_ARGS_ERR);
 			}

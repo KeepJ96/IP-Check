@@ -21,9 +21,9 @@ public class CmdUnban implements IpcCommand{
 				String ip_filter = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
 				if (args[1].toLowerCase().matches(ip_filter.toLowerCase())) {
 					// Command Instructions Here
-					ab.banPlayers(IPcheck.backend.getAlts(args[1]), sender, IPcheck.backend.checkIPaddress(args[1]), "", false);
+					ab.banPlayers(IPcheck.Database.getAlts(args[1]), sender, IPcheck.Database.checkIPaddress(args[1]), "", false);
 				} else {
-					ab.banPlayers(IPcheck.backend.getAlts(IPcheck.backend.getLastKnownIP(args[1])), sender, IPcheck.backend.getLastKnownIP(args[1]), "", false);
+					ab.banPlayers(IPcheck.Database.getAlts(IPcheck.Database.getLastKnownIP(args[1])), sender, IPcheck.Database.getLastKnownIP(args[1]), "", false);
 				}
 			} else {
 				sender.sendMessage(Language.NUM_ARGS_ERR);
