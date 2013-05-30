@@ -40,7 +40,7 @@ public class DatabaseManager{
         connection.query("CREATE TABLE IF NOT EXISTS ipcheck_log ( "+
                             "ip varchar(11) NOT NULL,"+
                             "username varchar(255) NOT NULL,"+
-                            "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
+                            "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"+ 
                             "PRIMARY KEY (ip,username)"+
                             ");");
         connection.query("CREATE TABLE IF NOT EXISTS ipcheck_user ( "+
