@@ -35,41 +35,41 @@ public class CommandManager {
     public CommandManager(){
         //
     }
-    private IpcCommand Check = new CmdCheck();
-    private IpcCommand Ban = new CmdBan();
-    private IpcCommand Unban = new CmdUnban();
-    private IpcCommand Exempt = new CmdExempt();
-    private IpcCommand Unexempt = new CmdUnexempt();
-    private IpcCommand Purge = new CmdPurge();
-    private IpcCommand Toggle = new CmdToggle();
-    private IpcCommand ExemptListAll = new CmdExemptListAll();
-    private IpcCommand ExemptListIp = new CmdExemptListIp();
-    private IpcCommand ExemptListPlayer = new CmdExemptListPlayer();
-    private IpcCommand Reload = new CmdReload();
-    private IpcCommand About = new CmdAbout();
-    private IpcCommand Help = new CmdHelp();
-    private IpcCommand Convert = new CmdConvert();
-    private IpcCommand Kick = new CmdKick();
-    private IpcCommand SBan = new CmdSBan();
+    private IpcCommand CheckCommand = new CmdCheck();
+    private IpcCommand BanCommand = new CmdBan();
+    private IpcCommand UnbanCommand = new CmdUnban();
+    private IpcCommand ExemptCommand = new CmdExempt();
+    private IpcCommand UnexemptCommand = new CmdUnexempt();
+    private IpcCommand PurgeCommand = new CmdPurge();
+    private IpcCommand ToggleCommand = new CmdToggle();
+    private IpcCommand ExemptListAllCommand = new CmdExemptListAll();
+    private IpcCommand ExemptListIpCommand = new CmdExemptListIp();
+    private IpcCommand ExemptListPlayerCommand = new CmdExemptListPlayer();
+    private IpcCommand ReloadCommand = new CmdReload();
+    private IpcCommand AboutCommand = new CmdAbout();
+    private IpcCommand HelpCommand = new CmdHelp();
+    private IpcCommand ConvertCommand = new CmdConvert();
+    private IpcCommand KickCommand = new CmdKick();
+    private IpcCommand SBanCommand = new CmdSBan();
     
     public ArrayList<IpcCommand> getAllCommands(){
         //Change the order to change the order in the /help command
         ArrayList<IpcCommand> cmds = new ArrayList<IpcCommand>();
-        cmds.add(Check);
-        cmds.add(Kick);
-        cmds.add(SBan);
-        cmds.add(Ban);
-        cmds.add(Unban);
-        cmds.add(Exempt);
-        cmds.add(Unexempt);
-        cmds.add(ExemptListAll);
-        cmds.add(ExemptListIp);
-        cmds.add(ExemptListPlayer);
-        cmds.add(Toggle);
-        cmds.add(Purge);
-        cmds.add(Convert);
-        cmds.add(About);
-        cmds.add(Reload);
+        cmds.add(CheckCommand);
+        cmds.add(KickCommand);
+        cmds.add(SBanCommand);
+        cmds.add(BanCommand);
+        cmds.add(UnbanCommand);
+        cmds.add(ExemptCommand);
+        cmds.add(UnexemptCommand);
+        cmds.add(ExemptListAllCommand);
+        cmds.add(ExemptListIpCommand);
+        cmds.add(ExemptListPlayerCommand);
+        cmds.add(ToggleCommand);
+        cmds.add(PurgeCommand);
+        cmds.add(ConvertCommand);
+        cmds.add(AboutCommand);
+        cmds.add(ReloadCommand);
         //cmds.add(Help);
         return cmds;
     }
@@ -78,15 +78,15 @@ public class CommandManager {
     public IpcCommand executeCommand(String[] args,CommandSender sender) {
             if (args.length > 0) {
                     // Ban Command
-                    if (args[0].equalsIgnoreCase("ban")) return Ban;
+                    if (args[0].equalsIgnoreCase("ban")) return BanCommand;
 
                     // Unban Command
-                    if (args[0].equalsIgnoreCase("unban")) return Unban;
+                    if (args[0].equalsIgnoreCase("unban")) return UnbanCommand;
 
                     // Exempt Command
                     if (args[0].equalsIgnoreCase("exempt")) {
                         if (args.length==2){
-                                return Exempt;
+                                return ExemptCommand;
                         }else{
                             sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + "An invalid sub-command or no sub-command was specified.");
                             return null;
@@ -94,50 +94,50 @@ public class CommandManager {
                     } 
 
                      // Unexempt Command
-                    if (args[0].equalsIgnoreCase("unexempt")) return Unexempt;
+                    if (args[0].equalsIgnoreCase("unexempt")) return UnexemptCommand;
 
                     // Purge Command
-                    if (args[0].equalsIgnoreCase("purge")) return Purge;
+                    if (args[0].equalsIgnoreCase("purge")) return PurgeCommand;
 
                     // Toggle Command
-                    if (args[0].equalsIgnoreCase("toggle")) return Toggle;
+                    if (args[0].equalsIgnoreCase("toggle")) return ToggleCommand;
 
                     // Exempt-List Command
                     if (args[0].equalsIgnoreCase("exempt-list")) {
                             if (args.length > 1) {
                                     if (args[1].equalsIgnoreCase("ip")) {
-                                            return ExemptListIp;
+                                            return ExemptListIpCommand;
                                     } else if (args[1].equalsIgnoreCase("player")) {
-                                            return ExemptListPlayer;
+                                            return ExemptListPlayerCommand;
                                     } else {
                                         sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + "An invalid sub-command or no sub-command was specified.");
                                         return null;
                                     }
                             } else {
-                                    return ExemptListAll;
+                                    return ExemptListAllCommand;
                             }
                     }
 
                     // Reload Command
-                    if (args[0].equalsIgnoreCase("reload")) return Reload;
+                    if (args[0].equalsIgnoreCase("reload")) return ReloadCommand;
 
                     // About Command
-                    if (args[0].equalsIgnoreCase("about")) return About;
+                    if (args[0].equalsIgnoreCase("about")) return AboutCommand;
 
                     // Help Command
-                    if (args[0].equalsIgnoreCase("help")) return Help;
+                    if (args[0].equalsIgnoreCase("help")) return HelpCommand;
 
                     // Convert Command
-                    if (args[0].equalsIgnoreCase("convert")) return Convert;
+                    if (args[0].equalsIgnoreCase("convert")) return ConvertCommand;
 
                     // Kick Command
-                    if (args[0].equalsIgnoreCase("kick")) return Kick;
+                    if (args[0].equalsIgnoreCase("kick")) return KickCommand;
 
                     // SBan Command
-                    if (args[0].equalsIgnoreCase("sban")) return SBan;
+                    if (args[0].equalsIgnoreCase("sban")) return SBanCommand;
 
 
-                    if (args.length < 2) return Check; // If it was not one of the above commands and arguments is greater than 0, then pass it to the default check command.
+                    if (args.length < 2) return CheckCommand; // If it was not one of the above commands and arguments is greater than 0, then pass it to the default check command.
             } else {
                     return null; // No Command was Given.
             }
