@@ -55,10 +55,10 @@ public class CmdHelp implements IpcCommand{
 				sender.sendMessage(ChatColor.GOLD + "------------------------------------------");
 			}
 		}
-		
+		if(arg<4){
 		sender.sendMessage(ChatColor.RED + "Type " + ChatColor.YELLOW + "/c help " + (arg + 1) + ChatColor.RED + " to see more help.");
 		sender.sendMessage(ChatColor.GOLD + "==========================================");
-		
+                }
 		commandList.clear();
 	}
 
