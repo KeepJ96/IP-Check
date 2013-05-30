@@ -32,7 +32,7 @@ public class JDBCConnection
     } 
     public JDBCConnection() { 
         driver="org.sqlite.JDBC";
-        connectionString="jdbc:sqlite:" + new File(IPcheck.getInstance().getDataFolder()+ File.separator + "database.sqlite").getAbsolutePath();
+        connectionString="jdbc:sqlite:" + new File(IPcheck.getInstance().getDataFolder()+ File.separator + "ip-check.db").getAbsolutePath();
     } 
     public Connection open() { 
         try { 

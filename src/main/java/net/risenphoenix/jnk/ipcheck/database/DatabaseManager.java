@@ -38,11 +38,10 @@ public class DatabaseManager{
         }
                 if(type.equals("mysql")){
                 connection.query("CREATE TABLE IF NOT EXISTS ipcheck_log ( "+
-                                    "id int(11) NOT NULL AUTO_INCREMENT,"+
                                     "ip varchar(11) NOT NULL,"+
-                                    "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
                                     "username varchar(255) NOT NULL,"+
-                                    "PRIMARY KEY (id)"+
+                                    "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
+                                    "PRIMARY KEY (ip,username)"+
                                     ");");
                 connection.query("CREATE TABLE IF NOT EXISTS ipcheck_user ( "+
                                     "username varchar(255) NOT NULL,"+
@@ -61,46 +60,49 @@ public class DatabaseManager{
                                     ");");
                 }else{
                 connection.query("CREATE TABLE IF NOT EXISTS ipcheck_log ( "+
-                                    "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,"+
-                                    "ip TEXT NOT NULL,"+
+                                    "ip TEXT,"+
+                                    "username TEXT,"+
                                     "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
-                                    "username TEXT NOT NULL"+
-                                    ");");
+                                    "PRIMARY KEY(username,ip));");
                 connection.query("CREATE TABLE IF NOT EXISTS ipcheck_user ( "+
-                                    "username TEXT PRIMARY KEY ,"+
+                                    "username TEXT,"+
                                     "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"+
                                     "banmessage TEXT,"+
                                     "banned INTEGER DEFAULT 0,"+
-                                    "exempted INTEGER DEFAULT 0"+
-                                    ");");
+                                    "exempted INTEGER DEFAULT 0,"+
+                                    "PRIMARY KEY(username));");
                 connection.query("CREATE TABLE IF NOT EXISTS ipcheck_ip ( "+
-                                    "ip TEXT PRIMARY KEY,"+
+                                    "ip TEXT,"+
                                     "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"+
                                     "banned INTEGER DEFAULT 0,"+
-                                    "exempted INTEGER DEFAULT 0"+
-                                    ");");
+                                    "exempted INTEGER DEFAULT 0,"+
+                                    "PRIMARY KEY(ip));");
                 }
     }
     public void close(){
         connection.close();
     }
+    
+    //Methods with differences in both databases
+    
     public void log(String player, String ip) {
-            connection.query("insert into ipcheck_log (ip,username) values ('"+ip+"','"+player+"');");
-            String cmd;
-            if(type.equals("mysql")){
-                cmd="insert into ipcheck_user (username) SELECT ('"+player+"') from ipcheck_user where not exists (select username from ipcheck_user where username='"+player+"')";
-            }else{
-                cmd="insert into ipcheck_user (username) SELECT ('"+player+"')";
-            }
-            connection.query(cmd);
-            String cmd2;
-            if(type.equals("mysql")){
-                cmd2="insert into ipcheck_ip (ip) SELECT ('"+ip+"') from ipcheck_ip where not exists (select ip from ipcheck_ip where ip='"+ip+"')";
-            }else{
-                cmd2="insert into ipcheck_ip (ip) SELECT ('"+ip+"')";
-            }
-            connection.query(cmd2);
+        addIP(ip);
+        addPlayer(player);
+        String log="replace into ipcheck_log (ip,username) VALUES ('"+ip+"','"+player+"')";
+        connection.query(log);
     }
+    
+    public void addIP(String ip){
+        String cmd="replace into ipcheck_ip (ip) VALUES ('"+ip+"')";
+        connection.query(cmd); 
+    }
+    
+    public void addPlayer(String player){
+        String cmd="replace into ipcheck_user (username) VALUES ('"+player+"')";
+        connection.query(cmd);
+    }
+    
+    //Player Methods
     
     public boolean purgePlayer(String player) {
             try{
@@ -112,15 +114,19 @@ public class DatabaseManager{
         }
     }
     
+    public boolean exemptPlayer(String player) {
+        try{
+            addPlayer(player);
+            connection.query("update ipcheck_user set exempted=1 where username='"+player+"'");
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+    
     public boolean banPlayer(String player,String message) {
-            try{
-            String cmd;
-            if(type.equals("mysql")){
-                cmd="insert into ipcheck_user (username) SELECT ('"+player+"') from ipcheck_user where not exists (select username from ipcheck_user where username='"+player+"')";
-            }else{
-                cmd="insert into ipcheck_user (username) SELECT ('"+player+"')";
-            }
-            connection.query(cmd);
+        try{
+            addPlayer(player);
             connection.query("update ipcheck_user set banned=1,banmessage='"+message+"' where username='"+player+"'");
             return true;
         }catch (Exception e){
@@ -154,38 +160,7 @@ public class DatabaseManager{
         }
         return false;
     }
-    
-    public String getBanMessage(String player) {
-        String returning="";
-        try {
-            ResultSet res =  connection.query("SELECT banmessage FROM ipcheck_user where username='"+player+"';").getResultSet();
-       
-            if(res.next()){
-                returning = res.getString(1);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return returning;
-    }
-    
-    
-    public boolean exemptPlayer(String player) {
-        try{
-            String cmd;
-            if(type.equals("mysql")){
-                cmd="insert into ipcheck_user (username) SELECT ('"+player+"') from ipcheck_user where not exists (select username from ipcheck_user where username='"+player+"')";
-            }else{
-                cmd="insert into ipcheck_user (username) SELECT ('"+player+"')";
-            }
-            connection.query(cmd);
-            connection.query("update ipcheck_user set exempted=1 where username='"+player+"'");
-            return true;
-        }catch (Exception e){
-            return false;
-        }
-    }
-    
+  
     public boolean unexemptPlayer(String player) {
             try{connection.query("update ipcheck_user set exempted=0 where username='"+player+"'");
             return true;
@@ -213,6 +188,23 @@ public class DatabaseManager{
         return false;
     }
     
+    public String getBanMessage(String player) {
+        String returning="";
+        try {
+            ResultSet res =  connection.query("SELECT banmessage FROM ipcheck_user where username='"+player+"';").getResultSet();
+       
+            if(res.next()){
+                returning = res.getString(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return returning;
+    }
+    
+        
+    //IP Methods
+    
     public boolean purgeIP(String ip) {
             try{connection.query("delete from ipcheck_ip where ip ='"+ip+"'");
                connection.query("delete from ipcheck_log where ip ='"+ip+"'");
@@ -221,16 +213,20 @@ public class DatabaseManager{
             return false;
         }
     }
-        
+    
+    public boolean exemptIP(String ip) {
+        try{
+            addIP(ip);
+            connection.query("update ipcheck_ip set exempted=1 where ip='"+ip+"'");
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+    
     public boolean banIP(String ip) {
-            try{
-            String cmd2;
-            if(type.equals("mysql")){
-                cmd2="insert into ipcheck_ip (ip) SELECT ('"+ip+"') from ipcheck_ip where not exists (select ip from ipcheck_ip where ip='"+ip+"')";
-            }else{
-                cmd2="insert into ipcheck_ip (ip) SELECT ('"+ip+"')";
-            }
-            connection.query(cmd2);
+        try{
+            addIP(ip);
             connection.query("update ipcheck_ip set banned=1 where ip='"+ip+"'");
             return true;
         }catch (Exception e){
@@ -265,20 +261,6 @@ public class DatabaseManager{
         return false;
     }
     
-    public boolean exemptIP(String ip) {
-            try{
-            String cmd2 = "insert into ipcheck_ip (ip) SELECT ('"+ip+"') from ipcheck_ip";
-            if(type.equals("mysql")){
-                cmd2+="where not exists (select ip from ipcheck_ip where ip='"+ip+"')";
-            }
-            connection.query(cmd2);
-            connection.query("update ipcheck_ip set exempted=1 where ip='"+ip+"'");
-            return true;
-        }catch (Exception e){
-            return false;
-        }
-    }
-    
     public boolean unexemptIP(String ip) {
             try{connection.query("update ipcheck_ip set exempted=0 where ip='"+ip+"'");
             return true;
@@ -305,6 +287,7 @@ public class DatabaseManager{
         }
         return false;
     }
+    
     
     public ArrayList<String> getPlayerExemptList() {
         ArrayList<String> names = new ArrayList<String>();
