@@ -11,7 +11,7 @@ public class LoginReport {
 		Player curPlayer = player;
 		
 		if ((curPlayer.hasPlayedBefore() && (accounts - 1) >= IPcheck.Configuration.notifyThreshold) || (!curPlayer.hasPlayedBefore() && accounts > IPcheck.Configuration.notifyThreshold)) {
-			if (!IPcheck.Configuration.isExemptPlayer(player.getName()) && !IPcheck.Configuration.isExemptIp(ip)) { // If number of accounts is greater than threshold and player is not exempt
+			if (!IPcheck.Database.isExemptedPlayer(player.getName()) && !IPcheck.Database.isExemptedIP(ip)) { // If number of accounts is greater than threshold and player is not exempt
 				
 				if (curPlayer.hasPlayedBefore()) {
 					accounts -= 1; // subtract one from playersfound to make up for Recursion

@@ -37,9 +37,9 @@ public class ActionBan {
                 offPlayer.setBanned(banning);
 
                 if (message.length() > 0) {
-                    IPcheck.Configuration.writeBannedEntry(offPlayer.getName(), message);
+                    IPcheck.Database.banPlayer(offPlayer.getName(), message);
                 } else {
-                    IPcheck.Configuration.writeBannedEntry(offPlayer.getName(), IPcheck.Configuration.banMessage);
+                    IPcheck.Database.banPlayer(offPlayer.getName(), IPcheck.Configuration.banMessage);
                 }
                 
                 if (banning) {

@@ -121,6 +121,21 @@ public class DatabaseManager{
         return false;
     }
     
+    public String getBanMessage(String player) {
+        String returning="";
+        try {
+            ResultSet res =  connection.query("SELECT banmessage FROM ipcheck_user where username='"+player+"';").getResultSet();
+       
+            if(res.next()){
+                returning = res.getString(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return returning;
+    }
+    
+    
     public boolean exemptPlayer(String player) {
             if(connection.query("update ipcheck_user set exempted=1 where username='"+player+"'")==null){
                 return false;

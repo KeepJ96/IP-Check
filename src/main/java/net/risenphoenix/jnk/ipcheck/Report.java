@@ -177,7 +177,7 @@ public class Report {
                     sender.sendMessage(ChatColor.RED + "ERROR: " + ChatColor.GOLD + "Player object returned was NULL");
             }
 
-            if (IPcheck.Configuration.isExemptPlayer(player.getName())) {
+            if (IPcheck.Database.isExemptedPlayer(player.getName())) {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Exempt: " + ChatColor.GREEN + "True");
             } else {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "Player Exempt: " + ChatColor.RED + "False");
@@ -191,7 +191,7 @@ public class Report {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "IP Banned: " + ChatColor.GREEN + "False");
             }
 
-            if (IPcheck.Configuration.isExemptIp(arg)) {
+            if (IPcheck.Database.isExemptedIP(arg)) {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "IP Exempt: " + ChatColor.GREEN + "True");
             } else {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "IP Exempt: " + ChatColor.RED + "False");
@@ -203,7 +203,7 @@ public class Report {
                 if (player != null) {
                     if (player.isBanned()) {
                         sender.sendMessage("");
-                        sender.sendMessage(ChatColor.LIGHT_PURPLE + "Banned Reason: " + ChatColor.YELLOW + IPcheck.Configuration.getBannedReason(player.getName()));
+                        sender.sendMessage(ChatColor.LIGHT_PURPLE + "Banned Reason: " + ChatColor.YELLOW + IPcheck.Database.getBanMessage(player.getName()));
                     }
                 }
             }
