@@ -13,11 +13,12 @@ In it's current state, IP-Check comes with the following features:
    * Logging of players and their IP Addresses for the prevention and detection of mutli-accounters.  
    * Background checking of players to alert you when a multi-accounter is on your server.  
    * Exemption capabilities to allow players to go unchecked (and prevent unnecessary spam in your chat. :))  
+   * MySQL Support for backend usage.  
+   * SQLite Support for backend usage.  
    * Much more!  
 
 ##Upcoming Features
 We've got some pretty advanced features lined up for our 1.3.x release. In fact, we're receiving the help of a few net-savvy friends in helping up with the new features. Here's some of the stuff we've got planned:  
-   * MySQL Support for backend usage.  
    * A centralized network-accessable control panel for plugin/overall server management.  
    * A detailed logging system. 
    * Ability to manage players and perform plugin related tasks on them remotely from the new C-Panel.  
