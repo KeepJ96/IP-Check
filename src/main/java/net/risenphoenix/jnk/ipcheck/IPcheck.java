@@ -20,10 +20,10 @@ import net.risenphoenix.jnk.ipcheck.commands.CmdReload;
 import net.risenphoenix.jnk.ipcheck.commands.CmdSBan;
 import net.risenphoenix.jnk.ipcheck.commands.CmdToggle;
 import net.risenphoenix.jnk.ipcheck.commands.CmdUnban;
+import net.risenphoenix.jnk.ipcheck.commands.CmdPurge;
 import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
 import net.risenphoenix.jnk.ipcheck.commands.ParseCommand;
-import net.risenphoenix.jnk.ipcheck.commands.exempt.CmdExemptIp;
-import net.risenphoenix.jnk.ipcheck.commands.exempt.CmdExemptPlayer;
+import net.risenphoenix.jnk.ipcheck.commands.exempt.CmdExempt;
 import net.risenphoenix.jnk.ipcheck.commands.exempt.CmdUnexempt;
 import net.risenphoenix.jnk.ipcheck.commands.exempt.list.CmdExmtListAll;
 import net.risenphoenix.jnk.ipcheck.commands.exempt.list.CmdExmtListIp;
@@ -64,8 +64,7 @@ public class IPcheck extends JavaPlugin implements Listener{
     public static final IpcCommand check = new CmdCheck();
     public static final IpcCommand ban = new CmdBan();
     public static final IpcCommand unban = new CmdUnban();
-    public static final IpcCommand exemptIp = new CmdExemptIp();
-    public static final IpcCommand exemptPlayer = new CmdExemptPlayer();
+    public static final IpcCommand exempt = new CmdExempt();
     public static final IpcCommand unexempt = new CmdUnexempt();
     public static final IpcCommand toggle = new CmdToggle();
     public static final IpcCommand exemptList_all = new CmdExmtListAll();
@@ -77,6 +76,7 @@ public class IPcheck extends JavaPlugin implements Listener{
     public static final IpcCommand convert = new CmdConvert();
     public static final IpcCommand kick = new CmdKick();
     public static final IpcCommand sban = new CmdSBan();
+    public static final IpcCommand purge = new CmdPurge();
 
     //Methods
     // Called when plugin is enabled
@@ -124,8 +124,8 @@ public class IPcheck extends JavaPlugin implements Listener{
         commands.add(check);               //Default Check Command             || 0
         commands.add(ban);                 //Ban Command                       || 1
         commands.add(unban);               //Unban Command                     || 2
-        commands.add(exemptIp);            //Exempt Command (IP)               || 3
-        commands.add(exemptPlayer);        //Exempt Command (Player)           || 4
+        commands.add(exempt);              //Exempt Command                    || 3
+        commands.add(purge);               //Purge Command                     || 4
         commands.add(unexempt);            //Unexempt Command                  || 5
         commands.add(toggle);              //Toggle Command                    || 6
         commands.add(exemptList_all);      //Exempt-List Command (list)        || 7

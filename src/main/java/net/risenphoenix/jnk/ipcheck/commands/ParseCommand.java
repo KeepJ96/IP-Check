@@ -19,6 +19,8 @@ public class ParseCommand {
                 Convert              = 13
                 Kick                 = 14
                 SBan                 = 15
+                Purge                 = 16
+                * 
 		
 		See Javadoc for execute() in this class for explanation of negative return values.*/
 	
@@ -34,21 +36,18 @@ public class ParseCommand {
 			
 			// Exempt Command
 			if (args[0].equalsIgnoreCase("exempt")) {
-				if (args.length > 1) {
-					if (args[1].equalsIgnoreCase("ip")) {
-						return 3;
-					} else if (args[1].equalsIgnoreCase("player")) {
-						return 4;
-					} else if (args[1].equalsIgnoreCase("remove")) {
-						return 5;
-					} else {
-						return -2; // Invalid Sub-Command
-					}
-				} else {
-					return -2; // No Sub-Command
-				}
-			}
-			
+                            if (args.length==2){
+                                if (args[1].equalsIgnoreCase("remove")) {
+                                    return 5;
+                                }else{
+                                    return 3;
+                                }
+                            }else{
+                                return -2; // Invalid Sub-Command
+                            }
+                        } 
+                        // Purge Command
+                        if (args[0].equalsIgnoreCase("purge")) return 4;
 			// Toggle Command
 			if (args[0].equalsIgnoreCase("toggle")) return 6;
 			
@@ -85,6 +84,7 @@ public class ParseCommand {
                         // SBan Command
                         if (args[0].equalsIgnoreCase("sban")) return 15;
 			
+                        
 			if (args.length < 2) return 0; // If it was not one of the above commands and arguments is greater than 0, then pass it to the default check command.
 		} else {
 			return -3; // No Command was Given.
