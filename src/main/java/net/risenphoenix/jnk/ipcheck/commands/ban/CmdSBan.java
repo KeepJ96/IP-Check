@@ -1,8 +1,10 @@
-package net.risenphoenix.jnk.ipcheck.commands;
+package net.risenphoenix.jnk.ipcheck.commands.ban;
 
 import java.util.ArrayList;
-import net.risenphoenix.jnk.ipcheck.ActionBan;
-import net.risenphoenix.jnk.ipcheck.Language;
+import net.risenphoenix.jnk.ipcheck.PlayerActions;
+import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
+import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
+import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -13,7 +15,7 @@ public class CmdSBan implements IpcCommand{
     public void execute(CommandSender sender, String commandLabel, String[] args) {
         if (sender.hasPermission("ipcheck.ban") || sender.isOp()) {
 			if (args.length >= 2) {
-				ActionBan ab = new ActionBan();
+				PlayerActions ab = new PlayerActions();
 				
 				// Create the ban Message, if one exists.
 				StringBuilder sb = new StringBuilder();
@@ -31,7 +33,7 @@ public class CmdSBan implements IpcCommand{
 				String ip_filter = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
 				if (args[1].toLowerCase().matches(ip_filter.toLowerCase())) {
 					// Command Instructions Here
-					sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + "To ban an IP address, use \'/c ban\'");
+					sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + "To ban an IP address, use \'/c ban\'");
 				} else {
                                     ArrayList<String> player = new ArrayList<String>();
                                     player.add(args[1]);
@@ -39,16 +41,11 @@ public class CmdSBan implements IpcCommand{
                                     ab.banPlayers(player, sender, "no-ban", sb.toString(), true);
 				}
 			} else {
-				sender.sendMessage(Language.NUM_ARGS_ERR);
+				sender.sendMessage(TranslationManager.NUM_ARGS_ERR);
 			}
 		} else {
-			sender.sendMessage(Language.NO_PERM_ERR);
+			sender.sendMessage(TranslationManager.NO_PERM_ERR);
 		}
-    }
-
-    @Override
-    public int getID() {
-        return 15;
     }
 
     @Override

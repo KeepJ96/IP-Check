@@ -8,10 +8,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 
 import net.risenphoenix.jnk.ipcheck.configuration.ConfigurationManager;
-import net.risenphoenix.jnk.ipcheck.Language;
+import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
 
-public class CmdExmtListAll implements IpcCommand{
+public class CmdExemptListAll implements IpcCommand{
 
 	@Override
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
@@ -36,20 +36,15 @@ public class CmdExmtListAll implements IpcCommand{
 				}
 				sender.sendMessage(sb2.toString());
 			} else {
-				sender.sendMessage(Language.NO_PERM_ERR);
+				sender.sendMessage(TranslationManager.NO_PERM_ERR);
 			}
 			
 			sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");
-			sender.sendMessage(ChatColor.YELLOW + "Total exemptions on file: " + ChatColor.LIGHT_PURPLE + (list.size() + list2.size()));
+			sender.sendMessage(ChatColor.YELLOW + "Total exemptions: " + ChatColor.LIGHT_PURPLE + (list.size() + list2.size()));
 			sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");
 		} else {
-			sender.sendMessage(Language.NO_PERM_ERR);
+			sender.sendMessage(TranslationManager.NO_PERM_ERR);
 		}
-	}
-
-	@Override
-	public int getID() {
-		return 7;
 	}
 
 	@Override

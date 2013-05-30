@@ -1,10 +1,10 @@
-package net.risenphoenix.jnk.ipcheck;
+package net.risenphoenix.jnk.ipcheck.translation;
 
 /**
  *
  * @author FR34KYN01535
  */
-public class Language {
+public class TranslationManager {
     public static final String PLUG_NAME = "[IP-Check] ";
     public static final String INIT_BACKEND = "Initializing Flat-File Backend Manager...";
     public static final String DEINIT_BACKEND = "Shutting down Backend Manager...";

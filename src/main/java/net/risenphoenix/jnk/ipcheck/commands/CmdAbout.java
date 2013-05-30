@@ -1,7 +1,7 @@
 package net.risenphoenix.jnk.ipcheck.commands;
 
 import net.risenphoenix.jnk.ipcheck.IPcheck;
-import net.risenphoenix.jnk.ipcheck.Language;
+import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -10,12 +10,7 @@ public class CmdAbout implements IpcCommand{
 	
 	@Override
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
-		sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + IPcheck.VER_STRING + " by Jnk1296.");
-	}
-
-	@Override
-	public int getID() {
-		return 11;
+		sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + IPcheck.VER_STRING + " by Jnk1296 and FR34KYN01535.");
 	}
 
 	@Override

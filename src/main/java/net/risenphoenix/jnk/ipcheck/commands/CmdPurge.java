@@ -1,7 +1,7 @@
 package net.risenphoenix.jnk.ipcheck.commands;
 
 import net.risenphoenix.jnk.ipcheck.IPcheck;
-import net.risenphoenix.jnk.ipcheck.Language;
+import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -20,15 +20,15 @@ public class CmdPurge implements IpcCommand{
                   IPcheck.Database.purgePlayer(args[1]); 
                 }
             } else {
-                sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.NUM_ARGS_ERR);
+                sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.NUM_ARGS_ERR);
             }
         } else {
-            sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.NO_PERM_ERR);
+            sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.NO_PERM_ERR);
         }
     }
 
     public int getID() {
-        return 16;
+        return 160;
     }
 
     public String getHelp() {

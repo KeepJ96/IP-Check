@@ -1,6 +1,9 @@
-package net.risenphoenix.jnk.ipcheck;
+package net.risenphoenix.jnk.ipcheck.reports;
 
+import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 import java.util.ArrayList;
+import net.risenphoenix.jnk.ipcheck.IPcheck;
+import net.risenphoenix.jnk.ipcheck.RandomMessages;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -33,7 +36,7 @@ public class Report {
             IPs = IPcheck.Database.getIPs(arg); // Load list of IPs from backend
 
             if (IPs == null) {
-                sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.NO_FIND);
+                sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.NO_FIND);
                 return;
             }
             
@@ -62,7 +65,7 @@ public class Report {
             singleAlts = IPcheck.Database.getAlts(arg);
             
             if (singleAlts == null) {
-                sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.NO_FIND);
+                sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.NO_FIND);
                 return;
             }
         }
@@ -185,7 +188,7 @@ public class Report {
         }
 
         if (!forPlayer) {
-            if (Functions.isBannedIP(arg)) {
+            if (RandomMessages.isBannedIP(arg)) {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "IP Banned: " + ChatColor.RED + "True");
             } else {
                     sender.sendMessage(ChatColor.LIGHT_PURPLE + "IP Banned: " + ChatColor.GREEN + "False");

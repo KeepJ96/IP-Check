@@ -5,9 +5,9 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.logging.Logger;
-import net.risenphoenix.jnk.ipcheck.Functions;
+import net.risenphoenix.jnk.ipcheck.RandomMessages;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
-import net.risenphoenix.jnk.ipcheck.Language;
+import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 import org.bukkit.Bukkit;
 
 public class ErrorLogger {
@@ -29,7 +29,7 @@ public class ErrorLogger {
         e.printStackTrace(pw);
 
         String message = (
-            Functions.getErrorMessage() + "\r\n" +
+            RandomMessages.getErrorMessage() + "\r\n" +
             "-------------------------------------\r\n" +
             IPcheck.VER_STRING + "\r\n" +
             "Compilation Date: " + IPcheck.COMP_DATE + "\r\n" +
@@ -51,13 +51,13 @@ public class ErrorLogger {
             f = new FileWriter(path, true);
             f.write(message);
         } catch (Exception ee) {
-            logger.severe(Language.PLUG_NAME + ee.getMessage());
+            logger.severe(TranslationManager.PLUG_NAME + ee.getMessage());
         } finally {
             if (f != null) {
                 try {
                     f.close();
                 } catch (Exception eee) {
-                    logger.severe(Language.PLUG_NAME + eee.getMessage());
+                    logger.severe(TranslationManager.PLUG_NAME + eee.getMessage());
                 }
             }
         }

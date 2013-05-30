@@ -1,8 +1,8 @@
 package net.risenphoenix.jnk.ipcheck.commands;
 
-import net.risenphoenix.jnk.ipcheck.ActionBan;
+import net.risenphoenix.jnk.ipcheck.PlayerActions;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
-import net.risenphoenix.jnk.ipcheck.Language;
+import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -13,7 +13,7 @@ public class CmdKick implements IpcCommand{
     public void execute(CommandSender sender, String commandLabel, String[] args) {
         if (sender.hasPermission("ipcheck.kick") || sender.isOp()) {
 			if (args.length >= 2) {
-				ActionBan ab = new ActionBan();
+				PlayerActions ab = new PlayerActions();
 				
 				// Create the ban Message, if one exists.
 				StringBuilder sb = new StringBuilder();
@@ -38,18 +38,13 @@ public class CmdKick implements IpcCommand{
                                     total = ab.kickPlayers(IPcheck.Database.getAlts(IPcheck.Database.getLastKnownIP(args[1])), sender, IPcheck.Database.getLastKnownIP(args[1]), sb.toString());
 				}
                                 
-                               sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + "Kicked " + total + " players.");
+                               sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + "Kicked " + total + " players.");
 			} else {
-				sender.sendMessage(Language.NUM_ARGS_ERR);
+				sender.sendMessage(TranslationManager.NUM_ARGS_ERR);
 			}
 		} else {
-			sender.sendMessage(Language.NO_PERM_ERR);
+			sender.sendMessage(TranslationManager.NO_PERM_ERR);
 		}
-    }
-
-    @Override
-    public int getID() {
-        return 14;
     }
 
     @Override

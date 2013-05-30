@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
-import net.risenphoenix.jnk.ipcheck.Language;
+import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 
 import net.risenphoenix.jnk.ipcheck.logging.ErrorLogger;
 
@@ -68,12 +68,12 @@ public class ConfigurationManager {
             dateStampFormat = IPcheck.getInstance().getConfig().getString("logging-date-stamp-format");
             notifyThreshold = IPcheck.getInstance().getConfig().getInt("min-account-notify-threshold");
             if (notifyThreshold < 1) {
-                    logger.warning(Language.PLUG_NAME + "Value of Configuration option 'min-account-notify-threshold' was lower than the minumum limit! 'min-account-notify-threshold' has been set to the default value (1).");
+                    logger.warning(TranslationManager.PLUG_NAME + "Value of Configuration option 'min-account-notify-threshold' was lower than the minumum limit! 'min-account-notify-threshold' has been set to the default value (1).");
                     notifyThreshold = 1;
             }
             secureThreshold = IPcheck.getInstance().getConfig().getInt("secure-kick-threshold");
             if (secureThreshold < 1) {
-                    logger.warning(Language.PLUG_NAME + "Value of Configuration option 'secure-kick-threshold' was lower than the minumum limit! 'secure-kick-threshold' has been set to the default value (1).");
+                    logger.warning(TranslationManager.PLUG_NAME + "Value of Configuration option 'secure-kick-threshold' was lower than the minumum limit! 'secure-kick-threshold' has been set to the default value (1).");
                     secureThreshold = 1;
             }
             secureKickMsg = IPcheck.getInstance().getConfig().getString("secure-kick-message");

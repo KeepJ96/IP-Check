@@ -1,7 +1,7 @@
 package net.risenphoenix.jnk.ipcheck.listeners;
 
 import net.risenphoenix.jnk.ipcheck.IPcheck;
-import net.risenphoenix.jnk.ipcheck.LoginReport;
+import net.risenphoenix.jnk.ipcheck.reports.LoginReport;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 

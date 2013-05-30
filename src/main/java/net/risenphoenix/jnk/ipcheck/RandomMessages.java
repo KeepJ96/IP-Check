@@ -1,5 +1,6 @@
 package net.risenphoenix.jnk.ipcheck;
 
+import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -11,7 +12,7 @@ import java.util.logging.Logger;
 import net.risenphoenix.jnk.ipcheck.logging.ErrorLogger;
 import org.bukkit.Bukkit;
 
-public class Functions {
+public class RandomMessages {
         private static final Logger logger = Bukkit.getLogger();
 	// Start-up/Misc. use Random Messages.
 	private static final ArrayList<String> MESSAGES_RANDOM_1 = new ArrayList<String>() {
@@ -108,7 +109,7 @@ public class Functions {
         } catch (Exception e) {
             ErrorLogger EL = new ErrorLogger();
             EL.execute(e);
-            logger.severe(Language.BAN_LIST_READ_ERR);
+            logger.severe(TranslationManager.BAN_LIST_READ_ERR);
         } finally {
             try {
                 if (br != null) {
@@ -124,7 +125,6 @@ public class Functions {
         return false;
     }
 
-        
 	// Get Random Message
 	public static String getRandomMessage() {
 		int random = new Random().nextInt(MESSAGES_RANDOM_1.size());
@@ -140,12 +140,12 @@ public class Functions {
 	}
 	
 	public static String getSeasonalMessage(String date) {
-		if (date.equals("05-05")) return Language.PLUG_NAME + "So who here likes Mayonase?";
-		if (date.equals("04-01")) return Language.PLUG_NAME + "Your current subscription expires today! Renew immediately! The current subscription price is: $19.95";
-		if (date.equals("04-02")) return Language.PLUG_NAME + "April fools! Of course this plugin is free! :)";
-		if (date.equals("04-12")) return Language.PLUG_NAME + "Happy Birthday Jnk!";
-		if (date.equals("12-25")) return Language.PLUG_NAME + "Merry Christmas from IP-Check. =D";
-		if (date.equals("02-14")) return Language.PLUG_NAME + "Won't you be my Valentine? <3";
+		if (date.equals("05-05")) return TranslationManager.PLUG_NAME + "So who here likes Mayonase?";
+		if (date.equals("04-01")) return TranslationManager.PLUG_NAME + "Your current subscription expires today! Renew immediately! The current subscription price is: $19.95";
+		if (date.equals("04-02")) return TranslationManager.PLUG_NAME + "April fools! Of course this plugin is free! :)";
+		if (date.equals("04-12")) return TranslationManager.PLUG_NAME + "Happy Birthday Jnk!";
+		if (date.equals("12-25")) return TranslationManager.PLUG_NAME + "Merry Christmas from IP-Check. =D";
+		if (date.equals("02-14")) return TranslationManager.PLUG_NAME + "Won't you be my Valentine? <3";
 		
 		return null;
 	}

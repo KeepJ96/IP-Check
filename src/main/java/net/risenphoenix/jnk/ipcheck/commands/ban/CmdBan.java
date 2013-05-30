@@ -1,9 +1,11 @@
-package net.risenphoenix.jnk.ipcheck.commands;
+package net.risenphoenix.jnk.ipcheck.commands.ban;
 
-import net.risenphoenix.jnk.ipcheck.ActionBan;
+import net.risenphoenix.jnk.ipcheck.PlayerActions;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
-import net.risenphoenix.jnk.ipcheck.Language;
-import net.risenphoenix.jnk.ipcheck.Report;
+import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
+import net.risenphoenix.jnk.ipcheck.reports.Report;
+import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
+import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 
@@ -14,7 +16,7 @@ public class CmdBan implements IpcCommand{
 		if (sender.hasPermission("ipcheck.ban") || sender.isOp()) {
 			if (args.length >= 2) {
 				Report report = new Report();
-				ActionBan ab = new ActionBan();
+				PlayerActions ab = new PlayerActions();
 				
 				// Create the ban Message, if one exists.
 				StringBuilder sb = new StringBuilder();
@@ -37,16 +39,11 @@ public class CmdBan implements IpcCommand{
 					ab.banPlayers(IPcheck.Database.getAlts(IPcheck.Database.getLastKnownIP(args[1])), sender, IPcheck.Database.getLastKnownIP(args[1]), sb.toString(), true);
 				}
 			} else {
-				sender.sendMessage(Language.NUM_ARGS_ERR);
+				sender.sendMessage(TranslationManager.NUM_ARGS_ERR);
 			}
 		} else {
-			sender.sendMessage(Language.NO_PERM_ERR);
+			sender.sendMessage(TranslationManager.NO_PERM_ERR);
 		}
-	}
-
-	@Override
-	public int getID() {
-		return 1;
 	}
 
 	@Override

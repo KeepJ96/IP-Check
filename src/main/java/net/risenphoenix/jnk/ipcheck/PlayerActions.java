@@ -1,5 +1,6 @@
 package net.risenphoenix.jnk.ipcheck;
 
+import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 import net.risenphoenix.jnk.ipcheck.configuration.ConfigurationManager;
 import java.util.ArrayList;
 import org.bukkit.Bukkit;
@@ -8,11 +9,11 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ActionBan {
+public class PlayerActions {
 	public void banPlayers(ArrayList<String> players, CommandSender sender, String ip, String message, boolean banning) {
             // Ban or Unban IP Address
             if (ip.equals("no-find")) {
-                sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.NO_FIND);
+                sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.NO_FIND);
                 return;
             }
 
@@ -74,7 +75,7 @@ public class ActionBan {
             int playersKicked = 0;
             
             if (ip.equals("no-find")) {
-                sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.NO_FIND);
+                sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.NO_FIND);
                 return -1;
             }
             

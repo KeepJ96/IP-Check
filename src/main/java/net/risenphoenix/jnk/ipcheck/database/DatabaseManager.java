@@ -17,18 +17,18 @@ public class DatabaseManager{
     private String type="";
 
     public DatabaseManager(boolean useMySQL){
-    if(useMySQL){
-        connection = new JDBCConnection(IPcheck.Configuration.dbHostname, 
-                                        IPcheck.Configuration.dbPort,
-                                        IPcheck.Configuration.dbName,
-                                        IPcheck.Configuration.dbUsername,
-                                        IPcheck.Configuration.dbPassword);
-        type="mysql";
-    }else{
-        connection = new JDBCConnection();
-        type="sqlite";
-    } 
-        
+        if(useMySQL){
+            connection = new JDBCConnection(IPcheck.Configuration.dbHostname, 
+                                            IPcheck.Configuration.dbPort,
+                                            IPcheck.Configuration.dbName,
+                                            IPcheck.Configuration.dbUsername,
+                                            IPcheck.Configuration.dbPassword);
+            type="mysql";
+        }else{
+            connection = new JDBCConnection();
+            type="sqlite";
+        } 
+
         if(!IPcheck.getInstance().getConfig().getBoolean("dbGenerated")){
                 connection.query("DROP TABLE IF EXISTS ipcheck_log;");
                 connection.query("DROP TABLE IF EXISTS ipcheck_user;");
@@ -36,48 +36,48 @@ public class DatabaseManager{
                 IPcheck.getInstance().getConfig().set("dbGenerated", true);
                 IPcheck.getInstance().saveConfig();
         }
-                if(type.equals("mysql")){
-                connection.query("CREATE TABLE IF NOT EXISTS ipcheck_log ( "+
-                                    "ip varchar(11) NOT NULL,"+
-                                    "username varchar(255) NOT NULL,"+
-                                    "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
-                                    "PRIMARY KEY (ip,username)"+
-                                    ");");
-                connection.query("CREATE TABLE IF NOT EXISTS ipcheck_user ( "+
-                                    "username varchar(255) NOT NULL,"+
-                                    "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
-                                    "banmessage varchar(255) NOT NULL,"+
-                                    "banned bit(1) NOT NULL DEFAULT b'0',"+
-                                    "exempted bit(1) NOT NULL DEFAULT b'0',"+
-                                    "PRIMARY KEY (username)"+
-                                    ");");
-                connection.query("CREATE TABLE IF NOT EXISTS ipcheck_ip ( "+
-                                    "ip varchar(11) NOT NULL,"+
-                                    "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
-                                    "banned bit(1) NOT NULL DEFAULT b'0',"+
-                                    "exempted bit(1) NOT NULL DEFAULT b'0',"+
-                                    "PRIMARY KEY (ip)"+
-                                    ");");
-                }else{
-                connection.query("CREATE TABLE IF NOT EXISTS ipcheck_log ( "+
-                                    "ip TEXT,"+
-                                    "username TEXT,"+
-                                    "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
-                                    "PRIMARY KEY(username,ip));");
-                connection.query("CREATE TABLE IF NOT EXISTS ipcheck_user ( "+
-                                    "username TEXT,"+
-                                    "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"+
-                                    "banmessage TEXT,"+
-                                    "banned INTEGER DEFAULT 0,"+
-                                    "exempted INTEGER DEFAULT 0,"+
-                                    "PRIMARY KEY(username));");
-                connection.query("CREATE TABLE IF NOT EXISTS ipcheck_ip ( "+
-                                    "ip TEXT,"+
-                                    "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"+
-                                    "banned INTEGER DEFAULT 0,"+
-                                    "exempted INTEGER DEFAULT 0,"+
-                                    "PRIMARY KEY(ip));");
-                }
+        if(type.equals("mysql")){
+        connection.query("CREATE TABLE IF NOT EXISTS ipcheck_log ( "+
+                            "ip varchar(11) NOT NULL,"+
+                            "username varchar(255) NOT NULL,"+
+                            "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
+                            "PRIMARY KEY (ip,username)"+
+                            ");");
+        connection.query("CREATE TABLE IF NOT EXISTS ipcheck_user ( "+
+                            "username varchar(255) NOT NULL,"+
+                            "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
+                            "banmessage varchar(255) NOT NULL,"+
+                            "banned bit(1) NOT NULL DEFAULT b'0',"+
+                            "exempted bit(1) NOT NULL DEFAULT b'0',"+
+                            "PRIMARY KEY (username)"+
+                            ");");
+        connection.query("CREATE TABLE IF NOT EXISTS ipcheck_ip ( "+
+                            "ip varchar(11) NOT NULL,"+
+                            "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
+                            "banned bit(1) NOT NULL DEFAULT b'0',"+
+                            "exempted bit(1) NOT NULL DEFAULT b'0',"+
+                            "PRIMARY KEY (ip)"+
+                            ");");
+        }else{
+        connection.query("CREATE TABLE IF NOT EXISTS ipcheck_log ( "+
+                            "ip TEXT,"+
+                            "username TEXT,"+
+                            "timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
+                            "PRIMARY KEY(username,ip));");
+        connection.query("CREATE TABLE IF NOT EXISTS ipcheck_user ( "+
+                            "username TEXT,"+
+                            "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"+
+                            "banmessage TEXT,"+
+                            "banned INTEGER DEFAULT 0,"+
+                            "exempted INTEGER DEFAULT 0,"+
+                            "PRIMARY KEY(username));");
+        connection.query("CREATE TABLE IF NOT EXISTS ipcheck_ip ( "+
+                            "ip TEXT,"+
+                            "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"+
+                            "banned INTEGER DEFAULT 0,"+
+                            "exempted INTEGER DEFAULT 0,"+
+                            "PRIMARY KEY(ip));");
+        }
     }
     public void close(){
         connection.close();

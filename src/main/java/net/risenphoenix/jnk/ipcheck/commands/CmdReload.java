@@ -1,7 +1,7 @@
 package net.risenphoenix.jnk.ipcheck.commands;
 
 import net.risenphoenix.jnk.ipcheck.IPcheck;
-import net.risenphoenix.jnk.ipcheck.Language;
+import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
@@ -14,16 +14,11 @@ public class CmdReload implements IpcCommand{
 			if (args.length == 1) {
 				IPcheck.Configuration.initialize();
 			} else {
-				sender.sendMessage(Language.NUM_ARGS_ERR);
+				sender.sendMessage(TranslationManager.NUM_ARGS_ERR);
 			}
 		} else {
-			sender.sendMessage(Language.NO_PERM_ERR);
+			sender.sendMessage(TranslationManager.NO_PERM_ERR);
 		}
-	}
-
-	@Override
-	public int getID() {
-		return 10;
 	}
 
 	@Override

@@ -25,25 +25,21 @@ public class CmdHelp implements IpcCommand{
 		}
 		
 		// Fetch list of commands which apply to the sender.
-		for(int i = 0; i < IPcheck.commands.size(); i++) {
-			for(IpcCommand ic:IPcheck.commands) {
-				if (ic.getID() == i) {
-					boolean show = true;
-					Permission[] perms = ic.getPermissions();
-					
-					for(int ii = 0; ii < perms.length; ii++) {
-						if (!sender.hasPermission(perms[ii])) {
-							show = false;
-							break;
-						}
-					}
-					
-					if (show) {
-						commandList.add(ic);
-					}
-				}
-			}
-		}
+                for(IpcCommand ic:IPcheck.Commands.getAllCommands()) {
+                                    boolean show = true;
+                                    Permission[] perms = ic.getPermissions();
+
+                                    for(int ii = 0; ii < perms.length; ii++) {
+                                            if (!sender.hasPermission(perms[ii])) {
+                                                    show = false;
+                                                    break;
+                                            }
+                                    }
+
+                                    if (show) {
+                                            commandList.add(ic);
+                                    }
+                }
 		
 		int[] bounds = getBounds(arg);
 		
@@ -60,11 +56,6 @@ public class CmdHelp implements IpcCommand{
 		sender.sendMessage(ChatColor.GOLD + "==========================================");
                 }
 		commandList.clear();
-	}
-
-	@Override
-	public int getID() {
-		return 12;
 	}
 
 	@Override

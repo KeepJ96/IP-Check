@@ -6,14 +6,14 @@ import org.bukkit.permissions.Permission;
 
 import net.risenphoenix.jnk.ipcheck.configuration.ConfigurationManager;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
-import net.risenphoenix.jnk.ipcheck.Language;
+import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
 
 public class CmdUnexempt implements IpcCommand{
 
 	@Override
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
-		if (sender.hasPermission("ipcheck.exempt.remove") || sender.isOp()) {
+		if (sender.hasPermission("ipcheck.unexempt") || sender.isOp()) {
 			if (args.length == 3) {
                                 boolean result=false;
                                 if(args[2].contains(".")){
@@ -22,21 +22,16 @@ public class CmdUnexempt implements IpcCommand{
                                     result = IPcheck.Database.unexemptPlayer(args[2]);
                                 }
 				if (result) {
-					sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.EXEMPTION_DEL_SUC);
+					sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.EXEMPTION_DEL_SUC);
 				} else {
-					sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.EXEMPTION_DEL_ERR);
+					sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.EXEMPTION_DEL_ERR);
 				}
 			} else {
-				sender.sendMessage(Language.NUM_ARGS_ERR);
+				sender.sendMessage(TranslationManager.NUM_ARGS_ERR);
 			}
 		} else {
-			sender.sendMessage(Language.NO_PERM_ERR);
+			sender.sendMessage(TranslationManager.NO_PERM_ERR);
 		}
-	}
-
-	@Override
-	public int getID() {
-		return 5;
 	}
 
 	@Override
@@ -46,13 +41,13 @@ public class CmdUnexempt implements IpcCommand{
 
 	@Override
 	public String getSyntax() {
-		return "exempt remove <player||IP-address>";
+		return "unexempt <player||IP-address>";
 	}
 
 	@Override
 	public Permission[] getPermissions() {
 		Permission perms[] = {
-			new Permission("ipcheck.exempt.remove")
+			new Permission("ipcheck.unexempt")
 		};
 		
 		return perms;

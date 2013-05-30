@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 
 import net.risenphoenix.jnk.ipcheck.IPcheck;
-import net.risenphoenix.jnk.ipcheck.Language;
+import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
 
 public class CmdExempt implements IpcCommand{
@@ -18,28 +18,23 @@ public class CmdExempt implements IpcCommand{
 				
 				if (args[1].toLowerCase().matches(ip_filter.toLowerCase())) {
 					if (IPcheck.Database.exemptIP(args[1])) {
-						sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.IP_EXEMPT_SUC);
+						sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.IP_EXEMPT_SUC);
 					} else {
-						sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.EXEMPTION_FAIL);
+						sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.EXEMPTION_FAIL);
 					}
 				} else {
 					if (IPcheck.Database.exemptPlayer(args[1])) {
-						sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.PLAYER_EXEMPT_SUC);
+						sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.PLAYER_EXEMPT_SUC);
 					} else {
-						sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.EXEMPTION_FAIL);
+						sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.EXEMPTION_FAIL);
 					}
 				}
 			} else {
-				sender.sendMessage(Language.NUM_ARGS_ERR);
+				sender.sendMessage(TranslationManager.NUM_ARGS_ERR);
 			}
 		} else {
-			sender.sendMessage(Language.NO_PERM_ERR);
+			sender.sendMessage(TranslationManager.NO_PERM_ERR);
 		}
-	}
-
-	@Override
-	public int getID() {
-		return 3;
 	}
 
 	@Override

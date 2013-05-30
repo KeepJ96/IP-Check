@@ -164,10 +164,6 @@ public class CmdConvert implements IpcCommand{
         return list;
     }
 
-    public int getID() {
-        return 13;
-    }
-
     public String getHelp() {
         return "Converts old database formats into a new database.";
     }
