@@ -38,7 +38,7 @@ public class DatabaseManager{
         }
         if(type.equals("mysql")){
         connection.query("CREATE TABLE IF NOT EXISTS ipcheck_log ( "+
-                            "ip varchar(11) NOT NULL,"+
+                            "ip varchar(15) NOT NULL,"+
                             "username varchar(255) NOT NULL,"+
                             "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"+ 
                             "PRIMARY KEY (ip,username)"+
@@ -52,7 +52,7 @@ public class DatabaseManager{
                             "PRIMARY KEY (username)"+
                             ");");
         connection.query("CREATE TABLE IF NOT EXISTS ipcheck_ip ( "+
-                            "ip varchar(11) NOT NULL,"+
+                            "ip varchar(15) NOT NULL,"+
                             "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
                             "banned bit(1) NOT NULL DEFAULT b'0',"+
                             "exempted bit(1) NOT NULL DEFAULT b'0',"+
