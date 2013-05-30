@@ -15,8 +15,12 @@ public class CmdUnexempt implements IpcCommand{
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
 		if (sender.hasPermission("ipcheck.exempt.remove") || sender.isOp()) {
 			if (args.length == 3) {
-				boolean result = IPcheck.Configuration.deleteExemption(args[2]);
-				
+                                boolean result=false;
+                                if(args[2].contains(".")){
+                                    result = IPcheck.Database.unexemptIP(args[2]);
+                                }else{
+                                    result = IPcheck.Database.unexemptPlayer(args[2]);
+                                }
 				if (result) {
 					sender.sendMessage(ChatColor.GOLD + Language.PLUG_NAME + ChatColor.YELLOW + Language.EXEMPTION_DEL_SUC);
 				} else {

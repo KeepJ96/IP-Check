@@ -1,8 +1,8 @@
 # IP-Check -- Author: Jnk1296, FR34KYN01535 
 # For more information visit http://dev.bukkit.org/server-mods/ip-check-jnk/
 
-# Define backend (flatfile or mysql)
-backend: flatfile
+# Use MySQL instead of SQLite?
+use-mysql: false
 
 # Login details if backend is mysql
 dbUsername: "root"

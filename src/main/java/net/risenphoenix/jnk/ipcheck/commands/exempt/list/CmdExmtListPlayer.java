@@ -14,7 +14,7 @@ public class CmdExmtListPlayer implements IpcCommand{
 	@Override
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
 		if (sender.hasPermission("ipcheck.list") || sender.isOp()) {
-			ArrayList<String> list = IPcheck.Configuration.getPlayerExemptList();
+			ArrayList<String> list = IPcheck.Database.getPlayerExemptList();
 			StringBuilder sb = new StringBuilder();
 	
 			sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");

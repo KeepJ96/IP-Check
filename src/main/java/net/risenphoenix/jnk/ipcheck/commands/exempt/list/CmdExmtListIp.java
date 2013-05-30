@@ -15,7 +15,7 @@ public class CmdExmtListIp implements IpcCommand{
 	@Override
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
 		if ((sender.hasPermission("ipcheck.list") && sender.hasPermission("ipcheck.showip")) || sender.isOp()) {
-			ArrayList<String> list = IPcheck.Configuration.getIpExemptList();
+			ArrayList<String> list = IPcheck.Database.getIpExemptList();
 			StringBuilder sb = new StringBuilder();
 			
 			sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");

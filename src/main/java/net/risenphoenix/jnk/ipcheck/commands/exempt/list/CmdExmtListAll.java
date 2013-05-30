@@ -16,8 +16,8 @@ public class CmdExmtListAll implements IpcCommand{
 	@Override
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
 		if (sender.hasPermission("ipcheck.list") || sender.isOp()) {
-			ArrayList<String> list = IPcheck.Configuration.getPlayerExemptList();
-			ArrayList<String> list2 = IPcheck.Configuration.getIpExemptList();
+			ArrayList<String> list = IPcheck.Database.getPlayerExemptList();
+			ArrayList<String> list2 = IPcheck.Database.getIpExemptList();
 			
 			StringBuilder sb1 = new StringBuilder();
 			StringBuilder sb2 = new StringBuilder();

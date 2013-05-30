@@ -34,7 +34,6 @@ public class ErrorLogger {
             IPcheck.VER_STRING + "\r\n" +
             "Compilation Date: " + IPcheck.COMP_DATE + "\r\n" +
             "-------------------------------------\r\n" +
-            "Backend Manager Registrar: " + getRegistrar() + "\r\n" +
             "Current Operating Directory: " + System.getProperty("user.dir") + "\r\n" +
             "-------------------------------------\r\n" +
             "We're sorry, but an error occurred while attempting to perform \r\n" +
@@ -66,13 +65,5 @@ public class ErrorLogger {
 
     private void createFolder() {
         if (!dir.exists()) dir.mkdir();
-    }
-
-    private String getRegistrar() {
-        if (IPcheck.backend != null) {
-            return IPcheck.backend.getRegistrar();
-        } else {
-            return "NOT_INITIALIZED";
-        }
     }
 }
