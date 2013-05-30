@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
 import net.risenphoenix.jnk.ipcheck.logging.ErrorLogger;
+import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.Permission;
 
@@ -23,16 +25,26 @@ public class CmdConvert implements IpcCommand{
     private static File playersDir = new File("plugins/Essentials/userdata");
     
     public void execute(CommandSender sender, String commandLabel, String[] args) {
-        ArrayList<String> load;
-        if (args[1].equals("-e")) {
-            load=loadEssentials();
-        }else{
-            load=loadPlainText();
-        }
-        
-        for (String s:load) {
-            String[] sArray = s.split("|");
-            IPcheck.Database.log(sArray[0],sArray[1]);
+        try{     
+            if (args.length > 1) {
+                ArrayList<String> load;
+                if (args[1].equals("-e")) {
+                    load=loadEssentials();
+                }else{
+                    load=loadPlainText();
+                }
+                long startTime = System.currentTimeMillis();
+                for (String s:load) {
+                    String[] sArray = s.split("|");
+                    IPcheck.Database.log(sArray[0],sArray[1]);
+                }
+                long endTime = System.currentTimeMillis();
+                sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + "Conversion complete! Time taken: " + ((endTime - startTime) / 1000) + " seconds. " +
+                "Total number of entries converted: " + load.size() + ".");
+            }
+        }catch(Exception e){
+            sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + "Conversion failed!");
+            logger.warning("Conversion failed: "+e.getMessage());
         }
     }
     
