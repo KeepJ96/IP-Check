@@ -15,9 +15,18 @@ public class CmdPurge implements IpcCommand{
 
                 // DELETING AN IP ENTRY
                 if (args[1].toLowerCase().matches(ip_filter.toLowerCase())) {
-                  IPcheck.Database.purgeIP(args[1]);
+                  if(IPcheck.Database.purgeIP(args[1])){
+                        sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + String.format(TranslationManager.PURGE_SUC,args[1]));
+                  }else{
+                      sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + String.format(TranslationManager.PURGE_ERR,args[1]));
+                  }
+                  
                 } else{
-                  IPcheck.Database.purgePlayer(args[1]); 
+                    if(IPcheck.Database.purgePlayer(args[1])){
+                        sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + String.format(TranslationManager.PURGE_SUC,args[1]));
+                    }else{
+                        sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + String.format(TranslationManager.PURGE_ERR,args[1]));
+                    } 
                 }
             } else {
                 sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.NUM_ARGS_ERR);

@@ -42,5 +42,7 @@ public class TranslationManager {
     public static final String EXEMPTION_DEL_ERR = "Exemption specified does not exist.";
     public static final String ERROR_LOG_RMDR = "An error occurred! A log summary of this error has been saved to IP-Check's directory under ''Error_Reports''";
 
- 	
+    public static final String PURGE_SUC = "Sucessfully purged %s.";
+    public static final String PURGE_ERR = "Failed to purge %s!";
+    
 }
