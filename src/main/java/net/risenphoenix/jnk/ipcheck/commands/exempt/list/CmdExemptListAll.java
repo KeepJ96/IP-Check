@@ -16,8 +16,8 @@ public class CmdExemptListAll implements IpcCommand{
 	@Override
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
 		if (sender.hasPermission("ipcheck.list") || sender.isOp()) {
-			ArrayList<String> list = IPcheck.Database.getPlayerExemptList();
-			ArrayList<String> list2 = IPcheck.Database.getIpExemptList();
+			ArrayList<String> list = IPcheck.Instance.Database.getPlayerExemptList();
+			ArrayList<String> list2 = IPcheck.Instance.Database.getIpExemptList();
 			
 			StringBuilder sb1 = new StringBuilder();
 			StringBuilder sb2 = new StringBuilder();
@@ -36,14 +36,14 @@ public class CmdExemptListAll implements IpcCommand{
 				}
 				sender.sendMessage(sb2.toString());
 			} else {
-				sender.sendMessage(TranslationManager.NO_PERM_ERR);
+				sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NO_PERM_ERR"));
 			}
 			
 			sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");
 			sender.sendMessage(ChatColor.YELLOW + "Total exemptions: " + ChatColor.LIGHT_PURPLE + (list.size() + list2.size()));
 			sender.sendMessage(ChatColor.DARK_GRAY + "---------------------------------------------");
 		} else {
-			sender.sendMessage(TranslationManager.NO_PERM_ERR);
+			sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NO_PERM_ERR"));
 		}
 	}
 

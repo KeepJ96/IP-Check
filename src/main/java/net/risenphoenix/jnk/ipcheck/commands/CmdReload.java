@@ -12,12 +12,13 @@ public class CmdReload implements IpcCommand{
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
 		if (sender.hasPermission("ipcheck.reload") || sender.isOp()) {
 			if (args.length == 1) {
-				IPcheck.Configuration.initialize();
+				IPcheck.Instance.Configuration.initialize();
+                                IPcheck.Instance.Translation.reloadTranslation();
 			} else {
-				sender.sendMessage(TranslationManager.NUM_ARGS_ERR);
+				sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NUM_ARGS_ERR"));
 			}
 		} else {
-			sender.sendMessage(TranslationManager.NO_PERM_ERR);
+			sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NO_PERM_ERR"));
 		}
 	}
 

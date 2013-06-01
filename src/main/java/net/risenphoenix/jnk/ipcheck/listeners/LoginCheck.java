@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 public class LoginCheck {
 
     public boolean secureCheck(String ip, PlayerLoginEvent e) {
-        ArrayList<String> players = IPcheck.Database.getAlts(ip);
+        ArrayList<String> players = IPcheck.Instance.Database.getAlts(ip);
         int accounts = players.size();
         Player player = e.getPlayer();
         return secureKick(accounts, player.getName(), e, ip);
@@ -17,10 +17,10 @@ public class LoginCheck {
 
     public boolean secureKick(int accounts, String player, PlayerLoginEvent e, String ip) {
         // If the player was reported to have more than the secure-threshold # of accounts, then kick (if not exempt).
-        if (accounts > IPcheck.Configuration.secureThreshold && !IPcheck.Database.isExemptedPlayer(player) && !IPcheck.Database.isExemptedIP(ip)) {
+        if (accounts > IPcheck.Instance.Configuration.secureThreshold && !IPcheck.Instance.Database.isExemptedPlayer(player) && !IPcheck.Instance.Database.isExemptedIP(ip)) {
 
             if (player != null) {
-                e.setKickMessage(IPcheck.Configuration.secureKickMsg);
+                e.setKickMessage(IPcheck.Instance.Configuration.secureKickMsg);
                 e.setResult(Result.KICK_OTHER);
                 return false;
             }

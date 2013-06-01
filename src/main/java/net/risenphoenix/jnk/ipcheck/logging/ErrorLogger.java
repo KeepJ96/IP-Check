@@ -31,8 +31,8 @@ public class ErrorLogger {
         String message = (
             RandomMessages.getErrorMessage() + "\r\n" +
             "-------------------------------------\r\n" +
-            IPcheck.VER_STRING + "\r\n" +
-            "Compilation Date: " + IPcheck.COMP_DATE + "\r\n" +
+            IPcheck.Instance.Configuration.VER_STRING + "\r\n" +
+            "Compilation Date: " + IPcheck.Instance.Configuration.COMP_DATE + "\r\n" +
             "-------------------------------------\r\n" +
             "Current Operating Directory: " + System.getProperty("user.dir") + "\r\n" +
             "-------------------------------------\r\n" +
@@ -51,13 +51,13 @@ public class ErrorLogger {
             f = new FileWriter(path, true);
             f.write(message);
         } catch (Exception ee) {
-            logger.severe(TranslationManager.PLUG_NAME + ee.getMessage());
+            logger.severe(IPcheck.PLUG_NAME + ee.getMessage());
         } finally {
             if (f != null) {
                 try {
                     f.close();
                 } catch (Exception eee) {
-                    logger.severe(TranslationManager.PLUG_NAME + eee.getMessage());
+                    logger.severe(IPcheck.PLUG_NAME + eee.getMessage());
                 }
             }
         }

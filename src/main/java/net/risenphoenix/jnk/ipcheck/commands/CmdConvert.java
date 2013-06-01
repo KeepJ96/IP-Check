@@ -31,7 +31,7 @@ public class CmdConvert implements IpcCommand{
                 if (args[1].equals("-e")) {
                     load=loadEssentials();
                 } else {
-                    sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.ILL_ARGS_ERR);
+                    sender.sendMessage(ChatColor.GOLD + IPcheck.Instance.PLUG_NAME + ChatColor.YELLOW + IPcheck.Instance.Translation.getTranslation("ILL_ARGS_ERR"));
                     return;
                 }
             } else {
@@ -41,13 +41,13 @@ public class CmdConvert implements IpcCommand{
             long startTime = System.currentTimeMillis();
             for (String s:load) {
                 String[] sArray = s.split("|");
-                IPcheck.Database.log(sArray[0],sArray[1]);
+                IPcheck.Instance.Database.log(sArray[0],sArray[1]);
             }
             long endTime = System.currentTimeMillis();
-            sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + "Conversion complete! Time taken: " + ((endTime - startTime) / 1000) + " seconds. " +
+            sender.sendMessage(ChatColor.GOLD + IPcheck.Instance.PLUG_NAME + ChatColor.YELLOW + "Conversion complete! Time taken: " + ((endTime - startTime) / 1000) + " seconds. " +
             "Total number of entries converted: " + load.size() + ".");
         }catch(Exception e){
-            sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + "Conversion failed!");
+            sender.sendMessage(ChatColor.GOLD + IPcheck.Instance.PLUG_NAME + ChatColor.YELLOW + "Conversion failed!");
             logger.warning("Conversion failed: "+e.getMessage());
         }
     }

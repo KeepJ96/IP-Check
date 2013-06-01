@@ -13,7 +13,7 @@ public class PlayerActions {
 	public void banPlayers(ArrayList<String> players, CommandSender sender, String ip, String message, boolean banning) {
             // Ban or Unban IP Address
             if (ip.equals("no-find")) {
-                sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.NO_FIND);
+                sender.sendMessage(ChatColor.GOLD + IPcheck.Instance.PLUG_NAME + ChatColor.YELLOW + IPcheck.Instance.Translation.getTranslation("NO_FIND"));
                 return;
             }
 
@@ -38,9 +38,9 @@ public class PlayerActions {
                 offPlayer.setBanned(banning);
 
                 if (message.length() > 0) {
-                    IPcheck.Database.banPlayer(offPlayer.getName(), message);
+                    IPcheck.Instance.Database.banPlayer(offPlayer.getName(), message);
                 } else {
-                    IPcheck.Database.banPlayer(offPlayer.getName(), IPcheck.Configuration.banMessage);
+                    IPcheck.Instance.Database.banPlayer(offPlayer.getName(), IPcheck.Instance.Configuration.banMessage);
                 }
                 
                 if (banning) {
@@ -50,7 +50,7 @@ public class PlayerActions {
                         if (message.length() > 0) {
                             player.kickPlayer(message);
                         } else {
-                            player.kickPlayer(IPcheck.Configuration.banMessage);
+                            player.kickPlayer(IPcheck.Instance.Configuration.banMessage);
                         }
                     }
 
@@ -60,7 +60,7 @@ public class PlayerActions {
                             if (message.length() > 0) {
                                 online[i].sendMessage(ChatColor.GOLD + "Player " + ChatColor.RED + s + ChatColor.GOLD + " was banned by " + ChatColor.GREEN + sender.getName() + ChatColor.GOLD + " for: " + message);
                             } else {
-                                online[i].sendMessage(ChatColor.GOLD + "Player " + ChatColor.RED + s + ChatColor.GOLD + " was banned by " + ChatColor.GREEN + sender.getName() + ChatColor.GOLD + " for: " + IPcheck.Configuration.banMessage);
+                                online[i].sendMessage(ChatColor.GOLD + "Player " + ChatColor.RED + s + ChatColor.GOLD + " was banned by " + ChatColor.GREEN + sender.getName() + ChatColor.GOLD + " for: " + IPcheck.Instance.Configuration.banMessage);
                             }
                         }
                     }
@@ -75,7 +75,7 @@ public class PlayerActions {
             int playersKicked = 0;
             
             if (ip.equals("no-find")) {
-                sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.NO_FIND);
+                sender.sendMessage(ChatColor.GOLD + IPcheck.Instance.PLUG_NAME + ChatColor.YELLOW + IPcheck.Instance.Translation.getTranslation("NO_FIND"));
                 return -1;
             }
             

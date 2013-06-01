@@ -17,20 +17,20 @@ public class CmdUnexempt implements IpcCommand{
 			if (args.length == 3) {
                                 boolean result=false;
                                 if(args[2].contains(".")){
-                                    result = IPcheck.Database.unexemptIP(args[2]);
+                                    result = IPcheck.Instance.Database.unexemptIP(args[2]);
                                 }else{
-                                    result = IPcheck.Database.unexemptPlayer(args[2]);
+                                    result = IPcheck.Instance.Database.unexemptPlayer(args[2]);
                                 }
 				if (result) {
-					sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.EXEMPTION_DEL_SUC);
+					sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + IPcheck.Instance.Translation.getTranslation("EXEMPTION_DEL_SUC"));
 				} else {
-					sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.EXEMPTION_DEL_ERR);
+					sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + IPcheck.Instance.Translation.getTranslation("EXEMPTION_DEL_ERR"));
 				}
 			} else {
-				sender.sendMessage(TranslationManager.NUM_ARGS_ERR);
+				sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NUM_ARGS_ERR"));
 			}
 		} else {
-			sender.sendMessage(TranslationManager.NO_PERM_ERR);
+			sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NO_PERM_ERR"));
 		}
 	}
 

@@ -32,7 +32,7 @@ public class JDBCConnection
     } 
     public JDBCConnection() { 
         driver="org.sqlite.JDBC";
-        connectionString="jdbc:sqlite:" + new File(IPcheck.getInstance().getDataFolder()+ File.separator + "ip-check.db").getAbsolutePath();
+        connectionString="jdbc:sqlite:" + new File(IPcheck.Instance.getDataFolder()+ File.separator + "ip-check.db").getAbsolutePath();
     } 
     public Connection open() { 
         try { 
@@ -107,8 +107,8 @@ public class JDBCConnection
                 logger.severe("Database query error: " + msg);
                 if (retry && msg.contains("_BUSY")) {
                     logger.severe("Retrying query...");
-                    IPcheck.getInstance().getServer().getScheduler()
-                    .scheduleSyncDelayedTask(IPcheck.getInstance(), new Runnable() {
+                    IPcheck.Instance.getServer().getScheduler()
+                    .scheduleSyncDelayedTask(IPcheck.Instance, new Runnable() {
                         @Override
                             public void run() {
                                 query(query,false);

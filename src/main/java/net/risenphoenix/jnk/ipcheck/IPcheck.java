@@ -3,32 +3,11 @@ package net.risenphoenix.jnk.ipcheck;
 import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 import net.risenphoenix.jnk.ipcheck.commands.CommandManager;
 import net.risenphoenix.jnk.ipcheck.configuration.ConfigurationManager;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.risenphoenix.jnk.ipcheck.listeners.PlayerJoinListener;
 import net.risenphoenix.jnk.ipcheck.listeners.PlayerLoginListener;
 import net.risenphoenix.jnk.ipcheck.logging.DateStamp;
 import net.risenphoenix.jnk.ipcheck.logging.ErrorLogger;
-import net.risenphoenix.jnk.ipcheck.commands.CmdAbout;
-import net.risenphoenix.jnk.ipcheck.commands.ban.CmdBan;
-import net.risenphoenix.jnk.ipcheck.commands.CmdCheck;
-import net.risenphoenix.jnk.ipcheck.commands.CmdConvert;
-import net.risenphoenix.jnk.ipcheck.commands.CmdHelp;
-import net.risenphoenix.jnk.ipcheck.commands.CmdKick;
-import net.risenphoenix.jnk.ipcheck.commands.CmdReload;
-import net.risenphoenix.jnk.ipcheck.commands.ban.CmdSBan;
-import net.risenphoenix.jnk.ipcheck.commands.CmdToggle;
-import net.risenphoenix.jnk.ipcheck.commands.ban.CmdUnban;
-import net.risenphoenix.jnk.ipcheck.commands.CmdPurge;
 import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
-import net.risenphoenix.jnk.ipcheck.commands.exempt.CmdExempt;
-import net.risenphoenix.jnk.ipcheck.commands.exempt.CmdUnexempt;
-import net.risenphoenix.jnk.ipcheck.commands.exempt.list.CmdExemptListAll;
-import net.risenphoenix.jnk.ipcheck.commands.exempt.list.CmdExemptListIp;
-import net.risenphoenix.jnk.ipcheck.commands.exempt.list.CmdExemptListPlayer;
 import net.risenphoenix.jnk.ipcheck.database.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -46,19 +25,22 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class IPcheck extends JavaPlugin implements Listener{
     public static IPcheck Instance;	
-    //Root Command
-    public static final String ROOT_COMMAND = "c";
-    public static String VER_STRING;
-    public static Date COMP_DATE;
+    
+    public final static String PLUG_NAME = "[IP-Check] ";
+    public final static String ROOT_COMMAND = "c";
     
     //Configuration
-    public static ConfigurationManager Configuration;
+    public ConfigurationManager Configuration;
 
     //Database
-    public static DatabaseManager Database;
+    public DatabaseManager Database;
     
     //Commands
-    public static CommandManager Commands;
+    public CommandManager Commands;
+    
+    //Commands
+    public TranslationManager Translation;
+    
 
     //Event Listeners
     public static PlayerLoginListener PLL = new PlayerLoginListener();
@@ -69,28 +51,24 @@ public class IPcheck extends JavaPlugin implements Listener{
     // Called when plugin is enabled
     @Override
     public void onEnable() { 
-        this.saveDefaultConfig(); // Create config if there is none
-        Instance=this;
-        
+        saveDefaultConfig(); // Create config if there is none
+        this.Instance=this;
         Configuration = new ConfigurationManager(); 
+        Translation = new TranslationManager(getConfig().getString("language"));
         Database = new DatabaseManager(getConfig().getBoolean("use-mysql")); 
         Commands = new CommandManager();
         
-        VER_STRING = this.getDescription().getVersion(); // Getting Version from plugin.yml 
-        try {
-            COMP_DATE = new Date(IPcheck.class.getResource("IPcheck.class").openConnection().getLastModified()); //Getting compiletime from class file
-        } catch (IOException ex) {
-            Logger.getLogger(IPcheck.class.getName()).log(Level.SEVERE, null, ex);
-        }
         getServer().getPluginManager().registerEvents(this, this); // Register the Player Login Listener
-
+        showRandomMessage();
+    }
+    
+    private void showRandomMessage(){
         DateStamp ds = new DateStamp();
         String random = RandomMessages.getSeasonalMessage(ds.getCustomStamp("MM-dd")); // Is there an overriding message coded for this date?
-
         if (random != null) {
             Bukkit.getLogger().info(random);
         } else {
-            Bukkit.getLogger().info(TranslationManager.PLUG_NAME + RandomMessages.getRandomMessage()); // A Nice random Message
+            Bukkit.getLogger().info(PLUG_NAME + RandomMessages.getRandomMessage()); // A Nice random Message
         }
     }
 
@@ -98,9 +76,6 @@ public class IPcheck extends JavaPlugin implements Listener{
     @Override
     public void onDisable() {
         Database.close();
-    }
-    public static JavaPlugin getInstance(){
-        return Instance;
     }
 
     // Event Handler for PlayerLoginEvents
@@ -132,12 +107,12 @@ public class IPcheck extends JavaPlugin implements Listener{
                 } catch (Exception e) {
                     ErrorLogger EL = new ErrorLogger();
                     EL.execute(e);
-                    sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.ERROR_LOG_RMDR);
+                    sender.sendMessage(ChatColor.GOLD + PLUG_NAME + ChatColor.YELLOW + Translation.getTranslation("ERROR_LOG_RMDR"));
                 } finally {
                     return true;
                 }
             } else {
-                sender.sendMessage(TranslationManager.NO_PERM_ERR);
+                sender.sendMessage(Translation.getTranslation("NO_PERM_ERR"));
                 return true;
             }
         }

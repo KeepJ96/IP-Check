@@ -25,7 +25,7 @@ public class CmdHelp implements IpcCommand{
 		}
 		
 		// Fetch list of commands which apply to the sender.
-                for(IpcCommand ic:IPcheck.Commands.getAllCommands()) {
+                for(IpcCommand ic:IPcheck.Instance.Commands.getAllCommands()) {
                                     boolean show = true;
                                     Permission[] perms = ic.getPermissions();
 

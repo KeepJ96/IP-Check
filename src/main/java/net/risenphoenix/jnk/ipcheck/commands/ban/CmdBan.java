@@ -34,15 +34,15 @@ public class CmdBan implements IpcCommand{
 				String ip_filter = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
 				if (args[1].toLowerCase().matches(ip_filter.toLowerCase())) {
 					// Command Instructions Here
-					ab.banPlayers(IPcheck.Database.getAlts(args[1]), sender, IPcheck.Database.checkIPaddress(args[1]), sb.toString(), true);
+					ab.banPlayers(IPcheck.Instance.Database.getAlts(args[1]), sender, IPcheck.Instance.Database.checkIPaddress(args[1]), sb.toString(), true);
 				} else {
-					ab.banPlayers(IPcheck.Database.getAlts(IPcheck.Database.getLastKnownIP(args[1])), sender, IPcheck.Database.getLastKnownIP(args[1]), sb.toString(), true);
+					ab.banPlayers(IPcheck.Instance.Database.getAlts(IPcheck.Instance.Database.getLastKnownIP(args[1])), sender, IPcheck.Instance.Database.getLastKnownIP(args[1]), sb.toString(), true);
 				}
 			} else {
-				sender.sendMessage(TranslationManager.NUM_ARGS_ERR);
+				sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NUM_ARGS_ERR"));
 			}
 		} else {
-			sender.sendMessage(TranslationManager.NO_PERM_ERR);
+			sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NO_PERM_ERR"));
 		}
 	}
 

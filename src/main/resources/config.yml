@@ -1,6 +1,10 @@
 # IP-Check -- Authors: Jnk1296, FR34KYN01535 
 # For more information visit http://dev.bukkit.org/server-mods/ip-check-jnk/
 
+# Default language is english if empty or "en". 
+# To switch language put in the name of the languagefile (e.g. "de" for de.yml)
+language: "en"
+
 # Use MySQL instead of SQLite?
 use-mysql: false
 

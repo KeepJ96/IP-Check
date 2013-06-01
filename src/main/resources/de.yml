@@ -1,0 +1,23 @@
+# IP-Check -- Authors: Jnk1296, FR34KYN01535 
+# German languagefile -- Translator: FR34KYN01535
+# For more information visit http://dev.bukkit.org/server-mods/ip-check-jnk/
+name: German
+lname: Deutsch
+translation:
+  BAN_LIST_READ_ERR: "DE Error occurred while attempting to read banned-ips.txt!"
+  NO_FIND: "DE The player or IP specified could not be found."
+  NO_PERM_ERR: "DE You don't have permission to do that!"
+  NUM_ARGS_ERR: "DE Incorrect Number of Arguments."
+  ILL_ARGS_ERR: "DE Illegal Argument(s) were passed into the command."
+  PLAYER_EXEMPT_SUC: "DE Player added to exemption list!"
+  IP_EXEMPT_SUC: "DE IP-Address added to exemption list!"
+  EXEMPTION_FAIL: "DE Sorry. :( Something went wrong. The exemption could not be added."
+  TOGGLE_SECURE: "DE Secure-Mode set to: "
+  TOGGLE_NOTIFY: "DE Notify-On-Login set to: "
+  TOGGLE_DETAIL: "DE Descriptive-Notify set to: "
+  TOGGLE_ERR: "DE An error occurred while attempting to set state of toggle."
+  EXEMPTION_DEL_SUC: "DE Exemption successfully removed!"
+  EXEMPTION_DEL_ERR: "DE Exemption specified does not exist."
+  ERROR_LOG_RMDR: "DE An error occurred! A log summary of this error has been saved to IP-Check's directory under ''Error_Reports''"
+  PURGE_SUC: "DE Sucessfully purged %s."
+  PURGE_ERR: "DE Failed to purge %s!"

@@ -109,7 +109,7 @@ public class RandomMessages {
         } catch (Exception e) {
             ErrorLogger EL = new ErrorLogger();
             EL.execute(e);
-            logger.severe(TranslationManager.BAN_LIST_READ_ERR);
+            logger.severe(IPcheck.Instance.Translation.getTranslation("BAN_LIST_READ_ERR"));
         } finally {
             try {
                 if (br != null) {
@@ -140,13 +140,12 @@ public class RandomMessages {
 	}
 	
 	public static String getSeasonalMessage(String date) {
-		if (date.equals("05-05")) return TranslationManager.PLUG_NAME + "So who here likes Mayonase?";
-		if (date.equals("04-01")) return TranslationManager.PLUG_NAME + "Your current subscription expires today! Renew immediately! The current subscription price is: $19.95";
-		if (date.equals("04-02")) return TranslationManager.PLUG_NAME + "April fools! Of course this plugin is free! :)";
-		if (date.equals("04-12")) return TranslationManager.PLUG_NAME + "Happy Birthday Jnk!";
-		if (date.equals("12-25")) return TranslationManager.PLUG_NAME + "Merry Christmas from IP-Check. =D";
-		if (date.equals("02-14")) return TranslationManager.PLUG_NAME + "Won't you be my Valentine? <3";
-		
+		if (date.equals("05-05")) return IPcheck.Instance.PLUG_NAME + "So who here likes Mayonase?";
+		if (date.equals("04-01")) return IPcheck.Instance.PLUG_NAME + "Your current subscription expires today! Renew immediately! The current subscription price is: $19.95";
+		if (date.equals("04-02")) return IPcheck.Instance.PLUG_NAME + "April fools! Of course this plugin is free! :)";
+		if (date.equals("04-12")) return IPcheck.Instance.PLUG_NAME + "Happy Birthday Jnk!";
+		if (date.equals("12-25")) return IPcheck.Instance.PLUG_NAME + "Merry Christmas from IP-Check. =D";
+		if (date.equals("02-14")) return IPcheck.Instance.PLUG_NAME + "Won't you be my Valentine? <3";
 		return null;
 	}
 }
