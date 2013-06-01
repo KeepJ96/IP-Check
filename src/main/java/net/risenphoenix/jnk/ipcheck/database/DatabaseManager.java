@@ -18,23 +18,23 @@ public class DatabaseManager{
 
     public DatabaseManager(boolean useMySQL){
         if(useMySQL){
-            connection = new JDBCConnection(IPcheck.Configuration.dbHostname, 
-                                            IPcheck.Configuration.dbPort,
-                                            IPcheck.Configuration.dbName,
-                                            IPcheck.Configuration.dbUsername,
-                                            IPcheck.Configuration.dbPassword);
+            connection = new JDBCConnection(IPcheck.Instance.Configuration.dbHostname, 
+                                            IPcheck.Instance.Configuration.dbPort,
+                                            IPcheck.Instance.Configuration.dbName,
+                                            IPcheck.Instance.Configuration.dbUsername,
+                                            IPcheck.Instance.Configuration.dbPassword);
             type="mysql";
         }else{
             connection = new JDBCConnection();
             type="sqlite";
         } 
 
-        if(!IPcheck.getInstance().getConfig().getBoolean("dbGenerated")){
+        if(!IPcheck.Instance.getConfig().getBoolean("dbGenerated")){
                 connection.query("DROP TABLE IF EXISTS ipcheck_log;");
                 connection.query("DROP TABLE IF EXISTS ipcheck_user;");
                 connection.query("DROP TABLE IF EXISTS ipcheck_ip;");
-                IPcheck.getInstance().getConfig().set("dbGenerated", true);
-                IPcheck.getInstance().saveConfig();
+                IPcheck.Instance.getConfig().set("dbGenerated", true);
+                IPcheck.Instance.saveConfig();
         }
         if(type.equals("mysql")){
         connection.query("CREATE TABLE IF NOT EXISTS ipcheck_log ( "+

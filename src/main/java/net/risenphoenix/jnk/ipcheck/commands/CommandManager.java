@@ -1,6 +1,7 @@
 package net.risenphoenix.jnk.ipcheck.commands;
 
 import java.util.ArrayList;
+import net.risenphoenix.jnk.ipcheck.IPcheck;
 import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 import net.risenphoenix.jnk.ipcheck.commands.CmdAbout;
 import net.risenphoenix.jnk.ipcheck.commands.CmdCheck;
@@ -83,7 +84,7 @@ public class CommandManager {
                         if (args.length==2){
                                 return ExemptCommand;
                         }else{
-                            sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + "An invalid sub-command or no sub-command was specified.");
+                            sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + "An invalid sub-command or no sub-command was specified.");
                             return null;
                         }
                     } 
@@ -105,7 +106,7 @@ public class CommandManager {
                                     } else if (args[1].equalsIgnoreCase("player")) {
                                             return ExemptListPlayerCommand;
                                     } else {
-                                        sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + "An invalid sub-command or no sub-command was specified.");
+                                        sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + "An invalid sub-command or no sub-command was specified.");
                                         return null;
                                     }
                             } else {
@@ -136,7 +137,7 @@ public class CommandManager {
             } else {
                     return null; // No Command was Given.
             }
-            sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + "An invalid command was specified.");
+            sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + "An invalid command was specified.");
             return null;        
     }
 }

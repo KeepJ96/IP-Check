@@ -9,12 +9,18 @@
             <directory>${project.basedir}/src/main/resources/</directory>
             <outputDirectory>/IP-Check/</outputDirectory>
             <includes>
-                <include>config.yml</include>
+                <include>*.yml</include>
             </includes>
+            <excludes>
+                <exclude>plugin.yml</exclude>
+            </excludes>
         </fileSet>
         <fileSet>
             <directory>${project.basedir}/lib/</directory>
             <outputDirectory>/IP-Check/</outputDirectory>
+            <includes>
+                <include>config.yml</include>
+            </includes>
         </fileSet>
     </fileSets>
     <files>

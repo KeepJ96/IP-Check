@@ -1,6 +1,7 @@
 package net.risenphoenix.jnk.ipcheck.commands.ban;
 
 import java.util.ArrayList;
+import net.risenphoenix.jnk.ipcheck.IPcheck;
 import net.risenphoenix.jnk.ipcheck.PlayerActions;
 import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
@@ -33,7 +34,7 @@ public class CmdSBan implements IpcCommand{
 				String ip_filter = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
 				if (args[1].toLowerCase().matches(ip_filter.toLowerCase())) {
 					// Command Instructions Here
-					sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + "To ban an IP address, use \'/c ban\'");
+					sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + "To ban an IP address, use \'/c ban\'");
 				} else {
                                     ArrayList<String> player = new ArrayList<String>();
                                     player.add(args[1]);
@@ -41,10 +42,10 @@ public class CmdSBan implements IpcCommand{
                                     ab.banPlayers(player, sender, "no-ban", sb.toString(), true);
 				}
 			} else {
-				sender.sendMessage(TranslationManager.NUM_ARGS_ERR);
+				sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NUM_ARGS_ERR"));
 			}
 		} else {
-			sender.sendMessage(TranslationManager.NO_PERM_ERR);
+			sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NO_PERM_ERR"));
 		}
     }
 

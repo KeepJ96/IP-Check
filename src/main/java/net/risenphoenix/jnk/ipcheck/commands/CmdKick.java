@@ -33,17 +33,17 @@ public class CmdKick implements IpcCommand{
                                 
 				if (args[1].toLowerCase().matches(ip_filter.toLowerCase())) {
                                     // Command Instructions here
-                                    total = ab.kickPlayers(IPcheck.Database.getAlts(args[1]), sender, IPcheck.Database.checkIPaddress(args[1]), sb.toString());
+                                    total = ab.kickPlayers(IPcheck.Instance.Database.getAlts(args[1]), sender, IPcheck.Instance.Database.checkIPaddress(args[1]), sb.toString());
 				} else {
-                                    total = ab.kickPlayers(IPcheck.Database.getAlts(IPcheck.Database.getLastKnownIP(args[1])), sender, IPcheck.Database.getLastKnownIP(args[1]), sb.toString());
+                                    total = ab.kickPlayers(IPcheck.Instance.Database.getAlts(IPcheck.Instance.Database.getLastKnownIP(args[1])), sender, IPcheck.Instance.Database.getLastKnownIP(args[1]), sb.toString());
 				}
                                 
-                               sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + "Kicked " + total + " players.");
+                               sender.sendMessage(ChatColor.GOLD + IPcheck.Instance.PLUG_NAME + ChatColor.YELLOW + "Kicked " + total + " players.");
 			} else {
-				sender.sendMessage(TranslationManager.NUM_ARGS_ERR);
+				sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NUM_ARGS_ERR"));
 			}
 		} else {
-			sender.sendMessage(TranslationManager.NO_PERM_ERR);
+			sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NO_PERM_ERR"));
 		}
     }
 

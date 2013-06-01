@@ -17,23 +17,23 @@ public class CmdExempt implements IpcCommand{
 				String ip_filter = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
 				
 				if (args[1].toLowerCase().matches(ip_filter.toLowerCase())) {
-					if (IPcheck.Database.exemptIP(args[1])) {
-						sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.IP_EXEMPT_SUC);
+					if (IPcheck.Instance.Database.exemptIP(args[1])) {
+						sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + IPcheck.Instance.Translation.getTranslation("IP_EXEMPT_SUC"));
 					} else {
-						sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.EXEMPTION_FAIL);
+						sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + IPcheck.Instance.Translation.getTranslation("EXEMPTION_FAIL"));
 					}
 				} else {
-					if (IPcheck.Database.exemptPlayer(args[1])) {
-						sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.PLAYER_EXEMPT_SUC);
+					if (IPcheck.Instance.Database.exemptPlayer(args[1])) {
+						sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + IPcheck.Instance.Translation.getTranslation("PLAYER_EXEMPT_SUC"));
 					} else {
-						sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.EXEMPTION_FAIL);
+						sender.sendMessage(ChatColor.GOLD + IPcheck.PLUG_NAME + ChatColor.YELLOW + IPcheck.Instance.Translation.getTranslation("EXEMPTION_FAIL"));
 					}
 				}
 			} else {
-				sender.sendMessage(TranslationManager.NUM_ARGS_ERR);
+				sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NUM_ARGS_ERR"));
 			}
 		} else {
-			sender.sendMessage(TranslationManager.NO_PERM_ERR);
+			sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NO_PERM_ERR"));
 		}
 	}
 

@@ -15,24 +15,24 @@ public class CmdPurge implements IpcCommand{
 
                 // DELETING AN IP ENTRY
                 if (args[1].toLowerCase().matches(ip_filter.toLowerCase())) {
-                  if(IPcheck.Database.purgeIP(args[1])){
-                        sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + String.format(TranslationManager.PURGE_SUC,args[1]));
+                  if(IPcheck.Instance.Database.purgeIP(args[1])){
+                        sender.sendMessage(ChatColor.GOLD + IPcheck.Instance.PLUG_NAME + ChatColor.YELLOW + String.format(IPcheck.Instance.Translation.getTranslation("PURGE_SUC"),args[1]));
                   }else{
-                      sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + String.format(TranslationManager.PURGE_ERR,args[1]));
+                      sender.sendMessage(ChatColor.GOLD + IPcheck.Instance.PLUG_NAME + ChatColor.YELLOW + String.format(IPcheck.Instance.Translation.getTranslation("PURGE_ERR"),args[1]));
                   }
                   
                 } else{
-                    if(IPcheck.Database.purgePlayer(args[1])){
-                        sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + String.format(TranslationManager.PURGE_SUC,args[1]));
+                    if(IPcheck.Instance.Database.purgePlayer(args[1])){
+                        sender.sendMessage(ChatColor.GOLD + IPcheck.Instance.PLUG_NAME + ChatColor.YELLOW + String.format(IPcheck.Instance.Translation.getTranslation("PURGE_SUC"),args[1]));
                     }else{
-                        sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + String.format(TranslationManager.PURGE_ERR,args[1]));
+                        sender.sendMessage(ChatColor.GOLD + IPcheck.Instance.PLUG_NAME + ChatColor.YELLOW + String.format(IPcheck.Instance.Translation.getTranslation("PURGE_ERR"),args[1]));
                     } 
                 }
             } else {
-                sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.NUM_ARGS_ERR);
+                sender.sendMessage(ChatColor.GOLD + IPcheck.Instance.PLUG_NAME + ChatColor.YELLOW + IPcheck.Instance.Translation.getTranslation("NUM_ARGS_ERR"));
             }
         } else {
-            sender.sendMessage(ChatColor.GOLD + TranslationManager.PLUG_NAME + ChatColor.YELLOW + TranslationManager.NO_PERM_ERR);
+            sender.sendMessage(ChatColor.GOLD + IPcheck.Instance.PLUG_NAME + ChatColor.YELLOW + IPcheck.Instance.Translation.getTranslation("NO_PERM_ERR"));
         }
     }
 

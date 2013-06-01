@@ -28,10 +28,10 @@ public class PlayerLoginListener {
         }
 
         ipToCheck = ip.toString();
-        IPcheck.Database.log(player.getName(), ip.toString()); // Log the Playername and IP-Address
+        IPcheck.Instance.Database.log(player.getName(), ip.toString()); // Log the Playername and IP-Address
         shouldCheck = true;
 
-        if (IPcheck.Configuration.secureMode) {
+        if (IPcheck.Instance.Configuration.secureMode) {
             shouldCheck = lc.secureCheck(ip.toString(), e);
         }
     }
