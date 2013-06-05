@@ -4,6 +4,7 @@
     <formats>
         <format>zip</format>
     </formats>
+    
     <fileSets>
         <fileSet>
             <directory>${project.basedir}/src/main/resources/</directory>
@@ -25,9 +26,9 @@
     </fileSets>
     <files>
         <file>
-            <source>${project.build.directory}/${artifactId}.jar</source>
+            <source>${project.build.directory}/${artifactId}-${pom.version}.jar</source>
             <outputDirectory>/</outputDirectory>
-            <destName>IP-Check.jar</destName>
+            <destName>IP-Check-${pom.version}.jar</destName>
         </file>
     </files>
 </assembly>
