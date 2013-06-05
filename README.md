@@ -7,7 +7,8 @@ IP-Check is a server plugin designed to alert you (server administrator) and you
 In it's current state, IP-Check operates in a very simple way. Utilizing either the widely known Essentials plugin for Bukkit, or it's own backend manager, IP-Check logs every player that ever joins your server, and logs their current IP address. When the player logs in, IP-Check immediately performs a background check, comparing the IP Address of the player to it's database, and alerting you if a certain number (or higher number) of matches are found.  
 With one simple command, IP-Check can provide you with a list of every account that is tied to a player, and also let you know if the person has been banned or is exempt from (background) checking.  
 ##How can I get IP-Check?
-IP-Check is available for download on Dev Bukkit, or, if you're feeling ambitious, you can download and play with the source code on Github.  
+IP-Check is available for download on Dev Bukkit, or, if you're feeling ambitious, you can download and play with the source code on Github.
+We also have a continious integration server running, so you can fetch latest builds from the master branch at http://ci.bam.yt/view/Others/job/IP-Check/ .
 ##Current Features
 In it's current state, IP-Check comes with the following features:  
    * Logging of players and their IP Addresses for the prevention and detection of mutli-accounters.  
