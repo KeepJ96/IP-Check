@@ -1,8 +1,7 @@
 package net.risenphoenix.jnk.ipcheck;
 
-import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
-import net.risenphoenix.jnk.ipcheck.configuration.ConfigurationManager;
 import java.util.ArrayList;
+import net.risenphoenix.jnk.ipcheck.Objects.IPObject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -10,29 +9,29 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class PlayerActions {
-	public void banPlayers(ArrayList<String> players, CommandSender sender, String ip, String message, boolean banning) {
+	public void banPlayers(IPObject ipo, CommandSender sender, String message, boolean banning) {
             // Ban or Unban IP Address
-            if (ip.equals("no-find")) {
+            if (ipo.getIP().equals("no-find")) {
                 sender.sendMessage(ChatColor.GOLD + IPcheck.Instance.PLUG_NAME + ChatColor.YELLOW + IPcheck.Instance.Translation.getTranslation("NO_FIND"));
                 return;
             }
 
-            if (!ip.equals("no-ban")) {
+            if (!ipo.getIP().equals("no-ban")) {
                 if (banning) {
-                    Bukkit.banIP(ip);
+                    Bukkit.banIP(ipo.getIP());
                     sender.sendMessage("");
-                    sender.sendMessage("Banned IP Address: " + ip);
+                    sender.sendMessage("Banned IP Address: " + ipo.getIP());
                     sender.sendMessage("");
                 } else if (!banning) {
-                    Bukkit.unbanIP(ip);
+                    Bukkit.unbanIP(ipo.getIP());
                     sender.sendMessage("");
-                    sender.sendMessage("Unbanned IP Address: " + ip);
+                    sender.sendMessage("Unbanned IP Address: " + ipo.getIP());
                     sender.sendMessage("");
                 }
             }
 
             // Ban or Unban Players with corresponding IP Address
-            for(String s:players) {
+            for(String s:ipo.getUsers()) {
                 OfflinePlayer offPlayer = Bukkit.getOfflinePlayer(s);
 
                 offPlayer.setBanned(banning);
@@ -70,7 +69,7 @@ public class PlayerActions {
             }
 	}
         
-        public int kickPlayers(ArrayList<String> players, CommandSender sender, String ip, String message) {
+        public int kickPlayers(IPObject ipo, CommandSender sender, String ip, String message) {
             
             int playersKicked = 0;
             
@@ -79,7 +78,7 @@ public class PlayerActions {
                 return -1;
             }
             
-            for(String s:players) {
+            for(String s:ipo.getUsers()) {
                 Player player = Bukkit.getPlayer(s);
                                 
                 if (player != null) {

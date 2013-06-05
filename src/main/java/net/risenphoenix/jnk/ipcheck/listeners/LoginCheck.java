@@ -2,6 +2,7 @@ package net.risenphoenix.jnk.ipcheck.listeners;
 
 import java.util.ArrayList;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
+import net.risenphoenix.jnk.ipcheck.Objects.IPObject;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
@@ -9,8 +10,8 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 public class LoginCheck {
 
     public boolean secureCheck(String ip, PlayerLoginEvent e) {
-        ArrayList<String> players = IPcheck.Instance.Database.getAlts(ip);
-        int accounts = players.size();
+        IPObject ipo = IPcheck.Instance.Database.getAlts(ip);
+        int accounts = ipo.getUsers().size();
         Player player = e.getPlayer();
         return secureKick(accounts, player.getName(), e, ip);
     }

@@ -51,7 +51,7 @@ public class ConfigurationManager {
             initialize();
         }
         public void initialize(){
-            IPcheck.Instance.saveConfig();
+            IPcheck.Instance.saveDefaultConfig();
             IPcheck.Instance.reloadConfig();
             readConfiguration();
 

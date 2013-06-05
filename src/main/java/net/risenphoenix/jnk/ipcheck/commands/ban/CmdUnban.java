@@ -16,16 +16,15 @@ public class CmdUnban implements IpcCommand{
 	public void execute(CommandSender sender, String commandLabel, String[] args) {
 		if (sender.hasPermission("ipcheck.unban") || sender.isOp()) {
 			if (args.length == 2) {
-				Report report = new Report();
 				PlayerActions ab = new PlayerActions();
 				
 				//Command Instructions Here
 				String ip_filter = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
 				if (args[1].toLowerCase().matches(ip_filter.toLowerCase())) {
 					// Command Instructions Here
-					ab.banPlayers(IPcheck.Instance.Database.getAlts(args[1]), sender, IPcheck.Instance.Database.checkIPaddress(args[1]), "", false);
+					ab.banPlayers(IPcheck.Instance.Database.getAlts(args[1]), sender, "", false);
 				} else {
-					ab.banPlayers(IPcheck.Instance.Database.getAlts(IPcheck.Instance.Database.getLastKnownIP(args[1])), sender, IPcheck.Instance.Database.getLastKnownIP(args[1]), "", false);
+					ab.banPlayers(IPcheck.Instance.Database.getAlts(IPcheck.Instance.Database.getLastKnownIP(args[1])), sender, "", false);
 				}
 			} else {
 				sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NUM_ARGS_ERR"));

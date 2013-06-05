@@ -1,9 +1,11 @@
 package net.risenphoenix.jnk.ipcheck.database;
 import java.sql.*;
-import net.risenphoenix.jnk.ipcheck.IPcheck;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.risenphoenix.jnk.ipcheck.IPcheck;
+import net.risenphoenix.jnk.ipcheck.Objects.IPObject;
+import net.risenphoenix.jnk.ipcheck.Objects.UserObject;
 import org.bukkit.Bukkit;
 /**
  *
@@ -321,26 +323,27 @@ public class DatabaseManager{
         return ips;
     }
     
-    public ArrayList<String> getAlts(String ip) {
-        ArrayList<String> ips = new ArrayList<String>();
+    public IPObject getAlts(String ip) {
+        ArrayList<String> users = new ArrayList<String>();
         try {
             ResultSet res =  connection.query("select username from ipcheck_log where ip='"+ip+"'").getResultSet();
             if(res.getMetaData().getColumnCount()==1){
                 while(res.next()){
-                    ips.add(res.getString(1));
+                    users.add(res.getString(1).toLowerCase());
                 }
             }
             res.close();
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return ips;
+        
+        return new IPObject(ip, users);
     }
     
-    public ArrayList<String> getIPs(String player) {
+    public UserObject getIPs(String player) {
         ArrayList<String> ips = new ArrayList<String>();
         try {
-            ResultSet res =  connection.query("select ip from ipcheck_log where username='"+player+"'").getResultSet();
+            ResultSet res =  connection.query("select ip from ipcheck_log where lower(username)=lower('"+player+"')").getResultSet();
             if(res.getMetaData().getColumnCount()==1){
                 while(res.next()){
                     ips.add(res.getString(1));
@@ -350,7 +353,8 @@ public class DatabaseManager{
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return ips;
+        
+        return new UserObject(player, ips);
     }
     
     public String getLastKnownIP(String player) {

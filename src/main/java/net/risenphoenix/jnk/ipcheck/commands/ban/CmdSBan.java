@@ -2,6 +2,7 @@ package net.risenphoenix.jnk.ipcheck.commands.ban;
 
 import java.util.ArrayList;
 import net.risenphoenix.jnk.ipcheck.IPcheck;
+import net.risenphoenix.jnk.ipcheck.Objects.IPObject;
 import net.risenphoenix.jnk.ipcheck.PlayerActions;
 import net.risenphoenix.jnk.ipcheck.translation.TranslationManager;
 import net.risenphoenix.jnk.ipcheck.commands.IpcCommand;
@@ -39,7 +40,7 @@ public class CmdSBan implements IpcCommand{
                                     ArrayList<String> player = new ArrayList<String>();
                                     player.add(args[1]);
                                     
-                                    ab.banPlayers(player, sender, "no-ban", sb.toString(), true);
+                                    ab.banPlayers(new IPObject("no-ban", player), sender, sb.toString(), true);
 				}
 			} else {
 				sender.sendMessage(IPcheck.Instance.Translation.getTranslation("NUM_ARGS_ERR"));
