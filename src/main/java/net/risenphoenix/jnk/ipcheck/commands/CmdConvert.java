@@ -43,9 +43,6 @@ public class CmdConvert implements IpcCommand{
             long startTime = System.currentTimeMillis();
             for (String s:load) {
                 String[] sArray = s.split("\\|");
-                Bukkit.getLogger().log(Level.INFO, s);
-                Bukkit.getLogger().log(Level.INFO, sArray[0]);
-                Bukkit.getLogger().log(Level.INFO, sArray[1]);
                 IPcheck.Instance.Database.log(sArray[0],sArray[1]);
             }
             long endTime = System.currentTimeMillis();
