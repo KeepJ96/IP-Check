@@ -108,8 +108,8 @@ public class DatabaseManager{
     
     public boolean purgePlayer(String player) {
             try{
-               connection.query("delete from ipcheck_user where username ='"+player+"'");
-               connection.query("delete from ipcheck_log where username ='"+player+"'");
+               connection.query("delete from ipcheck_user where lower(username) =lower('"+player+"')");
+               connection.query("delete from ipcheck_log where lower(username) =lower('"+player+"')");
             return true;
         }catch (Exception e){
             return false;
@@ -119,7 +119,7 @@ public class DatabaseManager{
     public boolean exemptPlayer(String player) {
         try{
             addPlayer(player);
-            connection.query("update ipcheck_user set exempted=1 where username='"+player+"'");
+            connection.query("update ipcheck_user set exempted=1 where lower(username)=lower('"+player+"')");
             return true;
         }catch (Exception e){
             return false;
@@ -129,7 +129,7 @@ public class DatabaseManager{
     public boolean banPlayer(String player,String message) {
         try{
             addPlayer(player);
-            connection.query("update ipcheck_user set banned=1,banmessage='"+message+"' where username='"+player+"'");
+            connection.query("update ipcheck_user set banned=1,banmessage='"+message+"' where lower(username)=lower('"+player+")'");
             return true;
         }catch (Exception e){
             return false;
@@ -137,7 +137,7 @@ public class DatabaseManager{
     }
     
     public boolean unbanPlayer(String player) {
-            try{connection.query("update ipcheck_user set banned=0 where username='"+player+"'");
+            try{connection.query("update ipcheck_user set banned=0 where lower(username)=lower('"+player+"')");
             return true;
         }catch (Exception e){
             return false;
@@ -146,7 +146,7 @@ public class DatabaseManager{
     
     public boolean isBannedPlayer(String player) {
         try {
-            ResultSet res = connection.query("select banned from ipcheck_user where username='"+player+"'").getResultSet();
+            ResultSet res = connection.query("select banned from ipcheck_user where lower(username)=lower('"+player+"')").getResultSet();
             if(res.getMetaData().getColumnCount()==1){
                 while(res.next()){
                     int banned = Integer.parseInt(res.getString(1));
@@ -164,7 +164,7 @@ public class DatabaseManager{
     }
   
     public boolean unexemptPlayer(String player) {
-            try{connection.query("update ipcheck_user set exempted=0 where username='"+player+"'");
+            try{connection.query("update ipcheck_user set exempted=0 where lower(username)=lower('"+player+"')");
             return true;
         }catch (Exception e){
             return false;
@@ -173,7 +173,7 @@ public class DatabaseManager{
     
     public boolean isExemptedPlayer(String player) {
         try {
-            ResultSet res = connection.query("select exempted from ipcheck_user where username='"+player+"'").getResultSet();
+            ResultSet res = connection.query("select exempted from ipcheck_user where lower(username)=lower('"+player+"')").getResultSet();
             if(res.getMetaData().getColumnCount()==1){
                 while(res.next()){
                     int exempted = Integer.parseInt(res.getString(1));
@@ -193,7 +193,7 @@ public class DatabaseManager{
     public String getBanMessage(String player) {
         String returning="";
         try {
-            ResultSet res =  connection.query("SELECT banmessage FROM ipcheck_user where username='"+player+"';").getResultSet();
+            ResultSet res =  connection.query("SELECT banmessage FROM ipcheck_user where lower(username)=lower('"+player+"');").getResultSet();
        
             if(res.next()){
                 returning = res.getString(1);
@@ -360,7 +360,7 @@ public class DatabaseManager{
     public String getLastKnownIP(String player) {
         String returning="";
         try {
-            ResultSet res =  connection.query("SELECT ip FROM ipcheck_log where username='"+player+"' order by timestamp desc limit 1;").getResultSet();
+            ResultSet res =  connection.query("SELECT ip FROM ipcheck_log where lower(username)=lower('"+player+"') order by timestamp desc limit 1;").getResultSet();
        
             if(res.next()){
                 returning = res.getString(1);
