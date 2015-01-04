@@ -1,7 +1,6 @@
 name: IP-Check
 main: net.risenphoenix.ipcheck.IPCheck
-version: 2.0.6
-loadbefore: [AuthMe, xAuth, LoginSecurity, vAuth]
+version: 2.0.1
 commands:
    ipc:
       description: Check for multi-accounting players via IP-Address or Player Name

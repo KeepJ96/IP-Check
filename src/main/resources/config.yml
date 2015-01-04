@@ -1,12 +1,31 @@
-# IP-Check -- Authors: Jnk1296, FR34KYN01535 
+# ============================================================================ #
+#
+# IP-Check v2.0.6 b2067 | RP-Commons v1.03.02 b78 -- Author: Jnk1296
 # For more information visit http://dev.bukkit.org/server-mods/ip-check-jnk/
+#
+# IT IS RECOMMENDED THAT YOU READ THE CONFIGURATION EXPLANATION BEFORE MAKING
+# MODIFICATIONS TO ANY OF THESE VALUES.
+#
+# Configuration Explanation can be found at:
+# http://dev.bukkit.org/bukkit-plugins/ip-check-jnk/pages/default-configuration/
+#
+# MySQL pooling functions provided by c3p0.
+#
+# This product includes GeoLite data created by MaxMind, available from:
+# http://www.maxmind.com/
+#
+# ============================================================================ #
 
-# Default language is english if empty or "en". 
-# To switch language put in the name of the languagefile (e.g. "de" for de.yml)
+# Localization Language Selection
+# Default language is english if empty or "en".
+# To switch language put in the name of the language-file (e.g. "de" for de.yml)
 language: "en"
 
 # Use MySQL instead of SQLite?
 use-mysql: false
+
+# MySQL Connection Pool Size (number of connections available to IP-Check)
+mysql-pool-size: 1
 
 # Login details if backend is mysql
 dbUsername: "root"
@@ -14,17 +33,38 @@ dbPassword: ""
 dbHostname: "127.0.0.1"
 dbName: "ip-check"
 dbPort: 3306
+
 # Set this to false if you want the tables to be regenerated
 dbGenerated: false
 
-#Should use Login Checking?
+# Should use Login Checking?
 notify-on-login: true
 
-#Should show descriptive notifications?
+# Should warn when a banned player attempts to join
+warn-on-rejoin-attempt: false
+
+# Should show descriptive notifications?
 descriptive-notice: false
 
 # Should use Secure Mode?
+# Secure Mode is a feature of IP-Check that actively monitors and blocks
+# players from making too many accounts on your server (limit controlled by
+# secure-kick-threshold).
 secure-mode: false
+
+# Should this plugin be your default ban/kick manager?
+should-manage-bans: true
+
+# Should use Active Mode?
+# Active Mode is a feature of IP-Check that actively bans new accounts that
+# join your server if they connect from a banned IP-Address. This helps keep
+# IP-Check's database and your server's ban list up to date.
+# NOTE: This function will not work if should-mange-bans is false.
+active-mode: false
+
+# Should Ban Account when kicked by Secure Mode?
+# NOTE: This function will not work if should-manage-bans is false.
+should-ban-on-secure-kick: false
 
 # Set a minimum number of accounts to have before being notified
 min-account-notify-threshold: 1
@@ -32,14 +72,35 @@ min-account-notify-threshold: 1
 # Set a minimum number of accounts to have before being kicked
 secure-kick-threshold: 1
 
-#Set Kick Message
+# Set Secure Kick Message
 secure-kick-message: "Multiple Accounts Not Permitted."
 
-#Set Ban Message
+# Set Ban Message
 ban-message: "Banned for Multi-Accounting."
 
-#Set Logging Time/Date Stamp Format
-logging-date-stamp-format: "EEEE, MMMM dd, yyyy 'at' hh:mm:ss a, ZZZ"
+# Set Kick Message
+kick-message: "Kicked from server."
 
-#MC Hammer!
+# Disable Update Detection
+disable-update-detection: false
+
+# Disable Metrics Monitoring
+disable-metrics-monitoring: false
+
+# GeoIP Services Main Control
+use-geoip-services: true
+
+# Allow IP-Check to automatically download the GeoIP Database
+allow-geoip-download: true
+
+# Allow the use of the Country Blacklist
+use-country-blacklist: true
+
+# Which countries do you want to block from joining your server?
+country-blacklist: []
+
+# What message do you want to display to people who's country is blocked?
+blocked-message: "Your country has been blocked from joining this server."
+
+# MC Hammer!
 config-version: 1
