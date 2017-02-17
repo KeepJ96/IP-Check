@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Jacob Keep (Jnk1296). All rights reserved.
+ * Copyright © 2017 Jacob Keep (Jnk1296). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -148,8 +148,8 @@ public class CmdStore extends CommandStore {
 
         // Status Command
         this.add(
-                new CmdStatus(plugin, new String[]{"ipc", "status"},
-                        CommandType.STATIC));
+                new CmdStatus(plugin, new String[]{"ipc", "status",
+                        "VAR_ARG_OPT"}, CommandType.VARIABLE));
 
         // Purge Command
         this.add(

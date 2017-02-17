@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Jacob Keep (Jnk1296). All rights reserved.
+ * Copyright © 2017 Jacob Keep (Jnk1296). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -42,8 +42,8 @@ import net.risenphoenix.ipcheck.stores.LocaleStore;
 import net.risenphoenix.ipcheck.util.DateStamp;
 import net.risenphoenix.ipcheck.util.Messages;
 import net.risenphoenix.ipcheck.util.Metrics;
-import net.risenphoenix.ipcheck.util.Updater;
 
+import net.risenphoenix.ipcheck.util.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -78,7 +78,10 @@ public class IPCheck extends Plugin implements Listener {
     private boolean hasRegistered = false;
 
     // Used for Development Purposes Only (hard disable for automatic updater)
-    private boolean isDevBuild = true;
+    private boolean isDevBuild = false;
+
+    // Configuration Version Check
+    private int configVersion = 5;
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerLogin(PlayerLoginEvent e) {
@@ -106,6 +109,13 @@ public class IPCheck extends Plugin implements Listener {
         // Initialize Default Localization
         LocaleStore locStore = new LocaleStore(this);
         this.getLocalizationManager().appendLocalizationStore(locStore);
+
+        // Check Configuration Version, warn if Mismatch
+        if (this.getConfigurationManager()
+                .getInteger("config-version") != this.configVersion) {
+            sendConsoleMessage(Level.WARNING, getLocalizationManager()
+                    .getLocalString("CONFIG_VER_MISMATCH"));
+        }
 
         // Initialize GeoIP Services
         if (this.getConfigurationManager().getBoolean("use-geoip-services")) {
@@ -142,7 +152,7 @@ public class IPCheck extends Plugin implements Listener {
             if (!getConfigurationManager()
                     .getBoolean("disable-update-detection")) {
                 updater = new Updater(this, 55121, this.getFile(),
-                        Updater.UpdateType.DEFAULT, false);
+                        Updater.UpdateType.DEFAULT, true);
             }
 
             // Metrics Monitoring
@@ -191,11 +201,11 @@ public class IPCheck extends Plugin implements Listener {
     }
 
     public String getVersion() {
-        return "2.0.6";
+        return "2.0.7";
     }
 
     public int getBuildNumber() {
-        return 2068;
+        return 2084;
     }
 
     private void showRandomMessage() {
@@ -220,5 +230,4 @@ public class IPCheck extends Plugin implements Listener {
 
         return new Player[0];
     }
-
 }

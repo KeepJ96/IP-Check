@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Jacob Keep (Jnk1296). All rights reserved.
+ * Copyright © 2017 Jacob Keep (Jnk1296). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -36,10 +36,12 @@ import net.risenphoenix.commons.database.QueryFilter;
 import net.risenphoenix.commons.database.StatementObject;
 import net.risenphoenix.ipcheck.objects.IPObject;
 import net.risenphoenix.ipcheck.objects.UserObject;
+import org.bukkit.Bukkit;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class DatabaseController extends DatabaseManager {
 
@@ -55,9 +57,8 @@ public class DatabaseController extends DatabaseManager {
 
     // MySQL Initializer
     public DatabaseController(final Plugin plugin, String hostname, int port,
-                              String database, String username, String pwd
-                              /* int poolSize */) {
-        super(plugin, hostname, port, database, username, pwd, 0);
+                              String database, String username, String pwd) {
+        super(plugin, hostname, port, database, username, pwd);
 
 
         // Enable Debugging to allow us to view the dynamic SQL queries
@@ -94,6 +95,7 @@ public class DatabaseController extends DatabaseManager {
 
         String TABLE_IPC_USER = "CREATE TABLE IF NOT EXISTS ipcheck_user ( " +
                 "username TEXT," +
+                "uuid TEXT," +
                 "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
                 "banmessage TEXT," +
                 "banned INTEGER DEFAULT 0," +
@@ -131,6 +133,7 @@ public class DatabaseController extends DatabaseManager {
 
         String TABLE_IPC_USER = "CREATE TABLE IF NOT EXISTS ipcheck_user ( " +
                 "username varchar(255) NOT NULL," +
+                "uuid varchar(255)," +
                 "timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 "banmessage varchar(255)," +
                 "banned bit(1) NOT NULL DEFAULT b'0'," +
@@ -168,6 +171,12 @@ public class DatabaseController extends DatabaseManager {
                 SQL, new Object[]{ip, player.toLowerCase()}));
     }
 
+    public final void log(UUID uuid, String player, String ip) {
+        log(player, ip);
+
+        this.addUUID(uuid);
+    }
+
     public final void addIP(String ip) {
         String SQL = "insert " + ((this.getPlugin().getConfigurationManager()
                 .getBoolean("use-mysql")) ? "" : "or ") + "ignore into " +
@@ -184,6 +193,44 @@ public class DatabaseController extends DatabaseManager {
 
         this.executeStatement(new StatementObject(this.getPlugin(),
                 SQL, new Object[]{player.toLowerCase()}));
+    }
+
+    public final void addUUID(UUID uuid) {
+        String player = Bukkit.getOfflinePlayer(uuid).getName();
+
+        String SQL = "update ipcheck_user set uuid=? " +
+                "where lower(username) = ?";
+
+        this.executeStatement(new StatementObject(this.getPlugin(),
+                SQL, new Object[]{uuid.toString(), player.toLowerCase()}));
+    }
+
+    public final UUID getUUID(String player) {
+        String SQL = "select uuid from ipcheck_user where " +
+                "lower(username) = ?";
+
+        QueryFilter filter = new QueryFilter() {
+            @Override
+            public Object onExecute(ResultSet res) {
+                UUID uuid = null;
+
+                try {
+                    while (res.next()) {
+                        if (res.getString("uuid") != null &&
+                                res.getString("uuid").length() > 0) {
+                            uuid = UUID.fromString(res.getString("uuid"));
+                        }
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                return uuid;
+            }
+        };
+
+        return (UUID) this.executeQuery(new StatementObject(this.getPlugin(),
+                SQL, new Object[]{player.toLowerCase()}), filter);
     }
 
     /* Player Methods */
@@ -228,7 +275,7 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     while (res.next()) {
-                        int exempt = Integer.parseInt(res.getString(1));
+                        int exempt = Integer.parseInt(res.getString("exempted"));
                         isExempt = (exempt == 1);
                     }
                 } catch (SQLException e) {
@@ -253,7 +300,7 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     while (res.next()) {
-                        users.add(res.getString(1));
+                        users.add(res.getString("username"));
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -306,7 +353,7 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     while (res.next()) {
-                        int banned = Integer.parseInt(res.getString(1));
+                        int banned = Integer.parseInt(res.getString("banned"));
                         isBanned = (banned == 1);
                         break;
                     }
@@ -406,7 +453,7 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     while (res.next()) {
-                        int exempt = Integer.parseInt(res.getString(1));
+                        int exempt = Integer.parseInt(res.getString("exempted"));
                         isExempt = (exempt == 1);
                     }
                 } catch (SQLException e) {
@@ -431,7 +478,7 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     while (res.next()) {
-                        ips.add(res.getString(1));
+                        ips.add(res.getString("ip"));
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -479,7 +526,7 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     while (res.next()) {
-                        int banned = Integer.parseInt(res.getString(1));
+                        int banned = Integer.parseInt(res.getString("banned"));
                         isBanned = (banned == 1);
                         break;
                     }
@@ -509,7 +556,7 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     while (res.next()) {
-                        users.add(res.getString(1));
+                        users.add(res.getString("username"));
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -530,6 +577,7 @@ public class DatabaseController extends DatabaseManager {
         boolean isExempt = this.isExemptPlayer(player);
         boolean isRejoin = this.isRejoinExemptPlayer(player);
         boolean isProtec = this.isProtectedPlayer(player);
+        UUID uuid = this.getUUID(player);
 
         QueryFilter filter = new QueryFilter() {
             @Override
@@ -538,8 +586,8 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     while (res.next()) {
-                        if (!ips.contains(res.getString(1))) {
-                            ips.add(res.getString(1));
+                        if (!ips.contains(res.getString("ip"))) {
+                            ips.add(res.getString("ip"));
                         }
                     }
                 } catch (SQLException e) {
@@ -554,8 +602,34 @@ public class DatabaseController extends DatabaseManager {
                 new StatementObject(this.getPlugin(), SQL, new Object[]{
                         player.toLowerCase()}), filter);
 
-        return new UserObject(player.toLowerCase(), ips, isBanned, isExempt,
-                isRejoin, isProtec);
+        return new UserObject(player.toLowerCase(), uuid, ips, isBanned,
+                isExempt, isRejoin, isProtec);
+    }
+
+    public final ArrayList<String> getPlayersByUUID(UUID uuid) {
+        String SQL = "select username from ipcheck_user where uuid = ?";
+
+        QueryFilter filter = new QueryFilter() {
+            @Override
+            public Object onExecute(ResultSet res) {
+                ArrayList<String> users = new ArrayList<String>();
+
+                try {
+                    while (res.next()) {
+                        if (!users.contains(res.getString("username"))) {
+                            users.add(res.getString("username"));
+                        }
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                return users;
+            }
+        };
+
+        return (ArrayList<String>) this.executeQuery(new StatementObject(
+                this.getPlugin(), SQL, new Object[]{uuid.toString()}), filter);
     }
 
     public final String getLastKnownIP(String player) {
@@ -568,7 +642,7 @@ public class DatabaseController extends DatabaseManager {
                 String returning = "NO_FIND";
 
                 try {
-                    if (res.next()) returning = res.getString(1);
+                    if (res.next()) returning = res.getString("ip");
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -613,7 +687,7 @@ public class DatabaseController extends DatabaseManager {
                 String returning = null;
 
                 try {
-                    if (res.next()) returning = res.getString(1);
+                    if (res.next()) returning = res.getString("timestamp");
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -636,7 +710,7 @@ public class DatabaseController extends DatabaseManager {
                 String returning = null;
 
                 try {
-                    if (res.next()) returning = res.getString(1);
+                    if (res.next()) returning = res.getString("timestamp");
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -659,7 +733,7 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     res.next();
-                    date = res.getString(1);
+                    date = res.getString("CURRENT_TIMESTAMP");
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -685,7 +759,7 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     while (res.next()) {
-                        String user = res.getString(1);
+                        String user = res.getString("username");
                         users.add(new UserObject(user,
                                 dbC.isBannedPlayer(user)));
                     }
@@ -712,7 +786,7 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     while (res.next()) {
-                        String user = res.getString(1);
+                        String user = res.getString("username");
                         users.add(new UserObject(user,
                                 dbC.isBannedPlayer(user)));
                     }
@@ -739,8 +813,8 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     while (res.next()) {
-                        if (res.getString(4).equals("1")) {
-                            String user = res.getString(1);
+                        if (res.getString("banned").equals("1")) {
+                            String user = res.getString("username");
                             users.add(new UserObject(user,
                                     dbC.isBannedPlayer(user)));
                         }
@@ -769,7 +843,7 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     while (res.next()) {
-                        String ip = res.getString(1);
+                        String ip = res.getString("ip");
                         ips.add(new IPObject(ip, dbC.isBannedIP(ip)));
                     }
                 } catch (SQLException e) {
@@ -795,8 +869,8 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     while (res.next()) {
-                        if (res.getString(3).equals("1")) {
-                            String ip = res.getString(1);
+                        if (res.getString("banned").equals("1")) {
+                            String ip = res.getString("ip");
                             ips.add(new IPObject(ip, dbC.isBannedIP(ip)));
                         }
                     }
@@ -831,7 +905,7 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     if (res.next()) {
-                        isExempt = (res.getString(1).equals("1"));
+                        isExempt = (res.getString("rejoinexempt").equals("1"));
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -863,7 +937,7 @@ public class DatabaseController extends DatabaseManager {
 
                 try {
                     if (res.next()) {
-                        isExempt = (res.getString(1).equals("1"));
+                        isExempt = (res.getString("rejoinexempt").equals("1"));
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -892,7 +966,7 @@ public class DatabaseController extends DatabaseManager {
                 // Fetch UPOs and append to storage
                 try {
                     while (res.next())
-                        upos.add(dbc.getUserObject(res.getString(1)));
+                        upos.add(dbc.getUserObject(res.getString("username")));
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -921,7 +995,7 @@ public class DatabaseController extends DatabaseManager {
                 // Fetch IPOs and append to storage
                 try {
                     while (res.next())
-                        ipos.add(dbc.getIPObject(res.getString(1)));
+                        ipos.add(dbc.getIPObject(res.getString("ip")));
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -961,7 +1035,8 @@ public class DatabaseController extends DatabaseManager {
                 boolean result = false;
 
                 try {
-                    if (res.next()) result = res.getString(1).equals("1");
+                    if (res.next()) result =
+                            res.getString("protected").equals("1");
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -975,10 +1050,12 @@ public class DatabaseController extends DatabaseManager {
     }
 
     private void executeColumnUpdate() {
-        // Check for Missing Columns (Required for those upgrading from pre-2.0)
+        // Check for Missing Columns (Required for
+        // those upgrading from pre-2.0, 2.0.6, etc)
         boolean hasRejoinPlayer = true;
         boolean hasRejoinIP = true;
         boolean hasProtectedPlayer = true;
+        boolean hasUUID = true;
 
         // SQLite
         if (getDatabaseType() == DatabaseType.SQLITE) {
@@ -987,14 +1064,16 @@ public class DatabaseController extends DatabaseManager {
             QueryFilter filter = new QueryFilter() {
                 @Override
                 public Object onExecute(ResultSet res) {
-                    boolean[] flags = new boolean[2];
+                    boolean[] flags = new boolean[3];
                     // 0 = Rejoin, 1 = Protection
                     try {
                         while (res.next()) {
-                            if (res.getString(2).equals("rejoinexempt"))
+                            if (res.getString("name").equals("rejoinexempt"))
                                 flags[0] = true;
-                            if (res.getString(2).equals("protected"))
+                            if (res.getString("name").equals("protected"))
                                 flags[1] = true;
+                            if (res.getString("name").equals("uuid"))
+                                flags[2] = true;
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -1010,6 +1089,7 @@ public class DatabaseController extends DatabaseManager {
 
             hasRejoinPlayer = res[0];
             hasProtectedPlayer = res[1];
+            hasUUID = res[2];
 
             String SQL_I = "PRAGMA table_info(ipcheck_ip);";
 
@@ -1020,7 +1100,7 @@ public class DatabaseController extends DatabaseManager {
                     // 0 = Rejoin, 1 = Protection
                     try {
                         while (res.next()) {
-                            if (res.getString(2).equals("rejoinexempt"))
+                            if (res.getString("name").equals("rejoinexempt"))
                                 flag = true;
                         }
                     } catch (SQLException e) {
@@ -1052,6 +1132,14 @@ public class DatabaseController extends DatabaseManager {
                         SQL_ZERO));
             }
 
+            if (!hasUUID) {
+                String SQL_ZERO = "ALTER TABLE ipcheck_user ADD COLUMN " +
+                        "uuid TEXT";
+
+                this.executeStatement(new StatementObject(this.getPlugin(),
+                        SQL_ZERO));
+            }
+
             if (!hasRejoinIP) {
                 String SQL_ZERO = "ALTER TABLE ipcheck_ip ADD COLUMN " +
                         "rejoinexempt INTEGER DEFAULT 0";
@@ -1070,14 +1158,16 @@ public class DatabaseController extends DatabaseManager {
             QueryFilter filter = new QueryFilter() {
                 @Override
                 public Object onExecute(ResultSet res) {
-                    boolean[] flags = new boolean[2];
+                    boolean[] flags = new boolean[3];
                     // 0 = Rejoin, 1 = Protection
                     try {
                         while (res.next()) {
-                            if (res.getString(1).equals("rejoinexempt"))
+                            if (res.getString("Field").equals("rejoinexempt"))
                                 flags[0] = true;
-                            if (res.getString(1).equals("protected"))
+                            if (res.getString("Field").equals("protected"))
                                 flags[1] = true;
+                            if (res.getString("Field").equals("uuid"))
+                                flags[2] = true;
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -1093,6 +1183,7 @@ public class DatabaseController extends DatabaseManager {
 
             hasRejoinPlayer = res[0];
             hasProtectedPlayer = res[1];
+            hasUUID = res[2];
 
             String SQL_I = "SHOW COLUMNS FROM " +
                     getPlugin().getConfigurationManager().getString("dbName") +
@@ -1105,7 +1196,7 @@ public class DatabaseController extends DatabaseManager {
                     // 0 = Rejoin, 1 = Protection
                     try {
                         while (res.next()) {
-                            if (res.getString(1).equals("rejoinexempt"))
+                            if (res.getString("Field").equals("rejoinexempt"))
                                 flag = true;
                         }
                     } catch (SQLException e) {
@@ -1132,6 +1223,14 @@ public class DatabaseController extends DatabaseManager {
             if (!hasProtectedPlayer) {
                 String SQL_ZERO = "ALTER TABLE ipcheck_user ADD COLUMN " +
                         "protected bit(1) NOT NULL DEFAULT b'0'";
+
+                this.executeStatement(new StatementObject(this.getPlugin(),
+                        SQL_ZERO));
+            }
+
+            if (!hasUUID) {
+                String SQL_ZERO = "ALTER TABLE ipcheck_user ADD COLUMN " +
+                        "uuid varchar(255)";
 
                 this.executeStatement(new StatementObject(this.getPlugin(),
                         SQL_ZERO));

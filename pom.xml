@@ -4,7 +4,7 @@
 
     <groupId>net.risenphoenix</groupId>
     <artifactId>IP-Check</artifactId>
-    <version>2.0-SNAPSHOT</version>
+    <version>2.0.7-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>IP-Check</name>
@@ -21,15 +21,22 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
+        <!--
         <dependency>
             <groupId>GlowStone</groupId>
             <artifactId>GlowStone</artifactId>
             <version>92</version>
         </dependency>
+        -->
+        <dependency>
+            <groupId>bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.11.2</version>
+        </dependency>
         <dependency>
             <groupId>RP-Commons</groupId>
             <artifactId>RP-Commons-SNAPSHOT</artifactId>
-            <version>0.78</version>
+            <version>0.201</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -37,21 +44,26 @@
             <artifactId>geoip-api</artifactId>
             <version>1.2.12</version>
         </dependency>
-        <dependency>
-            <groupId>c3p0-local</groupId>
-            <artifactId>c3p0-local</artifactId>
-            <version>0.1</version>
-        </dependency>
     </dependencies>
 
     <repositories>
         <repository>
             <id>local-repo</id>
-            <url>file://home/jacob/.m2/repository/</url>
+            <url>file:/H:\Maven\repository</url>
         </repository>
     </repositories>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.16</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

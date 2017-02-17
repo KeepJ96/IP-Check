@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Jacob Keep (Jnk1296). All rights reserved.
+ * Copyright © 2017 Jacob Keep (Jnk1296). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -52,9 +52,14 @@ public class ReportObject {
     private ConfigurationManager config;
     private LocalizationManager local;
 
+    /* IP Cross-Checking Variables */
     private ArrayList<StringBuilder> SBs;
     private ArrayList<String> singleAlts;
     private ArrayList<String> uniqueAlts;
+
+    /* UUID Cross-Checking Variables */
+    private boolean useUUIDResults = false;
+    private String UUIDResults;
 
     private OfflinePlayer player;
     private boolean forPlayer;
@@ -222,6 +227,22 @@ public class ReportObject {
             this.plugin.sendPlayerMessage(sender,
                     this.local.getLocalString("REPORT_BODY_FOUR"), false);
         }
+
+        // UUID Hook, placed outside normal IF logic so that it will show
+        // regardless of Alternate Result amounts.
+        if (forPlayer) {
+            // UUID Results Hook
+            if (this.useUUIDResults) {
+                this.plugin.sendPlayerMessage(sender, ChatColor.DARK_GRAY +
+                            "------------------------------------------------",
+                        false);
+                this.plugin.sendPlayerMessage(sender,
+                        ChatColor.LIGHT_PURPLE + this.local
+                                .getLocalString("UUID_HEAD") + " ", false);
+                this.plugin.sendPlayerMessage(sender, ChatColor.YELLOW +
+                        this.UUIDResults + " ", false);
+            }
+        }
     }
 
     // Report Footer
@@ -377,6 +398,8 @@ public class ReportObject {
         // If there were zero IPs returned, return with NOT_FOUND status.
         if (user.getNumberOfIPs() == 0) return FetchResult.NOT_FOUND;
 
+        /*=================== IP CROSS-REFERENCING ===================*/
+
         // Fetch IPObjects from UserObject
         ArrayList<IPObject> ipos = new ArrayList<IPObject>();
 
@@ -432,6 +455,40 @@ public class ReportObject {
             /* Add the StringBuilder to the holder ArrayList if there are
              * accounts linked to the IP that are not filtered out. */
             if (!sb.toString().equals(ipo.getIP() + "|")) SBs.add(sb);
+        }
+
+        /*=================== UUID CROSS-REFERENCING ===================*/
+
+        // If Server is Online, allow Report to display UUID Results
+        if (Bukkit.getOnlineMode()) {
+            this.useUUIDResults = true;
+
+            // If User UUID field is not null, check database for other
+            // accounts sharing the same UUID.
+            if (user.getUUID() != null) {
+                ArrayList<String> uuid_links =
+                        this.db.getPlayersByUUID(user.getUUID());
+
+                ArrayList<String> unique_uuid_results =
+                        new ArrayList<String>();
+
+                for (String s : uuid_links) {
+                    if (s.toLowerCase().equals(arg.toLowerCase())) continue;
+                    if (!unique_uuid_results.contains(s))
+                        unique_uuid_results.add(s);
+                }
+
+                if (unique_uuid_results.size() == 0) {
+                    this.UUIDResults = this.local.getLocalString("NO_UUID_RES");
+                } else {
+                    ListFormatter format =
+                            new ListFormatter(unique_uuid_results);
+
+                    this.UUIDResults = format.getFormattedList().toString();
+                }
+            } else {
+                this.UUIDResults = this.local.getLocalString("NO_UUID_RES");
+            }
         }
 
         return FetchResult.GOOD;
