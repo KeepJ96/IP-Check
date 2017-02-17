@@ -1,4 +1,5 @@
-# Bug report template 
+# Issue Report
+---
 <!--- In order to create a valid issue report you have to follow this template. -->
 <!--- You may remove it if you are posting a feature request. -->
 <!--- You can run command '/ipc status' to get the requested data points. -->
@@ -12,6 +13,7 @@
 
 **How to replicate**:
 <!--- If you can reproduce the issue please tell us as detailed as possible step by step how to do that -->
+---
 **Checklist**:
 <!-- Make sure you've completed the following steps (put an "X" between of brackets): -->
 - [] I made sure there aren't duplicates of this report [(Use Search)](https://github.com/KeepJ96/IP-Check/issues)
