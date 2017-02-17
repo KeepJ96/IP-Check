@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Jacob Keep (Jnk1296). All rights reserved.
+ * Copyright © 2014 Jacob Keep (Jnk1296). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -55,7 +55,6 @@ public class LocaleStore extends LocalizationStore {
         this.add("TOGGLE_DETAIL", "Descriptive-Notify");
         this.add("TOGGLE_ACTIVE", "Active-Mode");
         this.add("TOGGLE_BLACKLIST", "Country-Black-List");
-        this.add("TOGGLE_WHITELIST", "Country-White-List (invert)");
         this.add("TOGGLE_GEOIP", "GeoIP-Services");
         this.add("TOGGLE_REJOIN", "Rejoin-Warning");
         this.add("TOGGLE_INVALID", "You did not specify a valid option.");
@@ -211,10 +210,6 @@ public class LocaleStore extends LocalizationStore {
         this.add("REPORT_BAN_HEAD", "Ban Reason:");
         this.add("REPORT_BAN_GENERIC", "No Message");
 
-        this.add("UUID_HEAD", "UUID Matches:");
-        this.add("NO_UUID_RES", "There were no results for players " +
-                "sharing this UUID.");
-
         // Exempt / Unexempt Messages
         this.add("EXEMPT_PROMPT", "Please select the Exemption you wish to " +
                 "create:");
@@ -255,28 +250,28 @@ public class LocaleStore extends LocalizationStore {
 
         // Stats Messages
         this.add("STATS_HEADER", "Plugin Usage Statistics:");
-        this.add("STATS_PVER", "IP-Check Version: ");
-        this.add("STATS_LVER", "RP-Commons Version: ");
-        this.add("STATS_DB_TYPE", "Database Type: ");
-        this.add("STATS_JVER", "Java Version: ");
-        this.add("STATS_OS", "Operating System: ");
-        this.add("STATS_OS_ARCH", "System Architecture: ");
-        this.add("STATS_PLOG", "Total Players Logged: ");
-        this.add("STATS_ILOG", "Total IPs Logged: ");
-        this.add("STATS_PEXM", "Total Players Exempt: ");
-        this.add("STATS_IEXM", "Total IPs Exempt: ");
-        this.add("STATS_RPEXM", "Total Players Rejoin Exempt: ");
-        this.add("STATS_RIEXM", "Total IPs Rejoin Exempt: ");
-        this.add("STATS_PBAN", "Total Players Banned: ");
-        this.add("STATS_IBAN", "Total IPs Banned: ");
-        this.add("STATS_PLOGS", "Player Logins this Session: ");
-        this.add("STATS_PBANS", "Players Banned this Session: ");
-        this.add("STATS_PUNBANS", "Players Unbanned this Session: ");
-        this.add("STATS_WARNS", "Login Warnings this Session: ");
-        this.add("STATS_KICKS", "Kicks Issued this Session: ");
-        this.add("STATS_SECURE", "Secure Mode Status: ");
-        this.add("STATS_ACTIVE", "Active Mode Status: ");
-        this.add("STATS_BLACKLIST", "Country Black-List Status: ");
+        this.add("STATS_PVER", "IP-Check Version:");
+        this.add("STATS_LVER", "RP-Commons Version:");
+        this.add("STATS_DB_TYPE", "Database Type:");
+        this.add("STATS_JVER", "Java Version:");
+        this.add("STATS_OS", "Operating System:");
+        this.add("STATS_OS_ARCH", "System Architecture:");
+        this.add("STATS_PLOG", "Total Players Logged:");
+        this.add("STATS_ILOG", "Total IPs Logged:");
+        this.add("STATS_PEXM", "Total Players Exempt:");
+        this.add("STATS_IEXM", "Total IPs Exempt:");
+        this.add("STATS_RPEXM", "Total Players Rejoin Exempt:");
+        this.add("STATS_RIEXM", "Total IPs Rejoin Exempt:");
+        this.add("STATS_PBAN", "Total Players Banned:");
+        this.add("STATS_IBAN", "Total IPs Banned:");
+        this.add("STATS_PLOGS", "Player Logins this Session:");
+        this.add("STATS_PBANS", "Players Banned this Session:");
+        this.add("STATS_PUNBANS", "Players Unbanned this Session:");
+        this.add("STATS_WARNS", "Login Warnings this Session:");
+        this.add("STATS_KICKS", "Kicks Issued this Session:");
+        this.add("STATS_SECURE", "Secure Mode Status:");
+        this.add("STATS_ACTIVE", "Active Mode Status:");
+        this.add("STATS_BLACKLIST", "Country Black-List Status:");
 
         this.add("VER_COMP_ERR", "This version of IP-Check is not fully " +
                 "compatible with the version of Bukkit you are running. " +
@@ -287,11 +282,6 @@ public class LocaleStore extends LocalizationStore {
                 "IP-Check! Automatic Updater and Metrics have been disabled! " +
                 "If you are seeing this message, please alert the plugin " +
                 "developer, as this should not appear.");
-
-        this.add("CONFIG_VER_MISMATCH", "WARNING: Your configuration " +
-                "is out of date! Please make note of your configuration " +
-                "settings, then delete your config.yml " +
-                "and restart the plugin.");
     }
 
 }

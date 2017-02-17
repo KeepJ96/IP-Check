@@ -4,18 +4,10 @@
   <groupId>net.risenphoenix</groupId>
   <artifactId>IP-Check</artifactId>
   <name>IP-Check</name>
-  <version>2.0.7-SNAPSHOT</version>
+  <version>2.0-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-install-plugin</artifactId>
-        <version>2.5.1</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.16</version>
-      </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
@@ -41,7 +33,6 @@
                 </includes>
                 <excludes>
                   <exclude>org.bukkit:*</exclude>
-                  <exclude>GlowStone:*</exclude>
                   <exclude>c3p0-local:c3p0-local</exclude>
                 </excludes>
               </artifactSet>
@@ -50,20 +41,16 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
   <repositories>
     <repository>
+      <id>bukkit-repo</id>
+      <url>http://repo.bukkit.org/content/groups/public/</url>
+    </repository>
+    <repository>
       <id>local-repo</id>
-      <url>file:/H:\Maven\repository</url>
+      <url>file://home/jacob/.m2/repository/</url>
     </repository>
   </repositories>
   <dependencies>
@@ -74,9 +61,21 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>bukkit</groupId>
+      <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.11.2</version>
+      <version>1.7.2-R0.2-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.bukkit</groupId>
+      <artifactId>craftbukkit</artifactId>
+      <version>1.7.2-R0.2-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>c3p0-local</groupId>
+      <artifactId>c3p0-local</artifactId>
+      <version>0.1</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

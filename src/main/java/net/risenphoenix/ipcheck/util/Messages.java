@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Jacob Keep (Jnk1296). All rights reserved.
+ * Copyright © 2014 Jacob Keep (Jnk1296). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -81,8 +81,6 @@ public class Messages {
             add("But did you know...");
             add("Would you like a Swiss Cake Roll?");
             add("Fact or Fiction?");
-            add("But now I'm back... and I'm better than ever!");
-            add("Never trust Athion Developers. :(");
         }
     };
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Jacob Keep (Jnk1296). All rights reserved.
+ * Copyright © 2014 Jacob Keep (Jnk1296). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -30,26 +30,21 @@
 
 package net.risenphoenix.ipcheck.objects;
 
-import org.bukkit.Bukkit;
-
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class UserObject {
 
     private String User;
-    private UUID uuid;
     private ArrayList<String> IPs;
     private boolean isBanned;
     private boolean isExempt;
     private boolean isRejoinExempt;
     private boolean isProtected;
 
-    public UserObject(String User, UUID uuid, ArrayList<String> IPs,
-                      boolean isBanned, boolean isExempt,
-                      boolean isRejoinExempt, boolean isProtected) {
+    public UserObject(String User, ArrayList<String> IPs, boolean isBanned,
+                      boolean isExempt, boolean isRejoinExempt,
+                      boolean isProtected) {
         this.User = User;
-        this.uuid = uuid;
         this.IPs = IPs;
         this.isBanned = isBanned;
         this.isExempt = isExempt;
@@ -64,10 +59,6 @@ public class UserObject {
 
     public final String getUser() {
         return this.User;
-    }
-
-    public final UUID getUUID() {
-        return uuid;
     }
 
     public final ArrayList<String> getIPs() {

@@ -1,6 +1,6 @@
 # ============================================================================ #
 #
-# IP-Check v2.0.7 b2084 | RP-Commons v1.1.0 b201 -- Author: Jnk1296
+# IP-Check v2.0.6 b2067 | RP-Commons v1.03.02 b78 -- Author: Jnk1296
 # For more information visit http://dev.bukkit.org/server-mods/ip-check-jnk/
 #
 # IT IS RECOMMENDED THAT YOU READ THE CONFIGURATION EXPLANATION BEFORE MAKING
@@ -8,6 +8,8 @@
 #
 # Configuration Explanation can be found at:
 # http://dev.bukkit.org/bukkit-plugins/ip-check-jnk/pages/default-configuration/
+#
+# MySQL pooling functions provided by c3p0.
 #
 # This product includes GeoLite data created by MaxMind, available from:
 # http://www.maxmind.com/
@@ -21,6 +23,9 @@ language: "en"
 
 # Use MySQL instead of SQLite?
 use-mysql: false
+
+# MySQL Connection Pool Size (number of connections available to IP-Check)
+mysql-pool-size: 1
 
 # Login details if backend is mysql
 dbUsername: "root"
@@ -91,9 +96,6 @@ allow-geoip-download: true
 # Allow the use of the Country Blacklist
 use-country-blacklist: true
 
-# Make Country Blacklist act as Whitelist
-use-blacklist-as-whitelist: false
-
 # Which countries do you want to block from joining your server?
 country-blacklist: []
 
@@ -101,4 +103,4 @@ country-blacklist: []
 blocked-message: "Your country has been blocked from joining this server."
 
 # MC Hammer!
-config-version: 5
+config-version: 1

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Jacob Keep (Jnk1296). All rights reserved.
+ * Copyright © 2014 Jacob Keep (Jnk1296). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -93,7 +93,7 @@ public class ActionBanAll {
                 String ip = db.getLastKnownIP(upo.getUser());
 
                 // If the UPOs Last IP is not equal to the banning flag
-                if (db.isBannedIP(ip) != banning) {
+                if (db.isBannedPlayer(ip) != banning) {
                     // Append IP to SQL command with additional parameters
                     ipBanString.append(ip + "' or ip='");
                     depthIP++;
@@ -134,13 +134,6 @@ public class ActionBanAll {
                             if (!db.isProtectedPlayer(p.getName())) {
                                 p.kickPlayer(banMsg);
                                 p.setBanned(true);
-                            }
-                        } else {
-                            OfflinePlayer op =
-                                    Bukkit.getOfflinePlayer(upo.getUser());
-
-                            if (op != null) {
-                                op.setBanned(true);
                             }
                         }
 

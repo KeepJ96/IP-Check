@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Jacob Keep (Jnk1296). All rights reserved.
+ * Copyright © 2014 Jacob Keep (Jnk1296). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -46,7 +46,7 @@ public class CmdStatus extends Command {
 
         setName(getLocalString("CMD_STATUS"));
         setHelp(getLocalString("HELP_STATUS"));
-        setSyntax("ipc status [adv | advanced | etc]");
+        setSyntax("ipc status");
         setPermissions(new Permission[]{new Permission("ipcheck.use")});
     }
 
@@ -94,67 +94,65 @@ public class CmdStatus extends Command {
         getPlugin().sendPlayerMessage(sender, ChatColor.DARK_GRAY +
                 "------------------------------------------------", false);
 
-        if (args.length == 2) {
-            sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
-                    getLocalString("STATS_PLOG") + ChatColor.YELLOW +
-                    stats.getPlayersLogged(), false);
+        sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
+                getLocalString("STATS_PLOG") + ChatColor.YELLOW +
+                stats.getPlayersLogged(), false);
 
-            sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
-                    getLocalString("STATS_ILOG") + ChatColor.YELLOW +
-                    stats.getIPsLogged(), false);
+        sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
+                getLocalString("STATS_ILOG") + ChatColor.YELLOW +
+                stats.getIPsLogged(), false);
 
-            sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
-                    getLocalString("STATS_PEXM") + ChatColor.YELLOW +
-                    stats.getPlayersExempt(), false);
+        sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
+                getLocalString("STATS_PEXM") + ChatColor.YELLOW +
+                stats.getPlayersExempt(), false);
 
-            sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
-                    getLocalString("STATS_IEXM") + ChatColor.YELLOW +
-                    stats.getIPsExempt(), false);
+        sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
+                getLocalString("STATS_IEXM") + ChatColor.YELLOW +
+                stats.getIPsExempt(), false);
 
-            sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
-                    getLocalString("STATS_RPEXM") + ChatColor.YELLOW +
-                    stats.getPlayersRejoinExempt(), false);
+        sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
+                getLocalString("STATS_RPEXM") + ChatColor.YELLOW +
+                stats.getPlayersRejoinExempt(), false);
 
-            sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
-                    getLocalString("STATS_RIEXM") + ChatColor.YELLOW +
-                    stats.getIPsRejoinExempt(), false);
+        sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
+                getLocalString("STATS_RIEXM") + ChatColor.YELLOW +
+                stats.getIPsRejoinExempt(), false);
 
-            // Border
-            getPlugin().sendPlayerMessage(sender, ChatColor.DARK_GRAY +
-                    "------------------------------------------------", false);
+        // Border
+        getPlugin().sendPlayerMessage(sender, ChatColor.DARK_GRAY +
+                "------------------------------------------------", false);
 
-            sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
-                    getLocalString("STATS_PBAN") + ChatColor.YELLOW +
-                    stats.getPlayersBanned(), false);
+        sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
+                getLocalString("STATS_PBAN") + ChatColor.YELLOW +
+                stats.getPlayersBanned(), false);
 
-            sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
-                    getLocalString("STATS_IBAN") + ChatColor.YELLOW +
-                    stats.getIPsBanned(), false);
+        sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
+                getLocalString("STATS_IBAN") + ChatColor.YELLOW +
+                stats.getIPsBanned(), false);
 
-            sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
-                    getLocalString("STATS_PLOGS") + ChatColor.YELLOW +
-                    stats.getLogPlayerSession(), false);
+        sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
+                getLocalString("STATS_PLOGS") + ChatColor.YELLOW +
+                stats.getLogPlayerSession(), false);
 
-            sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
-                    getLocalString("STATS_PBANS") + ChatColor.YELLOW +
-                    stats.getBannedPlayerSession(), false);
+        sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
+                getLocalString("STATS_PBANS") + ChatColor.YELLOW +
+                stats.getBannedPlayerSession(), false);
 
-            sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
-                    getLocalString("STATS_PUNBANS") + ChatColor.YELLOW +
-                    stats.getUnbannedPlayerSession(), false);
+        sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
+                getLocalString("STATS_PUNBANS") + ChatColor.YELLOW +
+                stats.getUnbannedPlayerSession(), false);
 
-            sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
-                    getLocalString("STATS_WARNS") + ChatColor.YELLOW +
-                    stats.getWarningIssuedSession(), false);
+        sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
+                getLocalString("STATS_WARNS") + ChatColor.YELLOW +
+                stats.getWarningIssuedSession(), false);
 
-            sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
-                    getLocalString("STATS_KICKS") + ChatColor.YELLOW +
-                    stats.getKickIssuedSession(), false);
+        sendPlayerMessage(sender, ChatColor.LIGHT_PURPLE +
+                getLocalString("STATS_KICKS") + ChatColor.YELLOW +
+                stats.getKickIssuedSession(), false);
 
-            // Border
-            getPlugin().sendPlayerMessage(sender, ChatColor.DARK_GRAY +
-                    "------------------------------------------------", false);
-        }
+        // Border
+        getPlugin().sendPlayerMessage(sender, ChatColor.DARK_GRAY +
+                "------------------------------------------------", false);
 
         String isTrue = ChatColor.GREEN + "True",
                isFalse = ChatColor.RED + "False";

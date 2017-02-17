@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Jacob Keep (Jnk1296). All rights reserved.
+ * Copyright © 2014 Jacob Keep (Jnk1296). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -50,6 +50,9 @@ public class ConfigStore extends ConfigurationStore {
         // Database Selection and Options
         this.add(new ConfigurationOption(ConfigOptionType.Boolean,
                 "use-mysql"));
+
+        this.add(new ConfigurationOption(ConfigOptionType.Integer,
+                "mysql-pool-size"));
 
         this.add(new ConfigurationOption(ConfigOptionType.String,
                 "dbUsername"));
@@ -126,16 +129,10 @@ public class ConfigStore extends ConfigurationStore {
         this.add(new ConfigurationOption(ConfigOptionType.Boolean,
                 "use-country-blacklist"));
 
-        this.add(new ConfigurationOption(ConfigOptionType.Boolean,
-                "use-blacklist-as-whitelist"));
-
         this.add(new ConfigurationOption(ConfigOptionType.StringList,
                 "country-blacklist"));
 
         this.add(new ConfigurationOption(ConfigOptionType.String,
                 "blocked-message"));
-
-        this.add(new ConfigurationOption(ConfigOptionType.Integer,
-                "config-version"));
     }
 }
