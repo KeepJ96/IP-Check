@@ -1,3 +1,3 @@
 IP-Check
 ========
-Current Build: **2.0.6**
+Current Build: **2.0.7**
