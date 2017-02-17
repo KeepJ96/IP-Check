@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Jacob Keep (Jnk1296). All rights reserved.
+ * Copyright © 2017 Jacob Keep (Jnk1296). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -114,11 +114,11 @@ public class LoginNotification {
                         " for " + "more information.", false);
 
                 ipc.sendPlayerMessage(p, ChatColor.DARK_GRAY +
-                        "---------------------------------------", false);
+                        "------------------------------------------------", false);
             } else {
 
                 ipc.sendPlayerMessage(p, ChatColor.DARK_GRAY +
-                        "---------------------------------------", false);
+                        "------------------------------------------------", false);
 
                 ipc.sendPlayerMessage(p, ChatColor.RED +
                         local.getLocalString("LOGIN_WARN") + " " +
@@ -126,7 +126,7 @@ public class LoginNotification {
                         ChatColor.RED + local.getLocalString("LOGIN_EXPLAIN"));
 
                 ipc.sendPlayerMessage(p, ChatColor.DARK_GRAY +
-                        "---------------------------------------", false);
+                        "------------------------------------------------", false);
             }
         }
     }

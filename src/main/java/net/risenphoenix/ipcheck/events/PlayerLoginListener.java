@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Jacob Keep (Jnk1296). All rights reserved.
+ * Copyright © 2017 Jacob Keep (Jnk1296). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -38,6 +38,7 @@ import net.risenphoenix.ipcheck.database.DatabaseController;
 import net.risenphoenix.ipcheck.objects.DateObject;
 import net.risenphoenix.ipcheck.objects.IPObject;
 import net.risenphoenix.ipcheck.objects.UserObject;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
@@ -76,8 +77,12 @@ public class PlayerLoginListener {
         if (debugAddress)
             ipc.sendConsoleMessage(Level.INFO, "Address Output: " + address);
 
-        // Log Player and IP
-        db.log(player.getName(), address);
+        // Log Player and IP (and UUID if server is online)
+        if (Bukkit.getServer().getOnlineMode()) {
+            db.log(player.getUniqueId(), player.getName(), address);
+        } else {
+            db.log(player.getName(), address);
+        }
 
         // Stats Link
         ipc.getStatisticsObject().logPlayerJoin(1);
@@ -126,8 +131,7 @@ public class PlayerLoginListener {
             return;
         }
 
-        // Check if the player's country is blocked. If so, kick them with a
-        // corresponding message. (GeoIP Services Hook)
+        // Check if the player's country is "blocked". (GeoIP Services Hook)
         if (config.getBoolean("use-country-blacklist")) {
             // CBlock will be null if the database is not found.
             if (cBlockManager != null) {
@@ -136,8 +140,13 @@ public class PlayerLoginListener {
                     String countryID = cBlockManager.getCountryID(address);
                     String countryName = cBlockManager.getCountry(address);
 
-                    // If the country is blocked via black list, kick the player.
-                    if (cBlockManager.isBlockedCountry(countryID)) {
+                    boolean isBlockedCountry = cBlockManager
+                            .isBlockedCountry(countryID);
+
+                    boolean actAsWhitelist = config
+                            .getBoolean("use-blacklist-as-whitelist");
+
+                    if (!(isBlockedCountry == actAsWhitelist)) {
                         e.setKickMessage(config.getString("blocked-message") +
                                 " (" + countryName + ")");
                         e.setResult(Result.KICK_OTHER);

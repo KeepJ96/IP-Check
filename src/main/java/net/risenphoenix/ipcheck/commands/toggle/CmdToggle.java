@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 Jacob Keep (Jnk1296). All rights reserved.
+ * Copyright © 2017 Jacob Keep (Jnk1296). All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -77,6 +77,11 @@ public class CmdToggle extends Command {
             new ToggleOption(getPlugin(), "use-country-blacklist",
                 "TOGGLE_BLACKLIST", new String[]{"country-block", "black-list",
                     "cb"})
+        );
+
+        options.add( // Use Country Blacklist as Whitelist
+            new ToggleOption(getPlugin(), "whitelist-mode", "TOGGLE_WHITELIST",
+                new String[]{"cb-whitelist", "whitelist", "wl"})
         );
 
         options.add( // GeoIP Services

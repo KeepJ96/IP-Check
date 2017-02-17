@@ -9,13 +9,11 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
-    <orderEntry type="library" name="Maven: GlowStone:GlowStone:92" level="project" />
-    <orderEntry type="library" name="Maven: RP-Commons:RP-Commons-SNAPSHOT:0.78" level="project" />
+    <orderEntry type="library" name="Maven: bukkit:bukkit:1.11.2" level="project" />
+    <orderEntry type="library" name="Maven: RP-Commons:RP-Commons-SNAPSHOT:0.201" level="project" />
     <orderEntry type="library" name="Maven: com.maxmind.geoip:geoip-api:1.2.12" level="project" />
-    <orderEntry type="library" name="Maven: c3p0-local:c3p0-local:0.1" level="project" />
   </component>
 </module>
-
