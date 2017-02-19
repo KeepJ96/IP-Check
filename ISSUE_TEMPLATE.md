@@ -1,5 +1,4 @@
-# Issue Report
----
+# Issue Report <!--- Replace 'Issue Report' with the name of your issue, leaving the # symbol. -->
 <!--- In order to create a valid issue report you have to follow this template. -->
 <!--- You may remove it if you are posting a feature request. -->
 <!--- You can run command '/ipc status' to get the requested data points. -->
